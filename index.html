@@ -3,313 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soheil's Recipe OS</title>
+    <title>Soheil OS | Big Sur</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-color: #888; /* رنگ خاکستری دسکتاپ */
-            --pattern-color: #444;
-            --window-bg: #fff;
-            --title-bar-lines: repeating-linear-gradient(
-                to bottom,
-                #000 0px,
-                #000 1px,
-                #fff 1px,
-                #fff 2px
-            );
+            --bg-glass: rgba(255, 255, 255, 0.65);
+            --dock-glass: rgba(255, 255, 255, 0.4);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --border-radius: 18px;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: var(--bg-color);
-            /* الگوی شطرنجی ریز برای پس‌زمینه مکینتاش */
-            background-image: 
-                linear-gradient(45deg, #bbb 25%, transparent 25%), 
-                linear-gradient(-45deg, #bbb 25%, transparent 25%), 
-                linear-gradient(45deg, transparent 75%, #bbb 75%), 
-                linear-gradient(-45deg, transparent 75%, #bbb 75%);
-            background-size: 4px 4px;
-            font-family: 'VT323', monospace; /* فونت پیکسلی */
-            overflow: hidden;
             height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            
+            /* --- عکس پس‌زمینه جدید تو اینجاست --- */
+            background: url('https://s8.uupload.ir/files/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-2880x1800-1455_hxwe.jpg') no-repeat center center fixed;
+            background-size: cover;
+            
             user-select: none;
         }
 
-        /* --- نوار منوی بالا --- */
+        /* --- منوبار بالا --- */
         .menubar {
-            background: white;
-            border-bottom: 2px solid #000;
-            padding: 5px 15px;
+            width: 100%;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.2rem;
+            padding: 0 20px;
+            box-sizing: border-box;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
             position: fixed;
             top: 0;
-            width: 100%;
             z-index: 1000;
-            box-sizing: border-box;
         }
 
-        .menu-left {
-            display: flex;
-            gap: 20px;
-        }
-
-        .menu-item {
-            cursor: pointer;
-            padding: 0 5px;
-        }
-
-        .menu-item:hover {
-            background: black;
-            color: white;
-        }
-
-        .apple-logo {
-            font-weight: bold;
-        }
-
-        /* --- آیکون‌های دسکتاپ --- */
-        .desktop-icon {
-            position: absolute;
-            top: 60px;
-            right: 20px; /* آیکون هارد دیسک سمت راست */
-            text-align: center;
-            width: 80px;
-            cursor: pointer;
-        }
-
-        .icon-img {
-            width: 50px;
-            height: 50px;
-            background: white;
-            border: 2px solid black;
-            margin: 0 auto 5px;
-            position: relative;
-            box-shadow: 2px 2px 0 #000;
-        }
+        .menu-left { display: flex; gap: 20px; }
+        .menu-right { display: flex; gap: 15px; align-items: center; }
+        .apple-logo { font-size: 1.1rem; }
         
-        /* شکل ساده فلاپی دیسک با CSS */
-        .disk-icon {
-            background: white;
-            border: 2px solid black;
-        }
-        .disk-icon::after {
-            content: '';
-            position: absolute;
-            top: 5px; left: 5px; right: 5px; height: 25px;
-            border: 2px solid black;
-            border-top: none;
-        }
-
-        .icon-label {
-            background: white;
-            border: 1px solid black;
-            padding: 2px 5px;
-            font-size: 1.1rem;
-            display: inline-block;
-            box-shadow: 2px 2px 0 #000;
-        }
-
-        /* --- پنجره (Window) --- */
+        /* --- پنجره Finder --- */
         .window {
+            width: 700px;
+            height: 450px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             position: absolute;
-            top: 100px;
-            left: 100px;
-            width: 600px;
-            height: 400px;
-            background: var(--window-bg);
-            border: 2px solid black;
-            box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
-            direction: ltr; /* ساختار پنجره چپ‌چین باشه */
+            animation: popIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .title-bar {
-            height: 30px;
-            border-bottom: 2px solid black;
+            height: 50px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: var(--title-bar-lines); /* خط‌خطی کلاسیک */
-            position: relative;
+            padding: 0 20px;
             cursor: move; /* نشانگر جابجایی */
         }
 
-        .title-text {
-            background: white;
-            padding: 0 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: 1px solid black;
-        }
-
-        .close-btn {
-            width: 15px;
-            height: 15px;
-            border: 1px solid black;
-            background: white;
-            position: absolute;
-            left: 8px;
-            box-shadow: 1px 1px 0 black;
-        }
-
-        .window-content {
-            padding: 20px;
-            flex-grow: 1;
-            overflow-y: auto;
-            background: white;
-        }
-
-        .info-bar {
-            border-bottom: 2px solid black;
-            padding: 5px 10px;
-            font-size: 1rem;
+        .traffic-lights {
             display: flex;
-            justify-content: space-between;
+            gap: 8px;
         }
 
-        /* --- گرید آیکون‌های داخل پنجره --- */
-        .grid-container {
+        .light { width: 12px; height: 12px; border-radius: 50%; }
+        .close { background: #ff5f57; border: 1px solid #e0443e; cursor: pointer;}
+        .minimize { background: #febc2e; border: 1px solid #d89e24; }
+        .maximize { background: #28c840; border: 1px solid #1aab29; }
+
+        .toolbar-title {
+            margin-left: 20px;
+            color: #333;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .window-body {
+            display: flex;
+            height: 100%;
+        }
+
+        /* سایدبار سمت چپ پنجره */
+        .sidebar {
+            width: 180px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-right: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sidebar-item {
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar-item.active {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000;
+        }
+
+        .sidebar-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin: 10px 10px 5px;
+            font-weight: bold;
+        }
+
+        /* محتوای اصلی پنجره */
+        .content-area {
+            flex-grow: 1;
+            padding: 20px;
+            background: rgba(255,255,255,0.4);
+            border-bottom-right-radius: var(--border-radius);
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-auto-rows: 110px;
+            gap: 10px;
         }
 
-        .folder-item {
-            text-align: center;
-            cursor: pointer;
+        /* آیکون فایل نان سیر */
+        .file-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-decoration: none;
-            color: black;
-            display: block;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            cursor: pointer;
         }
 
-        .folder-item:hover .folder-label {
-            background: black;
-            color: white;
+        .file-item:hover {
+            background: rgba(0,0,0,0.05);
         }
 
-        .folder-icon {
-            width: 50px;
-            height: 40px;
-            border: 2px solid black;
-            border-radius: 2px 5px 2px 2px;
-            margin: 0 auto 5px;
-            position: relative;
+        .file-icon {
+            font-size: 3.5rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+        }
+
+        .file-name {
+            font-family: 'Vazirmatn', sans-serif;
+            color: #333;
+            font-size: 0.9rem;
+            text-align: center;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+        }
+
+        /* --- داک پایین صفحه --- */
+        .dock-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .dock {
+            background: var(--dock-glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 24px;
+            padding: 10px;
+            display: flex;
+            gap: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dock-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
             background: white;
-            box-shadow: 2px 2px 0 #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .dock-icon:hover {
+            transform: translateY(-15px) scale(1.1);
+            margin: 0 5px;
         }
         
-        /* لبه پوشه */
-        .folder-icon::before {
-            content: '';
-            position: absolute;
-            top: -6px; left: -2px;
-            width: 20px; height: 6px;
-            border: 2px solid black;
-            border-bottom: none;
-            background: white;
-            border-radius: 2px 2px 0 0;
+        /* رنگ‌های آیکون‌های داک */
+        .icon-finder { background: linear-gradient(#1e90ff, #00bfff); color: white; }
+        .icon-safari { background: white; color: #00a8ff; }
+        .icon-messages { background: #2ed573; color: white; }
+        .icon-music { background: #ff4757; color: white; }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translate(-50%, -40%) scale(0.95); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
-        .folder-label {
-            font-family: 'Vazirmatn', sans-serif; /* برای متن فارسی */
-            font-size: 0.9rem;
-            padding: 2px 5px;
-        }
-
-        /* --- ریسپانسیو برای موبایل --- */
+        /* ریسپانسیو موبایل */
         @media (max-width: 600px) {
-            .window {
-                width: 90%;
-                left: 5% !important;
-                top: 80px !important;
-                height: 70vh;
-            }
-            .menubar { font-size: 1rem; }
-            .desktop-icon { display: none; } /* در موبایل آیکون هارد نباشه بهتره */
+            .window { width: 90%; height: 60vh; }
+            .sidebar { display: none; }
+            .dock-icon { width: 45px; height: 45px; }
+            .menubar { font-size: 0.7rem; }
+            .menu-left { gap: 10px; }
         }
-
     </style>
 </head>
 <body>
 
     <div class="menubar">
         <div class="menu-left">
-            <div class="menu-item apple-logo"></div>
-            <div class="menu-item">File</div>
-            <div class="menu-item">Edit</div>
-            <div class="menu-item">View</div>
-            <div class="menu-item">Special</div>
+            <i class="fab fa-apple apple-logo"></i>
+            <span>Finder</span>
+            <span>File</span>
+            <span>Edit</span>
+            <span>View</span>
+            <span>Go</span>
         </div>
-        <div class="menu-right" id="clock">12:00 PM</div>
-    </div>
-
-    <div class="desktop-icon">
-        <div class="icon-img disk-icon"></div>
-        <div class="icon-label">Recipe HD</div>
+        <div class="menu-right">
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+            <span id="clock">12:00</span>
+        </div>
     </div>
 
     <div class="window" id="mainWindow">
-        <div class="title-bar" id="dragHeader">
-            <div class="close-btn"></div>
-            <div class="title-text">My Recipes</div>
+        <div class="title-bar" id="dragHandle">
+            <div class="traffic-lights">
+                <div class="light close" onclick="closeWindow()"></div>
+                <div class="light minimize"></div>
+                <div class="light maximize"></div>
+            </div>
+            <div class="toolbar-title">
+                <i class="fas fa-folder" style="color: #74b9ff;"></i>
+                Projects
+            </div>
         </div>
         
-        <div class="info-bar">
-            <span>1 item</span>
-            <span>340 MB available</span>
-        </div>
-
-        <div class="window-content">
-            <div class="grid-container">
+        <div class="window-body">
+            <div class="sidebar">
+                <div class="sidebar-title">Favorites</div>
+                <div class="sidebar-item active"><i class="fas fa-hdd" style="color: #aaa;"></i> Macintosh HD</div>
+                <div class="sidebar-item"><i class="fas fa-desktop" style="color: #aaa;"></i> Desktop</div>
+                <div class="sidebar-item"><i class="fas fa-download" style="color: #aaa;"></i> Downloads</div>
+                <div class="sidebar-title">iCloud</div>
+                <div class="sidebar-item"><i class="fas fa-cloud" style="color: #aaa;"></i> iCloud Drive</div>
+            </div>
+            
+            <div class="content-area">
                 
-                <a href="./garlic-bread/index.html" class="folder-item">
-                    <div class="folder-icon"></div>
-                    <span class="folder-label">نان سیر (Garlic Bread)</span>
+                <a href="./garlic-bread/index.html" class="file-item">
+                    <div class="file-icon">🥖</div>
+                    <span class="file-name">نان سیر (Garlic Bread)</span>
                 </a>
 
+                <div class="file-item">
+                    <div class="file-icon">🍕</div>
+                    <span class="file-name">پیتزا (بزودی)</span>
                 </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="dock-container">
+        <div class="dock">
+            <div class="dock-icon icon-finder" onclick="openWindow()"><i class="fas fa-face-smile"></i></div>
+            <div class="dock-icon icon-safari"><i class="fab fa-safari"></i></div>
+            <div class="dock-icon icon-messages"><i class="fas fa-comment"></i></div>
+            <div class="dock-icon icon-music"><i class="fas fa-music"></i></div>
+            <div class="dock-icon" style="background:#333; color:white;"><i class="fas fa-terminal"></i></div>
         </div>
     </div>
 
     <script>
-        // --- 1. تنظیم ساعت ---
+        // 1. تنظیم ساعت
         function updateClock() {
             const now = new Date();
-            let hours = now.getHours();
+            const hours = now.getHours();
             const minutes = now.getMinutes().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; 
-            document.getElementById('clock').textContent = `${hours}:${minutes} ${ampm}`;
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // --- 2. قابلیت جابجایی پنجره (Drag & Drop) ---
+        // 2. درگ کردن پنجره
         const windowEl = document.getElementById("mainWindow");
-        const header = document.getElementById("dragHeader");
+        const handle = document.getElementById("dragHandle");
+        let isDragging = false, startX, startY, initialLeft, initialTop;
 
-        let isDragging = false;
-        let startX, startY, initialLeft, initialTop;
-
-        header.addEventListener("mousedown", (e) => {
+        handle.addEventListener("mousedown", (e) => {
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
-            initialLeft = windowEl.offsetLeft;
-            initialTop = windowEl.offsetTop;
-            header.style.cursor = "grabbing";
+            const rect = windowEl.getBoundingClientRect();
+            initialLeft = rect.left + (rect.width / 2);
+            initialTop = rect.top + (rect.height / 2);
         });
 
-        document.addEventListener("mousemove", (e) => {
+        window.addEventListener("mousemove", (e) => {
             if (!isDragging) return;
             const dx = e.clientX - startX;
             const dy = e.clientY - startY;
@@ -317,34 +345,23 @@
             windowEl.style.top = `${initialTop + dy}px`;
         });
 
-        document.addEventListener("mouseup", () => {
-            isDragging = false;
-            header.style.cursor = "move";
-        });
-        
-        // پشتیبانی از تاچ موبایل
-        header.addEventListener("touchstart", (e) => {
-            const touch = e.touches[0];
-            isDragging = true;
-            startX = touch.clientX;
-            startY = touch.clientY;
-            initialLeft = windowEl.offsetLeft;
-            initialTop = windowEl.offsetTop;
-        }, {passive: false});
-
-        document.addEventListener("touchmove", (e) => {
-            if (!isDragging) return;
-            const touch = e.touches[0];
-            const dx = touch.clientX - startX;
-            const dy = touch.clientY - startY;
-            windowEl.style.left = `${initialLeft + dx}px`;
-            windowEl.style.top = `${initialTop + dy}px`;
-            e.preventDefault(); // جلوگیری از اسکرول صفحه
-        }, {passive: false});
-
-        document.addEventListener("touchend", () => {
+        window.addEventListener("mouseup", () => {
             isDragging = false;
         });
+
+        // 3. باز و بسته کردن پنجره
+        function closeWindow() {
+            windowEl.style.display = 'none';
+        }
+
+        function openWindow() {
+            windowEl.style.display = 'flex';
+            windowEl.style.top = '50%';
+            windowEl.style.left = '50%';
+            windowEl.style.animation = 'none';
+            windowEl.offsetHeight;
+            windowEl.style.animation = 'popIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        }
     </script>
 </body>
 </html>
