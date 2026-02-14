@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نان سیر مخصوص | برای مامان ❤️</title>
+    
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #FF9F1C; /* نارنجی اشتهاآور */
+            --accent: #2EC4B6;  /* سبز آبی ملایم برای تضاد */
+            --dark: #1F2421;
+            --light: #FBFBF2;
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* --- هدر (Hero Section) --- */
+        header {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('https://s8.uupload.ir/files/garlic_bread_202602150042_t59.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .header-content h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 0;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header-content p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-top: 10px;
+            animation: fadeInUp 1s ease-out 0.5s backwards;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* --- کانتینر اصلی --- */
+        .container {
+            max-width: 900px;
+            margin: -100px auto 50px; /* کشیدن به بالا روی هدر */
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- کارت شیشه‌ای اصلی --- */
+        .recipe-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+
+        .intro-text {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #555;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin: 60px 0 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 i {
+            color: var(--primary);
+        }
+
+        /* --- لیست مواد لازم --- */
+        .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .ingredient {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .ingredient:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 159, 28, 0.2);
+        }
+
+        .ingredient input {
+            transform: scale(1.5);
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .ingredient label {
+            cursor: pointer;
+            width: 100%;
+            font-weight: 500;
+        }
+
+        .ingredient.checked {
+            opacity: 0.6;
+            background: #f0f0f0;
+        }
+        .ingredient.checked label {
+            text-decoration: line-through;
+        }
+
+        /* --- مراحل پخت --- */
+        .step-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            border-right: 5px solid var(--primary);
+            transition: transform 0.3s;
+            opacity: 0; /* برای انیمیشن اسکرول */
+            transform: translateY(30px);
+        }
+
+        .step-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-number {
+            position: absolute;
+            left: -10px;
+            top: -10px;
+            font-size: 5rem;
+            font-weight: 900;
+            color: rgba(0,0,0,0.03);
+            z-index: 0;
+            font-family: sans-serif; /* فونت انگلیسی برای عدد بزرگ پس‌زمینه */
+        }
+
+        .step-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step-title {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .highlight {
+            background: rgba(255, 159, 28, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #d35400;
+            font-weight: bold;
+        }
+
+        /* --- فوتر --- */
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* --- انیمیشن‌ها --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        /* --- ریسپانسیو --- */
+        @media (max-width: 768px) {
+            header { height: 60vh; }
+            .header-content h1 { font-size: 2.5rem; }
+            .recipe-card { padding: 25px; }
+            .container { margin-top: -50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>نان سیر پنیری</h1>
+            <p>جادوی عطر سیر و پنیر | مخصوصِ مامان ❤️</p>
+        </div>
+        <div class="scroll-down" onclick="document.querySelector('.container').scrollIntoView({behavior: 'smooth'})">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="recipe-card">
+            
+            <p class="intro-text">
+                "اگه کسی نان سیر دوست نداشته باشه، نمیشه بهش اعتماد کرد!" <br>
+                مامان جان، این دستور پخت نهایی برای بهترین نان سیری هست که تا حالا خوردی. ترد، کره‌ای و پر از پنیر.
+            </p>
+
+            <h2><i class="fas fa-shopping-basket"></i> مواد لازم</h2>
+            <div class="ingredients-grid" id="ingredients-list">
+                </div>
+
+            <h2><i class="fas fa-fire-alt"></i> طرز تهیه</h2>
+            
+            <div class="step-card">
+                <span class="step-number">01</span>
+                <div class="step-content">
+                    <span class="step-title">آماده‌سازی سیر کبابی</span>
+                    دو بوته کامل سیر رو از وسط نصف کن. اون‌ها رو روی فویل بذار، کمی روغن زیتون، نمک و فلفل سیاه روشون بریز و فویل رو محکم بپیچ. بذار توی فر با دمای <span class="highlight">۱۴۰ درجه (۱.۵ ساعت)</span> تا کاملاً کاراملی و نرم بشه.
+                </div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">02</span>
+                <div class="step-content">
+                    <span class="step-title">ساخت بمب طعم (کره ترکیبی)</span>
+                    سیرهای کبابی رو فشار بده تا در بیان و بریز روی کره نرم شده. برای اینکه عطرش قوی‌تر بشه، چند حبه <span class="highlight">سیر تازه رنده شده</span> هم اضافه کن. حالا جعفری خرد شده، پنیر پارمزان، پاپریکا، نمک و فلفل رو اضافه کن و خوب مخلوط کن.
+                </div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">03</span>
+                <div class="step-content">
+                    <span class="step-title">آماده‌سازی نان</span>
+                    نان باگت یا نان خانگی رو از وسط نصف کن. از اون کره ترکیبیِ معرکه، یک لایه ضخیم و یکدست روی تمام سطح نان بمال. نان رو بذار تو فر <span class="highlight">۱۶۵ درجه (۱۰ دقیقه)</span> تا کره ذوب بشه و به خورد نان بره.
+                </div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">04</span>
+                <div class="step-content">
+                    <span class="step-title">مرحله پنیری!</span>
+                    نان رو بیار بیرون. حالا وقتشه که با سخاوت تمام، پنیر موزارلا رنده شده رو روش بریزی. دوباره بذار توی فر (این بار زیر گریل) تا پنیرها طلایی بشن و قل‌قل کنن.
+                </div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">05</span>
+                <div class="step-content">
+                    <span class="step-title">نوش جان!</span>
+                    نان رو برش بزن و تا داغه سرو کن. صدای ترد شدنش رو می‌شنوی؟ عالی شد!
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        <p>طراحی شده با عشق توسط سهیل | <span id="year"></span></p>
+    </footer>
+
+    <script>
+        // تنظیم سال جاری
+        document.getElementById('year').textContent = new Date().toLocaleDateString('fa-IR').split('/')[0];
+
+        // لیست مواد
+        const ingredients = [
+            "۲ بوته سیر کامل",
+            "کره (به دمای محیط رسیده)",
+            "روغن زیتون",
+            "نان باگت یا نان فرانسوی",
+            "پنیر موزارلا (فراوان)",
+            "پنیر پارمزان",
+            "جعفری تازه خرد شده",
+            "نمک و فلفل سیاه",
+            "پودر پاپریکا دودی",
+            "چند حبه سیر تازه"
+        ];
+
+        const listContainer = document.getElementById('ingredients-list');
+
+        ingredients.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'ingredient';
+            div.innerHTML = `
+                <input type="checkbox" id="ing-${index}">
+                <label for="ing-${index}">${item}</label>
+            `;
+            
+            div.addEventListener('click', (e) => {
+                if(e.target.tagName !== 'INPUT') {
+                    const chk = div.querySelector('input');
+                    chk.checked = !chk.checked;
+                }
+                div.classList.toggle('checked', div.querySelector('input').checked);
+            });
+
+            listContainer.appendChild(div);
+        });
+
+        // انیمیشن اسکرول (Scroll Reveal)
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // فقط یک بار اجرا شود
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.step-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
