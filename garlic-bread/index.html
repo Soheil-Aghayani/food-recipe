@@ -3,371 +3,377 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نان سیر مخصوص | برای مامان ❤️</title>
+    <title>بهترین نان سیر پنیری | دستور پخت حرفه‌ای</title>
     
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary: #FF9F1C; /* نارنجی اشتهاآور */
-            --accent: #2EC4B6;  /* سبز آبی ملایم برای تضاد */
-            --dark: #1F2421;
-            --light: #FBFBF2;
-            --glass: rgba(255, 255, 255, 0.95);
-            --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.15);
+            --primary: #e17055; /* نارنجی آجری */
+            --secondary: #2d3436; /* خاکستری تیره */
+            --accent: #fdcb6e; /* زرد طلایی */
+            --bg: #f5f6fa;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --radius: 16px;
         }
 
         * {
             box-sizing: border-box;
-            outline: none;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Vazirmatn', sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
-            margin: 0;
-            padding: 0;
+            background-color: var(--bg);
+            color: var(--secondary);
             line-height: 1.8;
             overflow-x: hidden;
         }
 
-        /* --- هدر (Hero Section) --- */
-        header {
-            height: 80vh;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('https://s8.uupload.ir/files/garlic_bread_202602150042_t59.jpeg');
+        /* --- هدر اصلی (Hero) --- */
+        .hero {
+            height: 60vh;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url('https://s8.uupload.ir/files/garlic_bread_202602150042_t59.jpeg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
-            text-align: center;
+            padding-bottom: 60px;
             color: white;
-            position: relative;
+            text-align: center;
         }
 
-        .header-content h1 {
-            font-size: 4rem;
+        .hero-content h1 {
+            font-size: 3.5rem;
             font-weight: 900;
-            margin: 0;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-            animation: fadeInDown 1s ease-out;
+            margin-bottom: 10px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            animation: slideUp 0.8s ease-out;
         }
 
-        .header-content p {
-            font-size: 1.5rem;
-            font-weight: 300;
-            margin-top: 10px;
-            animation: fadeInUp 1s ease-out 0.5s backwards;
+        .hero-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            animation: fadeIn 1s ease-out;
         }
 
-        .scroll-down {
-            position: absolute;
-            bottom: 30px;
-            font-size: 2rem;
-            animation: bounce 2s infinite;
-            cursor: pointer;
-            color: var(--primary);
-        }
-
-        /* --- کانتینر اصلی --- */
+        /* --- بدنه اصلی --- */
         .container {
-            max-width: 900px;
-            margin: -100px auto 50px; /* کشیدن به بالا روی هدر */
-            padding: 0 20px;
+            max-width: 800px;
+            margin: -40px auto 50px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px;
             position: relative;
             z-index: 10;
         }
 
-        /* --- کارت شیشه‌ای اصلی --- */
-        .recipe-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 50px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255,255,255,0.5);
+        /* --- نوار اطلاعات (Stats) --- */
+        .recipe-stats {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
         }
 
-        .intro-text {
-            font-size: 1.2rem;
+        .stat-item {
             text-align: center;
-            margin-bottom: 50px;
+        }
+
+        .stat-item i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #888;
+            display: block;
+        }
+
+        .stat-value {
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        /* --- محتوا --- */
+        .intro-text {
+            font-size: 1.1rem;
             color: #555;
+            margin-bottom: 40px;
+            border-right: 4px solid var(--primary);
+            padding-right: 20px;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
         }
 
         h2 {
-            font-size: 2rem;
-            color: var(--dark);
-            margin: 60px 0 30px;
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin: 50px 0 25px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
-        h2 i {
-            color: var(--primary);
-        }
+        h2 i { color: var(--primary); }
 
-        /* --- لیست مواد لازم --- */
-        .ingredients-grid {
+        /* --- مواد لازم (Checklist) --- */
+        .ingredients-list {
+            list-style: none;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
         }
 
-        .ingredient {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 15px;
+        .ingredient-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: #fdfdfd;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: all 0.2s;
         }
 
-        .ingredient:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 159, 28, 0.2);
+        .ingredient-item:hover {
+            border-color: var(--primary);
+            transform: translateX(-5px);
         }
 
-        .ingredient input {
-            transform: scale(1.5);
+        .ingredient-item input {
+            width: 20px;
+            height: 20px;
             accent-color: var(--primary);
-            cursor: pointer;
-        }
-        
-        .ingredient label {
-            cursor: pointer;
-            width: 100%;
-            font-weight: 500;
+            margin-left: 15px;
         }
 
-        .ingredient.checked {
-            opacity: 0.6;
-            background: #f0f0f0;
-        }
-        .ingredient.checked label {
+        .ingredient-item.checked {
+            opacity: 0.5;
             text-decoration: line-through;
         }
 
         /* --- مراحل پخت --- */
-        .step-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
+        .step {
+            display: flex;
+            gap: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            position: relative;
-            overflow: hidden;
-            border-right: 5px solid var(--primary);
-            transition: transform 0.3s;
-            opacity: 0; /* برای انیمیشن اسکرول */
-            transform: translateY(30px);
-        }
-
-        .step-card.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .step-number {
-            position: absolute;
-            left: -10px;
-            top: -10px;
-            font-size: 5rem;
-            font-weight: 900;
-            color: rgba(0,0,0,0.03);
-            z-index: 0;
-            font-family: sans-serif; /* فونت انگلیسی برای عدد بزرگ پس‌زمینه */
-        }
-
-        .step-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .step-title {
-            font-weight: 800;
-            color: var(--primary);
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .highlight {
-            background: rgba(255, 159, 28, 0.15);
-            padding: 2px 8px;
-            border-radius: 4px;
-            color: #d35400;
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
+            font-size: 1.2rem;
         }
 
-        /* --- فوتر --- */
+        .step-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .step-content p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .tip-box {
+            background-color: #fff8e1;
+            border: 1px solid #ffe082;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .tip-box i {
+            color: #ffa000;
+            font-size: 1.5rem;
+        }
+
         footer {
             text-align: center;
-            padding: 50px 20px;
-            color: #888;
+            padding: 40px;
+            color: #999;
             font-size: 0.9rem;
         }
 
-        /* --- انیمیشن‌ها --- */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-50px); }
+        /* --- انیمیشن --- */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        /* --- ریسپانسیو --- */
+        /* --- موبایل --- */
         @media (max-width: 768px) {
-            header { height: 60vh; }
-            .header-content h1 { font-size: 2.5rem; }
-            .recipe-card { padding: 25px; }
-            .container { margin-top: -50px; }
+            .hero-content h1 { font-size: 2rem; }
+            .container { padding: 25px; margin-top: -30px; border-radius: 20px 20px 0 0; }
+            .recipe-stats { gap: 10px; }
+            .stat-item span { font-size: 0.8rem; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-content">
-            <h1>نان سیر پنیری</h1>
-            <p>جادوی عطر سیر و پنیر | مخصوصِ مامان ❤️</p>
-        </div>
-        <div class="scroll-down" onclick="document.querySelector('.container').scrollIntoView({behavior: 'smooth'})">
-            <i class="fas fa-chevron-down"></i>
+    <header class="hero">
+        <div class="hero-content">
+            <span class="hero-badge"><i class="fas fa-star"></i> دستور پخت ویژه</span>
+            <h1>نان سیر پنیری رستورانی</h1>
+            <p>ترد، طلایی و سرشار از عطر سیر کبابی</p>
         </div>
     </header>
 
-    <div class="container">
-        <div class="recipe-card">
-            
-            <p class="intro-text">
-                "اگه کسی نان سیر دوست نداشته باشه، نمیشه بهش اعتماد کرد!" <br>
-                مامان جان، این دستور پخت نهایی برای بهترین نان سیری هست که تا حالا خوردی. ترد، کره‌ای و پر از پنیر.
-            </p>
-
-            <h2><i class="fas fa-shopping-basket"></i> مواد لازم</h2>
-            <div class="ingredients-grid" id="ingredients-list">
-                </div>
-
-            <h2><i class="fas fa-fire-alt"></i> طرز تهیه</h2>
-            
-            <div class="step-card">
-                <span class="step-number">01</span>
-                <div class="step-content">
-                    <span class="step-title">آماده‌سازی سیر کبابی</span>
-                    دو بوته کامل سیر رو از وسط نصف کن. اون‌ها رو روی فویل بذار، کمی روغن زیتون، نمک و فلفل سیاه روشون بریز و فویل رو محکم بپیچ. بذار توی فر با دمای <span class="highlight">۱۴۰ درجه (۱.۵ ساعت)</span> تا کاملاً کاراملی و نرم بشه.
-                </div>
+    <main class="container">
+        
+        <div class="recipe-stats">
+            <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span class="stat-label">زمان آماده‌سازی</span>
+                <div class="stat-value">۱۰ دقیقه</div>
             </div>
-
-            <div class="step-card">
-                <span class="step-number">02</span>
-                <div class="step-content">
-                    <span class="step-title">ساخت بمب طعم (کره ترکیبی)</span>
-                    سیرهای کبابی رو فشار بده تا در بیان و بریز روی کره نرم شده. برای اینکه عطرش قوی‌تر بشه، چند حبه <span class="highlight">سیر تازه رنده شده</span> هم اضافه کن. حالا جعفری خرد شده، پنیر پارمزان، پاپریکا، نمک و فلفل رو اضافه کن و خوب مخلوط کن.
-                </div>
+            <div class="stat-item">
+                <i class="fas fa-fire"></i>
+                <span class="stat-label">زمان پخت</span>
+                <div class="stat-value">۹۰ دقیقه</div>
             </div>
-
-            <div class="step-card">
-                <span class="step-number">03</span>
-                <div class="step-content">
-                    <span class="step-title">آماده‌سازی نان</span>
-                    نان باگت یا نان خانگی رو از وسط نصف کن. از اون کره ترکیبیِ معرکه، یک لایه ضخیم و یکدست روی تمام سطح نان بمال. نان رو بذار تو فر <span class="highlight">۱۶۵ درجه (۱۰ دقیقه)</span> تا کره ذوب بشه و به خورد نان بره.
-                </div>
+            <div class="stat-item">
+                <i class="fas fa-user-friends"></i>
+                <span class="stat-label">تعداد</span>
+                <div class="stat-value">۴ نفر</div>
             </div>
-
-            <div class="step-card">
-                <span class="step-number">04</span>
-                <div class="step-content">
-                    <span class="step-title">مرحله پنیری!</span>
-                    نان رو بیار بیرون. حالا وقتشه که با سخاوت تمام، پنیر موزارلا رنده شده رو روش بریزی. دوباره بذار توی فر (این بار زیر گریل) تا پنیرها طلایی بشن و قل‌قل کنن.
-                </div>
-            </div>
-
-            <div class="step-card">
-                <span class="step-number">05</span>
-                <div class="step-content">
-                    <span class="step-title">نوش جان!</span>
-                    نان رو برش بزن و تا داغه سرو کن. صدای ترد شدنش رو می‌شنوی؟ عالی شد!
-                </div>
-            </div>
-
         </div>
-    </div>
+
+        <div class="intro-text">
+            "اگه کسی نان سیر دوست نداشته باشه، نمیشه بهش اعتماد کرد! این دستور پخت، راز درست کردن خوشمزه‌ترین نان سیری هست که تا حالا امتحان کردید. ترکیب سیر کبابیِ شیرین با سیر تندِ تازه."
+        </div>
+
+        <h2><i class="fas fa-list-ul"></i> مواد لازم</h2>
+        <div class="ingredients-list" id="ingredients-container">
+            </div>
+
+        <h2><i class="fas fa-hat-chef"></i> طرز تهیه گام‌به‌گام</h2>
+        
+        <div class="step">
+            <div class="step-number">۱</div>
+            <div class="step-content">
+                <h3>رست کردن سیر</h3>
+                <p>دو بوته کامل سیر را از وسط نصف کنید. روی فویل قرار دهید، روغن زیتون، نمک و فلفل بزنید و فویل را بپیچید. به مدت <strong>۱.۵ ساعت</strong> در دمای <strong>۱۴۰ درجه سانتی‌گراد</strong> در فر قرار دهید تا کاراملی شود.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">۲</div>
+            <div class="step-content">
+                <h3>تهیه کره مخصوص (Compound Butter)</h3>
+                <p>سیرهای رست شده را از پوست خارج کرده و با کره نرم شده مخلوط کنید. برای طعم قوی‌تر، چند حبه <strong>سیر خام رنده شده</strong> اضافه کنید. سپس جعفری خرد شده، پنیر پارمزان، پاپریکا، نمک و فلفل را اضافه و کاملاً مخلوط کنید.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">۳</div>
+            <div class="step-content">
+                <h3>آماده‌سازی نان</h3>
+                <p>نان باگت یا نان حجیم را از وسط باز کنید. یک لایه ضخیم از کره مخصوص را روی تمام سطح نان بمالید. نان‌ها را در دمای <strong>۱۶۵ درجه</strong> به مدت ۱۰ دقیقه در فر بگذارید تا کره ذوب شود.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">۴</div>
+            <div class="step-content">
+                <h3>جادوی پنیر</h3>
+                <p>نان‌ها را خارج کنید و سطح آن‌ها را با لایه ضخیمی از <strong>پنیر موزارلا</strong> بپوشانید. مجدداً در فر (حالت گریل) قرار دهید تا پنیرها ذوب و طلایی شوند.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">۵</div>
+            <div class="step-content">
+                <h3>سرو</h3>
+                <p>نان را برش بزنید و تا گرم و ترد است نوش جان کنید. صدای تردی نان نشانه موفقیت شماست!</p>
+            </div>
+        </div>
+
+        <div class="tip-box">
+            <i class="fas fa-lightbulb"></i>
+            <div>
+                <strong>نکته سرآشپز:</strong>
+                استفاده همزمان از "سیر رست شده" (برای عطر ملایم و شیرین) و "سیر تازه" (برای تندی و تیز بودن) راز اصلی طعم بی‌نظیر این نان است.
+            </div>
+        </div>
+
+    </main>
 
     <footer>
-        <p>طراحی شده با عشق توسط سهیل | <span id="year"></span></p>
+        <p>&copy; <span id="year"></span> | طراحی و پخت با عشق ❤️</p>
     </footer>
 
     <script>
-        // تنظیم سال جاری
+        // سال جاری
         document.getElementById('year').textContent = new Date().toLocaleDateString('fa-IR').split('/')[0];
 
-        // لیست مواد
+        // لیست مواد اولیه
         const ingredients = [
-            "۲ بوته سیر کامل",
-            "کره (به دمای محیط رسیده)",
-            "روغن زیتون",
-            "نان باگت یا نان فرانسوی",
-            "پنیر موزارلا (فراوان)",
-            "پنیر پارمزان",
+            "۲ بوته سیر کامل (برای رست کردن)",
+            "۱ قالب کره (نرم شده)",
+            "روغن زیتون فرابکر",
+            "نان باگت فرانسوی یا نان خمیرترش",
+            "۲۰۰ گرم پنیر موزارلا رنده شده",
+            "۵۰ گرم پنیر پارمزان",
             "جعفری تازه خرد شده",
-            "نمک و فلفل سیاه",
+            "نمک دریایی و فلفل سیاه",
             "پودر پاپریکا دودی",
-            "چند حبه سیر تازه"
+            "۳ حبه سیر تازه (رنده شده)"
         ];
 
-        const listContainer = document.getElementById('ingredients-list');
+        const container = document.getElementById('ingredients-container');
 
         ingredients.forEach((item, index) => {
             const div = document.createElement('div');
-            div.className = 'ingredient';
+            div.className = 'ingredient-item';
             div.innerHTML = `
                 <input type="checkbox" id="ing-${index}">
                 <label for="ing-${index}">${item}</label>
             `;
             
             div.addEventListener('click', (e) => {
-                if(e.target.tagName !== 'INPUT') {
+                if (e.target.tagName !== 'INPUT') {
                     const chk = div.querySelector('input');
                     chk.checked = !chk.checked;
                 }
                 div.classList.toggle('checked', div.querySelector('input').checked);
             });
 
-            listContainer.appendChild(div);
-        });
-
-        // انیمیشن اسکرول (Scroll Reveal)
-        const observerOptions = {
-            threshold: 0.2
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target); // فقط یک بار اجرا شود
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.step-card').forEach(card => {
-            observer.observe(card);
+            container.appendChild(div);
         });
     </script>
 </body>
