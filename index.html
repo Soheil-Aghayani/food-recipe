@@ -23,6 +23,8 @@
       --blue: rgba(0,122,255,1);
       --dock-h: 88px;
       --menu-h: 28px;
+
+      --mac-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 3l0 22l6-6l4 9l3-1l-4-9l8 0z' fill='%23000'/%3E%3Cpath d='M7.5 5.3l0 16.1l4.4-4.4l1-.9l.5 1.2l3.2 7.5l.9-.4l-3.2-7.5l-.5-1.2l1.3 0l6.2 0z' fill='%23fff' opacity='0.35'/%3E%3C/svg%3E") 1 1;
     }
 
     html, body { height: 100%; }
@@ -34,7 +36,11 @@
       background-position: center;
       font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       user-select: none;
+      cursor: var(--mac-arrow), default;
     }
+
+    button{ cursor: var(--mac-arrow), pointer; }
+    input, textarea{ cursor: text; }
 
     button, input { font-family: inherit; }
 
@@ -63,7 +69,6 @@
       background: transparent;
       color: rgba(255,255,255,0.92);
       font-size: 12px;
-      cursor:pointer;
       padding: 4px 8px;
       border-radius: 8px;
     }
@@ -86,7 +91,6 @@
       width: 86px;
       border:0;
       background: transparent;
-      cursor: pointer;
       color: rgba(255,255,255,0.92);
       display:flex;
       flex-direction: column;
@@ -138,7 +142,6 @@
       border: 0;
       border-radius: 14px;
       background: transparent;
-      cursor: pointer;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -183,9 +186,12 @@
       display: flex;
       flex-direction: column;
       z-index: 1100;
+      will-change: transform, left, top, width, height, opacity, filter;
+      touch-action: none;
     }
 
     .window.is-hidden{ display:none; }
+
     .window.is-maximized{
       top: calc(var(--menu-h) + 10px);
       left: 14px;
@@ -206,9 +212,8 @@
       border-bottom: 1px solid rgba(0,0,0,0.08);
       position: relative;
       z-index: 20;
+      touch-action: none;
     }
-
-    .topbar.draggable{ cursor: default; }
 
     .traffic{
       display:flex;
@@ -226,7 +231,6 @@
       border: 0.5px solid rgba(0,0,0,0.12);
       padding: 0;
       margin: 0;
-      cursor: pointer;
       pointer-events: auto;
       background: transparent;
     }
@@ -266,7 +270,6 @@
       border-radius: 9px;
       border: 1px solid rgba(0,0,0,0.10);
       background: rgba(255,255,255,0.90);
-      cursor: pointer;
       padding:0;
       display:flex;
       align-items:center;
@@ -327,7 +330,6 @@
       text-align: left;
       padding: 8px 10px;
       border-radius: 8px;
-      cursor: pointer;
       display:flex;
       align-items:center;
       gap: 10px;
@@ -364,6 +366,7 @@
       padding: 0 14px;
       border-bottom: 1px solid rgba(0,0,0,0.06);
       background: rgba(255,255,255,0.86);
+      touch-action: none;
     }
 
     .finder-toolbar .path{
@@ -389,7 +392,6 @@
     .item{
       border: 0;
       background: transparent;
-      cursor: pointer;
       border-radius: 12px;
       padding: 12px 10px;
       display:flex;
@@ -451,7 +453,7 @@
       position: absolute;
       top: 64px;
       left: 18px;
-      width: 340px;
+      width: 360px;
       background: rgba(255,255,255,0.92);
       border: 1px solid rgba(0,0,0,0.10);
       border-radius: 16px;
@@ -477,7 +479,6 @@
       color: rgba(0,0,0,0.72);
       border-radius: 10px;
       padding: 6px 10px;
-      cursor: pointer;
       font-size: 12px;
     }
     .help-close:active{ filter: brightness(0.95); }
@@ -509,6 +510,8 @@
       color: rgba(0,0,0,0.78);
       font-size: 12.5px;
       line-height: 1.6;
+      direction: rtl;
+      text-align: right;
     }
 
     .help-text .name{
@@ -543,7 +546,7 @@
   </div>
 
   <div class="window" id="finderWin" data-app="finder">
-    <div class="topbar draggable" data-drag-handle="finder">
+    <div class="topbar" data-drag-handle="finder">
       <div class="traffic">
         <button class="light close" type="button" data-app="finder" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="finder" data-action="minimize" aria-label="Minimize"></button>
@@ -581,7 +584,7 @@
         </div>
 
         <div class="finder-main">
-          <div class="finder-toolbar draggable" data-drag-handle="finder">
+          <div class="finder-toolbar" data-drag-handle="finder">
             <div class="path" id="finderPath">Projects</div>
           </div>
 
@@ -615,7 +618,7 @@
   </div>
 
   <div class="window is-hidden" id="safariWin" data-app="safari" aria-hidden="true" style="width: 980px; height: 640px;">
-    <div class="topbar draggable" data-drag-handle="safari">
+    <div class="topbar" data-drag-handle="safari">
       <div class="traffic">
         <button class="light close" type="button" data-app="safari" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="safari" data-action="minimize" aria-label="Minimize"></button>
@@ -637,7 +640,7 @@
   </div>
 
   <div class="window is-hidden" id="recipeWin" data-app="recipe" aria-hidden="true" style="width: 980px; height: 640px;">
-    <div class="topbar draggable" data-drag-handle="recipe">
+    <div class="topbar" data-drag-handle="recipe">
       <div class="traffic">
         <button class="light close" type="button" data-app="recipe" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="recipe" data-action="minimize" aria-label="Minimize"></button>
@@ -655,7 +658,7 @@
   </div>
 
   <div class="window is-hidden" id="igithubWin" data-app="igithub" aria-hidden="true" style="width: 980px; height: 640px;">
-    <div class="topbar draggable" data-drag-handle="igithub">
+    <div class="topbar" data-drag-handle="igithub">
       <div class="traffic">
         <button class="light close" type="button" data-app="igithub" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="igithub" data-action="minimize" aria-label="Minimize"></button>
@@ -672,7 +675,7 @@
   </div>
 
   <div class="window is-hidden" id="musicWin" data-app="music" aria-hidden="true" style="width: 860px; height: 560px;">
-    <div class="topbar draggable" data-drag-handle="music">
+    <div class="topbar" data-drag-handle="music">
       <div class="traffic">
         <button class="light close" type="button" data-app="music" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="music" data-action="minimize" aria-label="Minimize"></button>
@@ -689,7 +692,7 @@
   </div>
 
   <div class="window is-hidden" id="binWin" data-app="bin" aria-hidden="true" style="width: 860px; height: 560px;">
-    <div class="topbar draggable" data-drag-handle="bin">
+    <div class="topbar" data-drag-handle="bin">
       <div class="traffic">
         <button class="light close" type="button" data-app="bin" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="bin" data-action="minimize" aria-label="Minimize"></button>
@@ -706,7 +709,7 @@
   </div>
 
   <div class="window is-hidden" id="desktopWin" data-app="desktop" aria-hidden="true" style="width: 980px; height: 640px;">
-    <div class="topbar draggable" data-drag-handle="desktop">
+    <div class="topbar" data-drag-handle="desktop">
       <div class="traffic">
         <button class="light close" type="button" data-app="desktop" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="desktop" data-action="minimize" aria-label="Minimize"></button>
@@ -733,7 +736,7 @@
           <img alt="Soheil" src="https://s8.uupload.ir/files/photo_2026-02-10_18-49-52_fwiq.jpg">
         </div>
         <div class="help-text">
-          <div class="name">Soheil OS</div>
+          <div class="name">Soheil OS v1.0.0</div>
           <div>
             این پروژه را ساختم تا دستور پخت غذاهای مختلف را برای مامانم یکجا جمع کنم.
             هدف این بود که دیگر مجبور نباشد بین سایت ها دنبال دستور پخت بگردد.
@@ -790,62 +793,19 @@
     };
 
     const apps = {
-      finder: {
-        key: "finder",
-        el: document.getElementById("finderWin"),
-        dock: document.getElementById("dockFinder"),
-        isOpen: true,
-        isMin: false
-      },
-      safari: {
-        key: "safari",
-        el: document.getElementById("safariWin"),
-        dock: document.getElementById("dockSafari"),
-        isOpen: false,
-        isMin: false
-      },
-      recipe: {
-        key: "recipe",
-        el: document.getElementById("recipeWin"),
-        dock: null,
-        isOpen: false,
-        isMin: false
-      },
-      igithub: {
-        key: "igithub",
-        el: document.getElementById("igithubWin"),
-        dock: document.getElementById("dockIGithub"),
-        isOpen: false,
-        isMin: false
-      },
-      music: {
-        key: "music",
-        el: document.getElementById("musicWin"),
-        dock: document.getElementById("dockMusic"),
-        isOpen: false,
-        isMin: false
-      },
-      bin: {
-        key: "bin",
-        el: document.getElementById("binWin"),
-        dock: null,
-        isOpen: false,
-        isMin: false
-      },
-      desktop: {
-        key: "desktop",
-        el: document.getElementById("desktopWin"),
-        dock: null,
-        isOpen: false,
-        isMin: false
-      }
+      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), isOpen:true, isMin:false },
+      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  isOpen:false, isMin:false },
+      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, isOpen:false, isMin:false },
+      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), isOpen:false, isMin:false },
+      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), isOpen:false, isMin:false },
+      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, isOpen:false, isMin:false },
+      desktop: { key:"desktop", el: document.getElementById("desktopWin"), dock: null, isOpen:false, isMin:false }
     };
 
     function markRunning(appKey){
       const app = apps[appKey];
       if (!app || !app.dock) return;
-      if (app.isOpen && !app.isMin) app.dock.classList.add("is-running");
-      else if (app.isOpen && app.isMin) app.dock.classList.add("is-running");
+      if (app.isOpen) app.dock.classList.add("is-running");
       else app.dock.classList.remove("is-running");
     }
 
@@ -965,41 +925,46 @@
       markRunning(appKey);
     }
 
+    function saveWindowInline(appEl){
+      appEl.dataset.prevLeft = appEl.style.left || "";
+      appEl.dataset.prevTop = appEl.style.top || "";
+      appEl.dataset.prevWidth = appEl.style.width || "";
+      appEl.dataset.prevHeight = appEl.style.height || "";
+      appEl.dataset.prevTransform = appEl.style.transform || "";
+    }
+
+    function restoreWindowInline(appEl){
+      appEl.style.left = appEl.dataset.prevLeft || "";
+      appEl.style.top = appEl.dataset.prevTop || "";
+      appEl.style.width = appEl.dataset.prevWidth || "";
+      appEl.style.height = appEl.dataset.prevHeight || "";
+      appEl.style.transform = appEl.dataset.prevTransform || "";
+    }
+
     function toggleMaximize(appKey){
       const app = apps[appKey];
       if (!app || !app.isOpen) return;
 
       bringToFront(appKey);
 
-      app.el.style.opacity = "";
-      app.el.style.filter = "";
-      app.el.style.transform = "";
+      const el = app.el;
+      const isMax = el.classList.contains("is-maximized");
 
-      const isMax = app.el.classList.contains("is-maximized");
       if (!isMax){
-        const r = app.el.getBoundingClientRect();
-        app.el.dataset.prevLeft = String(r.left);
-        app.el.dataset.prevTop = String(r.top);
-        app.el.dataset.prevWidth = String(r.width);
-        app.el.dataset.prevHeight = String(r.height);
-        app.el.dataset.prevTransform = app.el.style.transform || "";
+        saveWindowInline(el);
 
-        app.el.classList.add("is-maximized");
+        el.style.left = "";
+        el.style.top = "";
+        el.style.width = "";
+        el.style.height = "";
+        el.style.transform = "";
+
+        el.classList.add("is-maximized");
         return;
       }
 
-      app.el.classList.remove("is-maximized");
-
-      const prevLeft = Number(app.el.dataset.prevLeft || "0");
-      const prevTop = Number(app.el.dataset.prevTop || "0");
-      const prevWidth = Number(app.el.dataset.prevWidth || "820");
-      const prevHeight = Number(app.el.dataset.prevHeight || "540");
-
-      app.el.style.left = prevLeft + "px";
-      app.el.style.top = prevTop + "px";
-      app.el.style.width = prevWidth + "px";
-      app.el.style.height = prevHeight + "px";
-      app.el.style.transform = "translate(0,0)";
+      el.classList.remove("is-maximized");
+      restoreWindowInline(el);
     }
 
     function handleTraffic(appKey, action){
@@ -1054,6 +1019,16 @@
       let startLeft = 0;
       let startTop = 0;
 
+      let raf = 0;
+      let nextLeft = 0;
+      let nextTop = 0;
+
+      function apply(){
+        raf = 0;
+        el.style.left = nextLeft + "px";
+        el.style.top = nextTop + "px";
+      }
+
       handle.addEventListener("pointerdown", (e) => {
         const t = e.target;
         if (t && (t.closest(".traffic") || t.tagName === "INPUT" || t.tagName === "BUTTON")) return;
@@ -1081,22 +1056,25 @@
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
 
+        const minLeft = 10;
+        const minTop = 44;
         const maxLeft = window.innerWidth - 80;
         const maxTop = window.innerHeight - 80;
 
-        const nextLeft = Math.min(Math.max(10, startLeft + dx), maxLeft);
-        const nextTop = Math.min(Math.max(44, startTop + dy), maxTop);
+        nextLeft = Math.min(Math.max(minLeft, startLeft + dx), maxLeft);
+        nextTop = Math.min(Math.max(minTop, startTop + dy), maxTop);
 
-        el.style.left = nextLeft + "px";
-        el.style.top = nextTop + "px";
+        if (!raf) raf = requestAnimationFrame(apply);
       });
 
-      function endDrag(){
+      function end(){
         dragging = false;
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
       }
 
-      handle.addEventListener("pointerup", endDrag);
-      handle.addEventListener("pointercancel", endDrag);
+      handle.addEventListener("pointerup", end);
+      handle.addEventListener("pointercancel", end);
     }
 
     makeDraggable("finder");
@@ -1160,13 +1138,17 @@
 
         if (view === "igithub"){
           setFinderActive("igithub");
-          openApp("igithub");
+          if (!apps.igithub.isOpen) openApp("igithub");
+          else if (apps.igithub.isMin) restoreApp("igithub");
+          else bringToFront("igithub");
           return;
         }
 
         if (view === "desktop"){
           setFinderActive("desktop");
-          openApp("desktop");
+          if (!apps.desktop.isOpen) openApp("desktop");
+          else if (apps.desktop.isMin) restoreApp("desktop");
+          else bringToFront("desktop");
           return;
         }
 
@@ -1183,10 +1165,9 @@
       try{
         const res = await fetch("recipes/recipes.json", { cache: "no-store" });
         if (!res.ok) throw new Error("recipes.json not reachable");
-        const data = await res.json();
+        const items = await res.json();
 
-        const items = Array.isArray(data) ? data : (data.items || []);
-        if (!items.length){
+        if (!Array.isArray(items) || !items.length){
           empty.style.display = "block";
           return;
         }
@@ -1217,8 +1198,6 @@
 
           if (!coming){
             btn.addEventListener("click", () => openRecipe(it));
-          } else {
-            btn.addEventListener("click", () => {});
           }
 
           grid.appendChild(btn);
@@ -1260,19 +1239,10 @@
       const low = raw.toLowerCase();
 
       if (!raw || low === "start" || low === "start page" || low === "new tab") return "safari/start.html";
-
       if (low === "sohgle" || low === "google" || low.includes("google.")) return "safari/sohgle.html";
       if (low.startsWith("sohgle?") || low.startsWith("sohgle.html")) return "safari/sohgle.html" + (raw.includes("?") ? raw.slice(raw.indexOf("?")) : "");
 
-      if (low === "igithub") return "safari/sohgle.html?q=" + encodeURIComponent("iGithub");
-      if (low === "music") return "safari/sohgle.html?q=" + encodeURIComponent("Music");
-      if (low === "recipes" || low === "projects") return "safari/sohgle.html?q=" + encodeURIComponent("Recipes");
-
-      if (raw.startsWith("safari/") || raw.startsWith("recipes/") || raw.startsWith("music/") || raw.startsWith("igit/") || raw.startsWith("desktop/") || raw.startsWith("bin/")) return raw;
-
-      if (raw.includes(".") || raw.includes("://")) {
-        return "safari/sohgle.html?q=" + encodeURIComponent(raw);
-      }
+      if (raw.startsWith("safari/") || raw.startsWith("recipes/") || raw.startsWith("music/") || raw.startsWith("igit/") || raw.startsWith("desktop/") || raw.startsWith("bin/") || raw.startsWith("garlic-bread/")) return raw;
 
       return "safari/sohgle.html?q=" + encodeURIComponent(raw);
     }
@@ -1302,7 +1272,6 @@
       safariGo(target || "start", true);
     }
 
-    document.getElementById("dockSafari").addEventListener("dblclick", () => openSafari("start"));
     document.getElementById("dockSafari").addEventListener("click", () => {
       if (!apps.safari.isOpen) openSafari("start");
       else if (apps.safari.isMin) restoreApp("safari");
@@ -1401,8 +1370,12 @@
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
       Object.values(apps).forEach((app) => {
-        if (!app.isOpen) return;
-        app.el.classList.remove("is-maximized");
+        if (!app || !app.isOpen) return;
+        const el = app.el;
+        if (el.classList.contains("is-maximized")){
+          el.classList.remove("is-maximized");
+          restoreWindowInline(el);
+        }
       });
     });
 
