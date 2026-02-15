@@ -648,8 +648,11 @@
                 app.el.style.opacity = "";
                 app.el.style.filter = "";
                 app.el.style.transform = "";
+
+                app.isOpen = false;
             });
-        }
+            }
+
 
         function toggleMaximize(appKey) {
             const app = apps[appKey];
