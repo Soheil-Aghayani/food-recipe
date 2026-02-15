@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سیستم عامل سهیل | Big Sur</title>
+    <title>Soheil OS | Big Sur</title>
     
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -22,13 +22,14 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            font-family: 'Vazirmatn', sans-serif;
+            /* فونت سیستم مکینتاش برای رابط کاربری */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background: url('https://s8.uupload.ir/files/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-2880x1800-1455_hxwe.jpg') no-repeat center center fixed;
             background-size: cover;
             user-select: none;
         }
 
-        /* --- منوبار بالا --- */
+        /* --- Menubar --- */
         .menubar {
             width: 100%;
             height: 28px;
@@ -48,13 +49,14 @@
             z-index: 1000;
         }
 
-        .menu-right { display: flex; gap: 20px; align-items: center; } /* جای چپ و راست عوض شد برای فارسی */
-        .menu-left { display: flex; gap: 15px; align-items: center; }
+        .menu-left { display: flex; gap: 20px; align-items: center; }
+        .menu-right { display: flex; gap: 15px; align-items: center; }
         .apple-logo { font-size: 1.1rem; cursor: pointer; }
         .menu-item { cursor: pointer; padding: 0 5px; }
         .menu-item:hover { opacity: 0.8; }
+        .menu-bold { font-weight: 700; }
 
-        /* --- پنجره Finder --- */
+        /* --- Window --- */
         .window {
             width: 700px;
             height: 450px;
@@ -76,7 +78,7 @@
 
         .window.maximized {
             width: 100% !important;
-            height: calc(100% - 28px) !important; /* ارتفاع منهای منوبار */
+            height: calc(100% - 28px) !important;
             top: 28px !important;
             left: 0 !important;
             transform: none !important;
@@ -94,7 +96,6 @@
         .traffic-lights {
             display: flex;
             gap: 8px;
-            margin-left: 10px; /* فاصله از عنوان */
         }
 
         .light { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; position: relative; }
@@ -106,10 +107,10 @@
         .minimize { background: #febc2e; border: 1px solid #d89e24; }
         .minimize::before { content: '─'; }
         .maximize { background: #28c840; border: 1px solid #1aab29; }
-        .maximize::before { content: '┼'; } /* یا آیکون تمام صفحه */
+        .maximize::before { content: '┼'; }
 
         .toolbar-title {
-            margin-right: auto; /* هل دادن به سمت راست در حالت RTL */
+            margin-left: 20px;
             color: #333;
             font-weight: 600;
             display: flex;
@@ -122,12 +123,12 @@
             height: 100%;
         }
 
-        /* سایدبار */
+        /* Sidebar (Left) */
         .sidebar {
             width: 180px;
             padding: 10px;
             background: rgba(255, 255, 255, 0.2);
-            border-left: 1px solid rgba(0,0,0,0.05); /* خط سمت چپ برای RTL */
+            border-right: 1px solid rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -156,19 +157,18 @@
             font-weight: bold;
         }
 
-        /* محتوا */
+        /* Content */
         .content-area {
             flex-grow: 1;
             padding: 20px;
             background: rgba(255,255,255,0.4);
-            border-bottom-left-radius: var(--border-radius); /* گردی گوشه چپ برای RTL */
+            border-bottom-right-radius: var(--border-radius);
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
             grid-auto-rows: 110px;
             gap: 10px;
         }
 
-        /* آیکون فایل */
         .file-item {
             display: flex;
             flex-direction: column;
@@ -182,9 +182,17 @@
 
         .file-item:hover { background: rgba(0,0,0,0.05); }
         .file-icon { font-size: 3.5rem; margin-bottom: 8px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
-        .file-name { color: #333; font-size: 0.9rem; text-align: center; text-shadow: 0 1px 0 rgba(255,255,255,0.5); }
+        
+        /* فقط اسم فایل‌ها فارسی و وزیرمتن باشه */
+        .file-name { 
+            font-family: 'Vazirmatn', sans-serif;
+            color: #333; 
+            font-size: 0.9rem; 
+            text-align: center; 
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5); 
+        }
 
-        /* --- داک --- */
+        /* --- Dock --- */
         .dock-container {
             position: fixed;
             bottom: 20px;
@@ -230,22 +238,24 @@
             .sidebar { display: none; }
             .dock-icon { width: 45px; height: 45px; }
             .menubar { font-size: 0.7rem; }
-            .menu-right { gap: 10px; }
+            .menu-left { gap: 10px; }
         }
     </style>
 </head>
 <body>
 
     <div class="menubar">
-        <div class="menu-right">
-            <i class="fab fa-apple apple-logo" onclick="menuClick('اپل')"></i>
-            <span class="menu-item" onclick="menuClick('فایندر')">فایندر</span>
-            <span class="menu-item" onclick="menuClick('فایل')">فایل</span>
-            <span class="menu-item" onclick="menuClick('ویرایش')">ویرایش</span>
-            <span class="menu-item" onclick="menuClick('نمایش')">نمایش</span>
-            <span class="menu-item" onclick="menuClick('برو')">برو</span>
-        </div>
         <div class="menu-left">
+            <i class="fab fa-apple apple-logo"></i>
+            <span class="menu-item menu-bold">Finder</span>
+            <span class="menu-item">File</span>
+            <span class="menu-item">Edit</span>
+            <span class="menu-item">View</span>
+            <span class="menu-item">Go</span>
+            <span class="menu-item">Window</span>
+            <span class="menu-item">Help</span>
+        </div>
+        <div class="menu-right">
             <i class="fas fa-wifi"></i>
             <i class="fas fa-battery-three-quarters"></i>
             <span id="clock">12:00</span>
@@ -255,24 +265,24 @@
     <div class="window" id="mainWindow">
         <div class="title-bar" id="dragHandle">
             <div class="traffic-lights">
-                <div class="light close" onclick="closeWindow()" title="بستن"></div>
-                <div class="light minimize" onclick="minimizeWindow()" title="کوچک کردن"></div>
-                <div class="light maximize" onclick="maximizeWindow()" title="بزرگ کردن"></div>
+                <div class="light close" onclick="closeWindow()"></div>
+                <div class="light minimize" onclick="minimizeWindow()"></div>
+                <div class="light maximize" onclick="maximizeWindow()"></div>
             </div>
             <div class="toolbar-title">
                 <i class="fas fa-folder" style="color: #74b9ff;"></i>
-                پروژه‌ها
+                Projects
             </div>
         </div>
         
         <div class="window-body">
             <div class="sidebar">
-                <div class="sidebar-title">علاقه‌مندی‌ها</div>
-                <div class="sidebar-item active"><i class="fas fa-hdd" style="color: #aaa;"></i> مکینتاش HD</div>
-                <div class="sidebar-item"><i class="fas fa-desktop" style="color: #aaa;"></i> دسکتاپ</div>
-                <div class="sidebar-item"><i class="fas fa-download" style="color: #aaa;"></i> دانلودها</div>
-                <div class="sidebar-title">آی‌کلاد</div>
-                <div class="sidebar-item"><i class="fas fa-cloud" style="color: #aaa;"></i> آی‌کلاد درایو</div>
+                <div class="sidebar-title">Favorites</div>
+                <div class="sidebar-item active"><i class="fas fa-hdd" style="color: #aaa;"></i> Macintosh HD</div>
+                <div class="sidebar-item"><i class="fas fa-desktop" style="color: #aaa;"></i> Desktop</div>
+                <div class="sidebar-item"><i class="fas fa-download" style="color: #aaa;"></i> Downloads</div>
+                <div class="sidebar-title">iCloud</div>
+                <div class="sidebar-item"><i class="fas fa-cloud" style="color: #aaa;"></i> iCloud Drive</div>
             </div>
             
             <div class="content-area">
@@ -284,7 +294,7 @@
 
                 <div class="file-item">
                     <div class="file-icon">🍕</div>
-                    <span class="file-name">پیتزا (به‌زودی)</span>
+                    <span class="file-name">پیتزا (بزودی)</span>
                 </div>
 
             </div>
@@ -294,20 +304,23 @@
     <div class="dock-container">
         <div class="dock">
             <div class="dock-icon icon-finder" onclick="openWindow()"><i class="fas fa-face-smile"></i></div>
-            <div class="dock-icon icon-safari" onclick="dockClick('سافاری')"><i class="fab fa-safari"></i></div>
-            <div class="dock-icon icon-messages" onclick="dockClick('پیام‌ها')"><i class="fas fa-comment"></i></div>
-            <div class="dock-icon icon-music" onclick="dockClick('موسیقی')"><i class="fas fa-music"></i></div>
-            <div class="dock-icon" style="background:#333; color:white;" onclick="dockClick('ترمینال')"><i class="fas fa-terminal"></i></div>
+            <div class="dock-icon icon-safari"><i class="fab fa-safari"></i></div>
+            <div class="dock-icon icon-messages"><i class="fas fa-comment"></i></div>
+            <div class="dock-icon icon-music"><i class="fas fa-music"></i></div>
+            <div class="dock-icon" style="background:#333; color:white;"><i class="fas fa-terminal"></i></div>
         </div>
     </div>
 
     <script>
-        // 1. تنظیم ساعت
+        // 1. Clock
         function updateClock() {
             const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
+            const hours = now.getHours();
             const minutes = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            // فرمت ساعت انگلیسی
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const showHours = hours % 12 || 12;
+            document.getElementById('clock').textContent = `${showHours}:${minutes} ${ampm}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
@@ -316,7 +329,7 @@
         const handle = document.getElementById("dragHandle");
         let isDragging = false, startX, startY, initialLeft, initialTop;
 
-        // 2. درگ کردن پنجره (فقط وقتی ماکسیمایز نیست)
+        // 2. Drag Logic
         handle.addEventListener("mousedown", (e) => {
             if (windowEl.classList.contains('maximized')) return;
             isDragging = true;
@@ -339,13 +352,12 @@
             isDragging = false;
         });
 
-        // 3. عملکردهای پنجره
+        // 3. Window Controls
         function closeWindow() {
             windowEl.style.display = 'none';
         }
 
         function minimizeWindow() {
-            // فعلاً همان بستن را انجام می‌دهد، می‌توان انیمیشن خاصی اضافه کرد
             windowEl.style.display = 'none';
         }
 
@@ -362,14 +374,6 @@
             windowEl.style.animation = 'none';
             windowEl.offsetHeight;
             windowEl.style.animation = 'popIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
-        }
-
-        // 4. عملکردهای منو و داک (برای نمایش)
-        function menuClick(itemName) {
-            alert(`منوی "${itemName}" کلیک شد.`);
-        }
-        function dockClick(appName) {
-            alert(`برنامه "${appName}" باز شد.`);
         }
     </script>
 </body>
