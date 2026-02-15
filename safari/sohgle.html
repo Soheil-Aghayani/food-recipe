@@ -1,217 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sohgle</title>
+
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
   <style>
-    html, body {
-      height: 100%;
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      background:#fff;
+      color:#202124;
+      font-family: "Vazirmatn", Arial, sans-serif;
+      user-select:none;
     }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #fff;
-      color: #202124;
-    }
-    .top {
+
+    .top{
       height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 18px;
-      padding: 0 18px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap: 14px;
+      padding: 0 16px;
       box-sizing: border-box;
       font-size: 13px;
+      color: rgba(0,0,0,0.70);
     }
-    .top a {
-      text-decoration: none;
-      color: #202124;
-      opacity: 0.92;
+
+    .top button{
+      border:0;
+      background: transparent;
+      cursor:pointer;
+      color: rgba(0,0,0,0.70);
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 10px;
     }
-    .top a:hover {
-      text-decoration: underline;
-    }
-    .wrap {
+    .top button:active{ background: rgba(0,0,0,0.06); }
+
+    .wrap{
       height: calc(100% - 56px);
-      display: flex;
+      display:flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
+      align-items:center;
+      justify-content:center;
+      padding: 20px 14px;
       box-sizing: border-box;
     }
-    .logo {
-      font-size: 76px;
-      font-weight: 600;
-      letter-spacing: -1px;
-      line-height: 1;
-      margin: 0 0 22px;
-      user-select: none;
-    }
-    .b { color: #4285F4; }
-    .r { color: #EA4335; }
-    .y { color: #FBBC05; }
-    .g { color: #34A853; }
 
-    .search {
-      width: min(620px, 94vw);
-      position: relative;
+    .logo{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      margin-bottom: 18px;
     }
-    .box {
-      width: 100%;
+
+    .logo img{
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+    }
+
+    .logo span{
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: rgba(0,0,0,0.78);
+    }
+
+    .search{
+      width: min(620px, 94vw);
+    }
+
+    .box{
       height: 46px;
       border-radius: 24px;
       border: 1px solid #dfe1e5;
       box-shadow: 0 1px 6px rgba(32,33,36,0.28);
-      display: flex;
-      align-items: center;
+      display:flex;
+      align-items:center;
+      gap: 10px;
       padding: 0 16px;
       box-sizing: border-box;
+      background:#fff;
+    }
+
+    .box input{
+      border:0;
+      outline:none;
+      flex:1;
+      font-size: 15px;
+      user-select:text;
+    }
+
+    .btns{
+      display:flex;
       gap: 10px;
-      background: #fff;
+      margin-top: 18px;
+      justify-content:center;
     }
-    .box input {
-      border: 0;
-      outline: none;
-      flex-grow: 1;
-      font-size: 16px;
-    }
-    .btns {
-      display: flex;
-      gap: 10px;
-      margin-top: 22px;
-      justify-content: center;
-    }
-    .btn {
+
+    .btn{
       height: 36px;
       padding: 0 16px;
       border: 1px solid #f8f9fa;
-      border-radius: 4px;
+      border-radius: 6px;
       background: #f8f9fa;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 13px;
       color: #3c4043;
     }
-    .btn:hover {
-      border-color: #dadce0;
-      box-shadow: 0 1px 1px rgba(0,0,0,0.06);
+    .btn:hover{ border-color: #dadce0; }
+
+    .results{
+      width: min(760px, 94vw);
+      margin-top: 28px;
+      display:none;
     }
-    .results {
-      width: min(720px, 94vw);
-      margin-top: 34px;
+
+    .result{
+      margin: 0 0 18px;
     }
-    .result {
-      margin: 0 0 20px;
-    }
-    .result .url {
+
+    .result .url{
       font-size: 12px;
       color: #5f6368;
       margin-bottom: 4px;
     }
-    .result .title {
-      border: 0;
+
+    .result .title{
+      border:0;
       background: transparent;
-      padding: 0;
+      padding:0;
       font-size: 18px;
       color: #1a0dab;
       cursor: pointer;
       text-align: left;
     }
-    .result .title:hover {
-      text-decoration: underline;
-    }
-    .result .desc {
+
+    .result .desc{
       font-size: 13px;
       color: #4d5156;
-      line-height: 1.5;
       margin-top: 4px;
+      line-height: 1.6;
     }
   </style>
 </head>
+
 <body>
   <div class="top">
-    <a href="#" data-go="start">Start</a>
-    <a href="#" data-go="portfolio">Portfolio</a>
+    <button type="button" id="goStart">Start</button>
+    <button type="button" id="goProjects">Projects</button>
+    <button type="button" id="goIGithub">iGithub</button>
+    <button type="button" id="goMusic">Music</button>
   </div>
 
-  <div class="wrap" id="wrap">
-    <div class="logo" aria-label="Sohgle">
-      <span class="b">S</span><span class="r">o</span><span class="y">h</span><span class="b">g</span><span class="g">l</span><span class="r">e</span>
+  <div class="wrap">
+    <div class="logo">
+      <img alt="Sohgle" src="https://s8.uupload.ir/files/sohgle_mh26.png">
+      <span>Sohgle</span>
     </div>
 
-    <form class="search" id="form">
-      <div class="box">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-        </svg>
-        <input id="q" name="q" autocomplete="off" spellcheck="false" />
-      </div>
-      <div class="btns">
-        <button class="btn" type="submit">Sohgle Search</button>
-        <button class="btn" type="button" id="lucky">I am feeling lucky</button>
-      </div>
-    </form>
+    <div class="search">
+      <form id="form">
+        <div class="box">
+          <input id="q" name="q" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="btns">
+          <button class="btn" type="submit">Search</button>
+          <button class="btn" type="button" id="lucky">Lucky</button>
+        </div>
+      </form>
+    </div>
 
-    <div class="results" id="results" style="display:none;"></div>
+    <div class="results" id="results"></div>
   </div>
 
   <script>
-    function getParam(name) {
+    function post(msg){
+      window.parent.postMessage(msg, "*");
+    }
+
+    function getParam(name){
       const u = new URL(window.location.href);
       return u.searchParams.get(name) || "";
     }
 
-    function go(url) {
-      window.parent.postMessage({ type: "safari:navigate", url }, "*");
-    }
-
-    function renderResults(q) {
-      const results = document.getElementById("results");
-      results.style.display = "block";
-      results.innerHTML = "";
+    function renderResults(q){
+      const r = document.getElementById("results");
+      r.style.display = "block";
+      r.innerHTML = "";
 
       const items = [
         {
           url: "soheil-os.local",
           title: "Soheil OS",
-          desc: "A macOS-like web UI. Finder and Safari in one page.",
-          go: "index.html"
+          desc: "محیطی شبیه macOS برای نمایش دستور پخت ها",
+          action: () => post({ type: "os:openApp", app: "finder", view: "projects" })
         },
         {
-          url: "soheil-portfolio.local",
-          title: "Portfolio",
-          desc: "Open the portfolio inside the Safari window.",
-          go: "https://soheil-aghayani.github.io/Portfolio/"
+          url: "recipes.local",
+          title: "Projects",
+          desc: "لیست دستور پخت ها از recipes.json",
+          action: () => post({ type: "os:openApp", app: "finder", view: "projects" })
         },
         {
-          url: "garlic-bread.local",
-          title: "Garlic Bread",
-          desc: "Open the Garlic Bread project inside Safari.",
-          go: "garlic-bread/index.html"
+          url: "igithub.local",
+          title: "iGithub",
+          desc: "لیست ریپوها به صورت دینامیک",
+          action: () => post({ type: "os:openApp", app: "igithub" })
+        },
+        {
+          url: "music.local",
+          title: "Music",
+          desc: "پخش آهنگ داخل OS",
+          action: () => post({ type: "os:openApp", app: "music" })
         }
       ];
 
       items.forEach((it) => {
         const row = document.createElement("div");
         row.className = "result";
-        row.innerHTML = `
-          <div class="url">${it.url}</div>
-          <button class="title" type="button">${it.title}</button>
-          <div class="desc">${it.desc}</div>
-        `;
-        row.querySelector(".title").addEventListener("click", () => go(it.go));
-        results.appendChild(row);
+        row.innerHTML = '<div class="url">' + it.url + '</div>' +
+                        '<button class="title" type="button">' + it.title + '</button>' +
+                        '<div class="desc">' + it.desc + '</div>';
+        row.querySelector(".title").addEventListener("click", it.action);
+        r.appendChild(row);
       });
     }
 
-    const qValue = getParam("q");
     const qInput = document.getElementById("q");
+    const qValue = getParam("q");
     qInput.value = qValue;
 
-    if (qValue.trim()) {
-      renderResults(qValue.trim());
-    }
+    if (qValue.trim()) renderResults(qValue.trim());
 
     document.getElementById("form").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -222,16 +246,23 @@
     });
 
     document.getElementById("lucky").addEventListener("click", () => {
-      go("start");
+      post({ type: "os:openApp", app: "finder", view: "projects" });
     });
 
-    document.querySelectorAll("[data-go]").forEach((a) => {
-      a.addEventListener("click", (e) => {
-        e.preventDefault();
-        const t = a.getAttribute("data-go");
-        if (t === "start") go("start");
-        if (t === "portfolio") go("https://soheil-aghayani.github.io/Portfolio/");
-      });
+    document.getElementById("goStart").addEventListener("click", () => {
+      post({ type: "safari:navigate", url: "start" });
+    });
+
+    document.getElementById("goProjects").addEventListener("click", () => {
+      post({ type: "os:openApp", app: "finder", view: "projects" });
+    });
+
+    document.getElementById("goIGithub").addEventListener("click", () => {
+      post({ type: "os:openApp", app: "igithub" });
+    });
+
+    document.getElementById("goMusic").addEventListener("click", () => {
+      post({ type: "os:openApp", app: "music" });
     });
   </script>
 </body>

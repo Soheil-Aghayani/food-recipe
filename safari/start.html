@@ -1,152 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Safari Start</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start Page</title>
+
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
   <style>
-    :root {
-      --shadow: 0 18px 40px rgba(0,0,0,0.18);
-    }
-    html, body {
-      height: 100%;
-    }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: url('https://uupload.ir/view/safari-15.2-1_jzn5.webp/') no-repeat center center fixed;
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: url("https://s8.uupload.ir/files/download_0b5s.jpg") no-repeat center center fixed;
       background-size: cover;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      user-select: none;
+      overflow:hidden;
+      user-select:none;
     }
-    .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.10);
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      background: rgba(0,0,0,0.08);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
-    .wrap {
+
+    .wrap{
       position: relative;
       z-index: 1;
-      width: min(820px, 92vw);
-      padding: 28px;
-      box-sizing: border-box;
+      height: 100%;
+      display:flex;
+      flex-direction: column;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      box-sizing:border-box;
+    }
+
+    .search{
+      width: min(720px, 92vw);
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 10px 12px;
       border-radius: 18px;
-      background: rgba(255,255,255,0.30);
+      background: rgba(255,255,255,0.72);
       border: 1px solid rgba(255,255,255,0.30);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.18);
     }
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      color: rgba(0,0,0,0.86);
-      margin: 0 0 16px;
+
+    .search input{
+      border:0;
+      outline:none;
+      background: transparent;
+      width: 100%;
+      font-size: 14px;
+      padding: 6px 4px;
+      user-select: text;
     }
-    .grid {
-      display: grid;
+
+    .grid{
+      width: min(780px, 92vw);
+      display:grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
+      margin-top: 18px;
     }
-    .fav {
-      border: 0;
-      background: rgba(255,255,255,0.72);
+
+    .tile{
       border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 14px;
-      padding: 14px 10px 12px;
+      background: rgba(255,255,255,0.72);
+      border-radius: 16px;
+      padding: 14px 12px;
       cursor: pointer;
-      display: flex;
+      display:flex;
       flex-direction: column;
-      align-items: center;
+      align-items:center;
       gap: 10px;
-      transition: transform 0.12s ease;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.12);
     }
-    .fav:active {
-      transform: scale(0.98);
-    }
-    .icon {
+    .tile:active{ transform: scale(0.99); }
+
+    .tile img{
       width: 44px;
       height: 44px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      color: rgba(0,0,0,0.82);
-      font-size: 18px;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.14);
-      background: rgba(255,255,255,0.95);
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
     }
-    .icon.sohgle {
-      background: rgba(255,255,255,0.95);
-    }
-    .icon.sohgle span:nth-child(1) { color: #4285F4; }
-    .icon.sohgle span:nth-child(2) { color: #EA4335; }
-    .icon.sohgle span:nth-child(3) { color: #FBBC05; }
-    .icon.sohgle span:nth-child(4) { color: #4285F4; }
-    .icon.sohgle span:nth-child(5) { color: #34A853; }
-    .icon.sohgle span:nth-child(6) { color: #EA4335; }
 
-    .icon.portfolio {
-      background: linear-gradient(135deg, rgba(0,122,255,0.95), rgba(88,86,214,0.95));
-      color: #fff;
-    }
-    .icon.github {
-      background: rgba(36,41,46,0.95);
-      color: #fff;
-    }
-    .icon.garlic {
-      background: rgba(255,255,255,0.95);
-    }
-    .label {
+    .tile .label{
       font-size: 12px;
-      color: rgba(0,0,0,0.76);
+      color: rgba(0,0,0,0.72);
+      text-align:center;
     }
-    @media (max-width: 520px) {
-      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    @media (max-width: 560px){
+      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>
+
 <body>
   <div class="overlay"></div>
+
   <div class="wrap">
-    <p class="title">Favorites</p>
+    <div class="search">
+      <input id="q" type="text" placeholder="Search with Sohgle" autocomplete="off" spellcheck="false">
+    </div>
+
     <div class="grid">
-      <button class="fav" data-url="sohgle">
-        <div class="icon sohgle" aria-hidden="true">
-          <span>S</span><span>o</span><span>h</span><span>g</span><span>l</span><span>e</span>
-        </div>
+      <button class="tile" type="button" data-go="sohgle">
+        <img alt="Sohgle" src="https://s8.uupload.ir/files/sohgle_mh26.png">
         <div class="label">Sohgle</div>
       </button>
 
-      <button class="fav" data-url="https://soheil-aghayani.github.io/Portfolio/">
-        <div class="icon portfolio" aria-hidden="true"><i>P</i></div>
-        <div class="label">Portfolio</div>
+      <button class="tile" type="button" data-app="finder" data-view="projects">
+        <img alt="Projects" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+        <div class="label">Projects</div>
       </button>
 
-      <button class="fav" data-url="https://github.com/Soheil-Aghayani/food-recipe">
-        <div class="icon github" aria-hidden="true">GH</div>
-        <div class="label">Source</div>
+      <button class="tile" type="button" data-app="igithub">
+        <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
+        <div class="label">iGithub</div>
       </button>
 
-      <button class="fav" data-url="garlic-bread/index.html">
-        <div class="icon garlic" aria-hidden="true">🥖</div>
-        <div class="label">Garlic Bread</div>
+      <button class="tile" type="button" data-app="music">
+        <img alt="Music" src="https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png">
+        <div class="label">Music</div>
       </button>
     </div>
   </div>
 
   <script>
-    function go(url) {
-      if (!url) return;
-      window.parent.postMessage({ type: "safari:navigate", url }, "*");
+    function post(msg){
+      window.parent.postMessage(msg, "*");
     }
 
-    document.querySelectorAll("[data-url]").forEach((b) => {
-      b.addEventListener("click", () => go(b.getAttribute("data-url")));
+    document.querySelectorAll("[data-go]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const go = b.getAttribute("data-go");
+        post({ type: "safari:navigate", url: go });
+      });
+    });
+
+    document.querySelectorAll("[data-app]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const app = b.getAttribute("data-app");
+        const view = b.getAttribute("data-view");
+        post({ type: "os:openApp", app, view });
+      });
+    });
+
+    const q = document.getElementById("q");
+    q.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      const val = q.value.trim();
+      post({ type: "safari:navigate", url: "sohgle?q=" + encodeURIComponent(val) });
+      q.blur();
     });
   </script>
 </body>

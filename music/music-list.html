@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Music</title>
+
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background:#fff;
+      color: rgba(0,0,0,0.82);
+    }
+
+    .wrap{
+      height:100%;
+      display:flex;
+      flex-direction: column;
+    }
+
+    .bar{
+      height: 56px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      background: rgba(246,246,246,0.86);
+    }
+
+    .bar img{
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .bar .title{
+      font-weight: 900;
+      font-size: 13px;
+      color: rgba(0,0,0,0.78);
+    }
+
+    .main{
+      flex:1;
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      overflow:hidden;
+    }
+
+    .list{
+      border-right: 1px solid rgba(0,0,0,0.08);
+      padding: 12px;
+      overflow-y:auto;
+      box-sizing: border-box;
+    }
+
+    .track{
+      width:100%;
+      border: 1px solid rgba(0,0,0,0.10);
+      border-radius: 12px;
+      padding: 12px;
+      box-sizing: border-box;
+      cursor:pointer;
+      margin-bottom: 10px;
+    }
+    .track:hover{ background: rgba(0,122,255,0.06); }
+
+    .track .name{
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .track .meta{
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.56);
+    }
+
+    .player{
+      padding: 16px;
+      box-sizing: border-box;
+      overflow-y:auto;
+    }
+
+    .now{
+      font-weight: 900;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .controls{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      margin-top: 10px;
+    }
+
+    .btn{
+      border: 1px solid rgba(0,0,0,0.12);
+      background: rgba(0,0,0,0.03);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor:pointer;
+      font-size: 13px;
+      color: rgba(0,0,0,0.76);
+    }
+    .btn:active{ filter: brightness(0.96); }
+
+    .time{
+      font-size: 12px;
+      color: rgba(0,0,0,0.56);
+      margin-top: 10px;
+    }
+
+    input[type="range"]{
+      width: min(620px, 92%);
+    }
+
+    @media (max-width: 860px){
+      .main{ grid-template-columns: 1fr; }
+      .list{ border-right: 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="bar">
+      <img alt="Music" src="https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png">
+      <div class="title">Music</div>
+    </div>
+
+    <div class="main">
+      <div class="list" id="list"></div>
+
+      <div class="player">
+        <div class="now" id="nowTitle">Select a track</div>
+        <audio id="audio" preload="metadata"></audio>
+
+        <div class="controls">
+          <button class="btn" type="button" id="play">Play</button>
+          <button class="btn" type="button" id="pause">Pause</button>
+        </div>
+
+        <div class="time" id="time">00:00 / 00:00</div>
+        <input id="seek" type="range" min="0" max="100" value="0">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tracks = [
+      {
+        title: "Imagine Dragons - Zero",
+        src: "https://uupload.ir/view/07_zero_ed7u.mp3/"
+      }
+    ];
+
+    const list = document.getElementById("list");
+    const audio = document.getElementById("audio");
+    const nowTitle = document.getElementById("nowTitle");
+    const timeEl = document.getElementById("time");
+    const seek = document.getElementById("seek");
+
+    let current = null;
+    let seeking = false;
+
+    function pad(n){ return String(n).padStart(2,"0"); }
+    function fmt(sec){
+      sec = Math.max(0, sec || 0);
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return pad(m) + ":" + pad(s);
+    }
+
+    function setTrack(t){
+      current = t;
+      nowTitle.textContent = t.title;
+      audio.src = t.src;
+      audio.load();
+      seek.value = "0";
+      timeEl.textContent = "00:00 / 00:00";
+    }
+
+    tracks.forEach((t) => {
+      const div = document.createElement("div");
+      div.className = "track";
+      div.innerHTML = '<div class="name">' + t.title + '</div>' +
+                      '<div class="meta">Click to load</div>';
+      div.addEventListener("click", () => setTrack(t));
+      list.appendChild(div);
+    });
+
+    document.getElementById("play").addEventListener("click", () => audio.play());
+    document.getElementById("pause").addEventListener("click", () => audio.pause());
+
+    audio.addEventListener("loadedmetadata", () => {
+      timeEl.textContent = "00:00 / " + fmt(audio.duration);
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      if (seeking) return;
+      const d = audio.duration || 0;
+      const p = d ? (audio.currentTime / d) * 100 : 0;
+      seek.value = String(p);
+      timeEl.textContent = fmt(audio.currentTime) + " / " + fmt(d);
+    });
+
+    seek.addEventListener("input", () => {
+      seeking = true;
+    });
+
+    seek.addEventListener("change", () => {
+      const d = audio.duration || 0;
+      const p = Number(seek.value || "0") / 100;
+      audio.currentTime = d * p;
+      seeking = false;
+    });
+  </script>
+</body>
+</html>

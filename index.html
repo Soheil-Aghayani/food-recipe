@@ -1,887 +1,1412 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Soheil OS | Big Sur</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soheil OS</title>
 
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+  <link rel="apple-touch-icon" href="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
 
-    <style>
-        :root {
-            --bg-glass: rgba(255, 255, 255, 0.75);
-            --dock-glass: rgba(255, 255, 255, 0.4);
-            --sidebar-bg: rgba(235, 235, 235, 0.5);
-            --selection: rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            --border-radius: 12px;
-        }
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
 
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: url('https://s8.uupload.ir/files/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-2880x1800-1455_hxwe.jpg') no-repeat center center fixed;
-            background-size: cover;
-            user-select: none;
-        }
+  <style>
+    :root{
+      --os-bg: url("https://s8.uupload.ir/files/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-2880x1800-1455_hxwe.jpg");
+      --glass: rgba(255,255,255,0.72);
+      --glass-2: rgba(255,255,255,0.42);
+      --border: rgba(0,0,0,0.10);
+      --shadow: 0 22px 44px rgba(0,0,0,0.22);
+      --radius: 12px;
+      --text: rgba(0,0,0,0.84);
+      --muted: rgba(0,0,0,0.55);
+      --blue: rgba(0,122,255,1);
+      --dock-h: 88px;
+      --menu-h: 28px;
+    }
 
-        input, textarea, button {
-            font-family: inherit;
-        }
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      overflow:hidden;
+      background-image: var(--os-bg);
+      background-size: cover;
+      background-position: center;
+      font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      user-select: none;
+    }
 
-        .menubar {
-            width: 100%;
-            height: 28px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            box-sizing: border-box;
-            color: white;
-            font-size: 13px;
-            font-weight: 500;
-            position: fixed;
-            top: 0;
-            z-index: 30000;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
-        }
+    button, input { font-family: inherit; }
 
-        .menu-left { display: flex; gap: 20px; align-items: center; }
-        .menu-right { display: flex; gap: 15px; align-items: center; }
-        .apple-logo { font-size: 1.1rem; cursor: pointer; }
-        .menu-item { cursor: pointer; opacity: 0.9; }
-        .menu-item:hover { opacity: 1; }
-        .menu-bold { font-weight: 700; }
+    .menubar{
+      position: fixed;
+      top:0;
+      left:0;
+      right:0;
+      height: var(--menu-h);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      padding: 0 14px;
+      box-sizing: border-box;
+      background: rgba(255,255,255,0.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      z-index: 30000;
+    }
 
-        .window {
-            width: 740px;
-            height: 480px;
-            background: #fff;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            transition: width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
-                        height 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
-                        top 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
-                        left 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
-                        border-radius 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
+    .menu-left{ display:flex; align-items:center; gap:10px; }
+    .menu-help{
+      border:0;
+      background: transparent;
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      cursor:pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .menu-help:active{ background: rgba(255,255,255,0.12); }
 
-        .window.is-hidden {
-            display: none;
-        }
+    .menu-right{ display:flex; align-items:center; gap:10px; opacity: 0.95; }
 
-        .window.is-maximized {
-            top: 44px;
-            left: 20px;
-            width: calc(100vw - 40px);
-            height: calc(100vh - 44px - 120px);
-            transform: translate(0px, 0px);
-            border-radius: 14px;
-        }
+    .desktop-icons{
+      position: fixed;
+      top: calc(var(--menu-h) + 16px);
+      right: 18px;
+      display:flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 1200;
+      pointer-events: auto;
+    }
 
-        .window-layout {
-            display: flex;
-            flex-grow: 1;
-            height: 100%;
-        }
+    .desktop-icon{
+      width: 86px;
+      border:0;
+      background: transparent;
+      cursor: pointer;
+      color: rgba(255,255,255,0.92);
+      display:flex;
+      flex-direction: column;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 6px;
+      border-radius: 10px;
+    }
+    .desktop-icon:active{ background: rgba(0,0,0,0.10); }
+    .desktop-icon img{
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.35));
+    }
+    .desktop-icon span{
+      font-size: 12px;
+      line-height: 1.2;
+      text-align:center;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
 
-        .traffic-lights-container {
-            display: flex;
-            gap: 8px;
-            z-index: 10;
-            align-items: center;
-        }
+    .dock-wrap{
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 14px;
+      z-index: 25000;
+      pointer-events: auto;
+    }
 
-        .finder-traffic {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-        }
+    .dock{
+      height: var(--dock-h);
+      display:flex;
+      align-items:center;
+      gap: 14px;
+      padding: 10px 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.30);
+      border: 1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
+    }
 
-        .light { 
-            width: 12px;
-            height: 12px;
-            border-radius: 50%; 
-            border: 0.5px solid rgba(0,0,0,0.12);
-            background: transparent;
-            padding: 0;
-            margin: 0;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            user-select: none;
-        }
+    .dock-btn{
+      width: 54px;
+      height: 54px;
+      border: 0;
+      border-radius: 14px;
+      background: transparent;
+      cursor: pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 0;
+      position: relative;
+      transition: transform 0.18s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    .dock-btn:hover{ transform: translateY(-10px) scale(1.08); }
+    .dock-btn:active{ transform: translateY(-7px) scale(1.05); }
 
-        .light:active {
-            filter: brightness(0.92);
-        }
+    .dock-btn img{
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.28));
+    }
 
-        .close { background: #ff5f57; }
-        .minimize { background: #febc2e; }
-        .maximize { background: #28c840; }
+    .dock-dot{
+      position:absolute;
+      bottom: -6px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      display:none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .dock-btn.is-running .dock-dot{ display:block; }
 
-        .sidebar {
-            width: 200px;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(50px);
-            -webkit-backdrop-filter: blur(50px);
-            border-right: 1px solid rgba(0,0,0,0.08);
-            padding: 40px 10px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            flex-shrink: 0;
-            position: relative;
-        }
+    .window{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      width: 820px;
+      height: 540px;
+      background: rgba(255,255,255,0.90);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 1100;
+    }
 
-        .sidebar-title {
-            font-size: 11px;
-            color: #888;
-            font-weight: 600;
-            margin: 15px 12px 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+    .window.is-hidden{ display:none; }
+    .window.is-maximized{
+      top: calc(var(--menu-h) + 10px);
+      left: 14px;
+      transform: translate(0,0);
+      width: calc(100vw - 28px);
+      height: calc(100vh - var(--menu-h) - var(--dock-h) - 44px);
+      border-radius: 14px;
+    }
 
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #4a4a4a;
-            cursor: pointer;
-            transition: background 0.1s;
-            text-decoration: none;
-        }
+    .topbar{
+      height: 54px;
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      padding: 10px 14px;
+      box-sizing: border-box;
+      background: rgba(246,246,246,0.86);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      position: relative;
+      z-index: 20;
+    }
 
-        .sidebar-item i {
-            width: 20px;
-            text-align: center;
-            margin-right: 10px;
-            font-size: 14px;
-        }
+    .topbar.draggable{ cursor: default; }
 
-        .sidebar-item .fa-hdd { color: #8e8e93; }
-        .sidebar-item .fa-desktop { color: #007aff; }
-        .sidebar-item .fa-download { color: #007aff; }
-        .sidebar-item .fa-cloud { color: #007aff; }
+    .traffic{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      z-index: 30;
+      pointer-events: auto;
+      position: relative;
+    }
 
-        .sidebar-item.active {
-            background: rgba(0, 0, 0, 0.06);
-            color: #333;
-            font-weight: 500;
-        }
+    .light{
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      pointer-events: auto;
+      background: transparent;
+    }
+    .light:active{ filter: brightness(0.92); }
+    .light.close{ background:#ff5f57; }
+    .light.min{ background:#febc2e; }
+    .light.max{ background:#28c840; }
 
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background: #fff;
-        }
+    .title{
+      font-size: 13px;
+      color: rgba(0,0,0,0.78);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
 
-        .toolbar {
-            height: 50px;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
+    .address{
+      flex: 1;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.92);
+      padding: 0 12px;
+      font-size: 13px;
+      user-select: text;
+    }
+    .address:focus{
+      outline: none;
+      border-color: rgba(0,122,255,0.42);
+      box-shadow: 0 0 0 3px rgba(0,122,255,0.14);
+    }
 
-        .toolbar-title {
-            font-weight: 600;
-            color: #333;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
+    .nav-btn{
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      border: 1px solid rgba(0,0,0,0.10);
+      background: rgba(255,255,255,0.90);
+      cursor: pointer;
+      padding:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: rgba(0,0,0,0.72);
+      font-size: 13px;
+    }
+    .nav-btn:disabled{ opacity: 0.35; cursor: default; }
 
-        .files-grid {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            grid-auto-rows: 120px;
-            gap: 10px;
-            overflow-y: auto;
-        }
+    .content{
+      flex:1;
+      background: rgba(255,255,255,0.92);
+      position: relative;
+      overflow: hidden;
+    }
 
-        .file-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            text-decoration: none;
-            padding: 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+    iframe.app-frame{
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #fff;
+      display:block;
+      position: relative;
+      z-index: 1;
+    }
 
-        .file-item:hover { background: #e5f1fb; }
+    .finder-layout{
+      display:flex;
+      height:100%;
+      width:100%;
+    }
 
-        .file-icon { 
-            font-size: 42px; 
-            margin-bottom: 8px; 
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); 
-        }
+    .finder-side{
+      width: 220px;
+      background: rgba(238,238,238,0.60);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid rgba(0,0,0,0.08);
+      padding: 10px 10px 10px;
+      box-sizing: border-box;
+      position: relative;
+    }
 
-        .file-name { 
-            font-family: 'Vazirmatn', sans-serif;
-            color: #333; 
-            font-size: 12px; 
-            text-align: center; 
-            line-height: 1.4;
-            max-width: 100%;
-        }
+    .side-section{
+      margin-top: 10px;
+      font-size: 11px;
+      color: rgba(0,0,0,0.45);
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      padding: 0 8px;
+    }
 
-        .safari-window {
-            width: 960px;
-            height: 620px;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
+    .side-item{
+      width: 100%;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      color: rgba(0,0,0,0.72);
+      font-size: 13px;
+    }
 
-        .safari-topbar {
-            height: 54px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            box-sizing: border-box;
-            background: rgba(246, 246, 246, 0.86);
-            border-bottom: 1px solid rgba(0,0,0,0.08);
-            user-select: none;
-        }
+    .side-item img{
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      opacity: 0.92;
+    }
 
-        .safari-nav {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
+    .side-item.is-active{
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.82);
+      font-weight: 600;
+    }
 
-        .nav-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 9px;
-            border: 1px solid rgba(0,0,0,0.10);
-            background: rgba(255,255,255,0.90);
-            color: rgba(0,0,0,0.72);
-            cursor: pointer;
-            padding: 0;
-            display: grid;
-            place-items: center;
-        }
+    .finder-main{
+      flex: 1;
+      display:flex;
+      flex-direction: column;
+      background: rgba(255,255,255,0.92);
+      overflow:hidden;
+    }
 
-        .nav-btn:active {
-            filter: brightness(0.96);
-        }
+    .finder-toolbar{
+      height: 50px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding: 0 14px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      background: rgba(255,255,255,0.86);
+    }
 
-        .nav-btn:disabled {
-            opacity: 0.35;
-            cursor: default;
-        }
+    .finder-toolbar .path{
+      font-size: 13px;
+      color: rgba(0,0,0,0.74);
+      font-weight: 600;
+    }
 
-        .address-wrap {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-        }
+    .finder-scroll{
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
 
-        .address-input {
-            width: 100%;
-            height: 32px;
-            border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.12);
-            background: rgba(255,255,255,0.92);
-            padding: 0 12px;
-            font-size: 13px;
-            user-select: text;
-        }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      grid-auto-rows: 150px;
+      gap: 12px;
+    }
 
-        .address-input:focus {
-            outline: none;
-            border-color: rgba(0,122,255,0.40);
-            box-shadow: 0 0 0 3px rgba(0,122,255,0.14);
-        }
+    .item{
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 12px 10px;
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+    }
+    .item:hover{ background: rgba(0,122,255,0.10); }
+    .item:active{ background: rgba(0,122,255,0.14); }
 
-        .safari-view {
-            flex-grow: 1;
-            background: #fff;
-        }
+    .item img{
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.16));
+    }
 
-        #safariFrame {
-            width: 100%;
-            height: 100%;
-            border: 0;
-            background: #fff;
-        }
+    .item .name{
+      font-size: 12px;
+      color: rgba(0,0,0,0.82);
+      text-align: center;
+      line-height: 1.35;
+      max-width: 100%;
+    }
 
-        .dock-container {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            justify-content: center;
-            z-index: 25000;
-        }
+    .item .sub{
+      font-size: 11px;
+      color: rgba(0,0,0,0.55);
+      text-align:center;
+      margin-top: -4px;
+    }
 
-        .dock {
-            background: var(--dock-glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px;
-            padding: 10px 14px;
-            display: flex;
-            gap: 15px;
-            box-shadow: var(--shadow-lg);
-            align-items: center;
-        }
+    .item.is-disabled{
+      opacity: 0.55;
+      cursor: default;
+    }
+    .item.is-disabled:hover{ background: transparent; }
 
-        .dock-icon {
-            width: 55px; 
-            height: 55px; 
-            background-color: transparent; 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            cursor: pointer; 
-            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            display: block;
-            border: none;
-            outline: none;
-        }
+    .empty{
+      padding: 40px 10px;
+      text-align: center;
+      color: rgba(0,0,0,0.55);
+      font-size: 13px;
+    }
 
-        .dock-icon:hover { transform: translateY(-12px) scale(1.1); }
+    .help-overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.18);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display:none;
+      z-index: 26000;
+    }
+    .help-overlay.is-open{ display:block; }
 
-        @media (max-width: 600px) {
-            .window { width: 94%; height: 70vh; }
-            .sidebar { display: none; }
-            .dock-icon { width: 45px; height: 45px; }
-            .menubar { font-size: 11px; }
-            .finder-traffic { position: relative; top: auto; left: auto; padding: 15px; }
-            .window-layout { flex-direction: column; }
-            .safari-window { width: 94%; height: 72vh; }
-            .window.is-maximized { left: 10px; width: calc(100vw - 20px); height: calc(100vh - 44px - 120px); }
-        }
-    </style>
+    .help-card{
+      position: absolute;
+      top: 64px;
+      left: 18px;
+      width: 340px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(0,0,0,0.10);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .help-head{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      background: rgba(246,246,246,0.86);
+      color: rgba(0,0,0,0.78);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .help-close{
+      border:0;
+      background: rgba(0,0,0,0.06);
+      color: rgba(0,0,0,0.72);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .help-close:active{ filter: brightness(0.95); }
+
+    .help-body{
+      padding: 14px;
+      display:flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .help-photo{
+      width: 72px;
+      height: 72px;
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(0,0,0,0.10);
+      flex: 0 0 auto;
+    }
+    .help-photo img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display:block;
+    }
+
+    .help-text{
+      flex:1;
+      color: rgba(0,0,0,0.78);
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    .help-text .name{
+      font-weight: 800;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 720px){
+      .window{ width: 94vw; height: 72vh; }
+      .finder-side{ width: 190px; }
+      .grid{ grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+    }
+  </style>
 </head>
+
 <body>
+  <div class="menubar">
+    <div class="menu-left">
+      <button class="menu-help" id="helpBtn" type="button">Help</button>
+    </div>
+    <div class="menu-right">
+      <span id="clock">00:00</span>
+    </div>
+  </div>
 
-    <div class="menubar">
-        <div class="menu-left">
-            <i class="fab fa-apple apple-logo"></i>
-            <span class="menu-item menu-bold" style="margin-left: 15px;">Finder</span>
-            <span class="menu-item">File</span>
-            <span class="menu-item">Edit</span>
-            <span class="menu-item">View</span>
-            <span class="menu-item">Go</span>
-            <span class="menu-item">Window</span>
-            <span class="menu-item">Help</span>
-        </div>
-        <div class="menu-right">
-            <i class="fas fa-wifi"></i>
-            <i class="fas fa-battery-three-quarters"></i>
-            <span id="clock">12:00 PM</span>
-        </div>
+  <div class="desktop-icons">
+    <button class="desktop-icon" id="desktopBin" type="button" title="Bin">
+      <img alt="Bin" src="https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png">
+      <span>Bin</span>
+    </button>
+  </div>
+
+  <div class="window" id="finderWin" data-app="finder">
+    <div class="topbar draggable" data-drag-handle="finder">
+      <div class="traffic">
+        <button class="light close" type="button" data-app="finder" data-action="close" aria-label="Close"></button>
+        <button class="light min" type="button" data-app="finder" data-action="minimize" aria-label="Minimize"></button>
+        <button class="light max" type="button" data-app="finder" data-action="maximize" aria-label="Maximize"></button>
+      </div>
+      <div class="title">Finder</div>
     </div>
 
-    <div class="window" id="mainWindow" data-app="finder">
-        <div class="window-layout">
-            <div class="sidebar">
-                <div class="traffic-lights-container finder-traffic">
-                    <button class="light close" type="button" data-app="finder" data-action="close" aria-label="Close"></button>
-                    <button class="light minimize" type="button" data-app="finder" data-action="minimize" aria-label="Minimize"></button>
-                    <button class="light maximize" type="button" data-app="finder" data-action="maximize" aria-label="Maximize"></button>
-                </div>
+    <div class="content">
+      <div class="finder-layout">
+        <div class="finder-side">
+          <div class="side-section">Favorites</div>
 
-                <div style="height: 20px;"></div>
+          <button class="side-item is-active" type="button" data-finder="projects">
+            <img alt="Projects" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+            Projects
+          </button>
 
-                <div class="sidebar-title">Favorites</div>
+          <button class="side-item" type="button" data-finder="desktop">
+            <img alt="Desktop" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+            Desktop
+          </button>
 
-                <div class="sidebar-item active">
-                    <i class="fas fa-folder-open" style="color: #007aff;"></i>
-                    Projects
-                </div>
+          <button class="side-item" type="button" data-finder="downloads">
+            <img alt="Downloads" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+            Downloads
+          </button>
 
-                <div class="sidebar-item">
-                    <i class="fas fa-desktop"></i>
-                    Desktop
-                </div>
+          <div class="side-section" style="margin-top:14px;">iGithub</div>
 
-                <div class="sidebar-item">
-                    <i class="fas fa-download"></i>
-                    Downloads
-                </div>
-
-                <div class="sidebar-title">iCloud</div>
-                <div class="sidebar-item">
-                    <i class="fas fa-cloud"></i>
-                    iCloud Drive
-                </div>
-            </div>
-
-            <div class="main-content">
-                <div class="toolbar">
-                    <div class="toolbar-title">
-                        <i class="fas fa-chevron-left" style="color: #aaa; margin-right: 10px;"></i>
-                        <i class="fas fa-chevron-right" style="color: #aaa; margin-right: 15px;"></i>
-                        Projects
-                    </div>
-                </div>
-
-                <div class="files-grid">
-                    <a href="./garlic-bread/index.html" class="file-item open-in-safari" data-safari-url="./garlic-bread/index.html">
-                        <div class="file-icon">🥖</div>
-                        <span class="file-name">نان سیر<br>(Garlic Bread)</span>
-                    </a>
-
-                    <div class="file-item">
-                        <div class="file-icon">🍕</div>
-                        <span class="file-name">پیتزا<br>(Coming Soon)</span>
-                    </div>
-                </div>
-            </div>
+          <button class="side-item" type="button" data-finder="igithub">
+            <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
+            iGithub
+          </button>
         </div>
-    </div>
 
-    <div class="window safari-window is-hidden" id="safariWindow" data-app="safari" aria-hidden="true">
-        <div class="safari-topbar">
-            <div class="traffic-lights-container">
-                <button class="light close" type="button" data-app="safari" data-action="close" aria-label="Close"></button>
-                <button class="light minimize" type="button" data-app="safari" data-action="minimize" aria-label="Minimize"></button>
-                <button class="light maximize" type="button" data-app="safari" data-action="maximize" aria-label="Maximize"></button>
+        <div class="finder-main">
+          <div class="finder-toolbar draggable" data-drag-handle="finder">
+            <div class="path" id="finderPath">Projects</div>
+          </div>
+
+          <div class="finder-scroll" id="finderScroll">
+            <div id="projectsView">
+              <div class="grid" id="projectsGrid"></div>
+              <div class="empty" id="projectsEmpty" style="display:none;">No recipes yet</div>
             </div>
 
-            <div class="safari-nav">
-                <button class="nav-btn" id="safariBack" type="button" aria-label="Back">
-                    <i class="fas fa-chevron-left"></i>
+            <div id="downloadsView" style="display:none;">
+              <div class="empty">Downloads folder is empty</div>
+            </div>
+
+            <div id="desktopView" style="display:none;">
+              <div class="grid">
+                <button class="item" type="button" id="openBinFromDesktopFolder">
+                  <img alt="Bin" src="https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png">
+                  <div class="name">Bin</div>
+                  <div class="sub">Trash</div>
                 </button>
-                <button class="nav-btn" id="safariForward" type="button" aria-label="Forward">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-                <button class="nav-btn" id="safariReload" type="button" aria-label="Reload">
-                    <i class="fas fa-rotate-right"></i>
-                </button>
+              </div>
             </div>
 
-            <div class="address-wrap">
-                <input id="safariAddress" class="address-input" type="text" value="Start Page" autocomplete="off" spellcheck="false">
+            <div id="igithubHint" style="display:none;">
+              <div class="empty">iGithub opened as a separate app</div>
             </div>
+          </div>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="safari-view">
-            <iframe id="safariFrame" src="./safari/start.html" title="Safari" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
-        </div>
+  <div class="window is-hidden" id="safariWin" data-app="safari" aria-hidden="true" style="width: 980px; height: 640px;">
+    <div class="topbar draggable" data-drag-handle="safari">
+      <div class="traffic">
+        <button class="light close" type="button" data-app="safari" data-action="close" aria-label="Close"></button>
+        <button class="light min" type="button" data-app="safari" data-action="minimize" aria-label="Minimize"></button>
+        <button class="light max" type="button" data-app="safari" data-action="maximize" aria-label="Maximize"></button>
+      </div>
+
+      <button class="nav-btn" id="sBack" type="button" aria-label="Back">‹</button>
+      <button class="nav-btn" id="sForward" type="button" aria-label="Forward">›</button>
+      <button class="nav-btn" id="sReload" type="button" aria-label="Reload">↻</button>
+
+      <input class="address" id="sAddress" type="text" value="Start Page" autocomplete="off" spellcheck="false" />
     </div>
 
-    <div class="dock-container">
-        <div class="dock">
-            <button class="dock-icon" id="dockFinder"
-                 style="background-image: url('https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png');" 
-                 title="Finder" type="button">
-            </button>
+    <div class="content">
+      <iframe class="app-frame" id="sFrame" title="Safari"
+        src="safari/start.html"
+        sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+    </div>
+  </div>
 
-            <button class="dock-icon" id="dockSafari"
-                 style="background-image: url('https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png');"
-                 title="Safari" type="button">
-            </button>
-
-            <button class="dock-icon" 
-                 style="background-image: url('https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png');"
-                 title="Music" type="button">
-            </button>
-
-            <a href="https://soheil-aghayani.github.io/Portfolio/" class="dock-icon open-in-safari" data-safari-url="https://soheil-aghayani.github.io/Portfolio/"
-               style="background-image: url('https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png');"
-               title="My Portfolio"></a>
-
-            <a href="https://github.com/Soheil-Aghayani/food-recipe" class="dock-icon open-in-safari" data-safari-url="https://github.com/Soheil-Aghayani/food-recipe"
-               style="background-image: url('https://s8.uupload.ir/files/terminal_macos_bigsur_icon_189655_kepj.png');"
-               title="Source Code"></a>
-        </div>
+  <div class="window is-hidden" id="recipeWin" data-app="recipe" aria-hidden="true" style="width: 980px; height: 640px;">
+    <div class="topbar draggable" data-drag-handle="recipe">
+      <div class="traffic">
+        <button class="light close" type="button" data-app="recipe" data-action="close" aria-label="Close"></button>
+        <button class="light min" type="button" data-app="recipe" data-action="minimize" aria-label="Minimize"></button>
+        <button class="light max" type="button" data-app="recipe" data-action="maximize" aria-label="Maximize"></button>
+      </div>
+      <div class="title" id="recipeTitle">Recipe</div>
+      <input class="address" id="recipeAddress" type="text" value="" readonly />
     </div>
 
-    <script>
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            document.getElementById('clock').textContent = `${hours}:${minutes} ${ampm}`;
+    <div class="content">
+      <iframe class="app-frame" id="recipeFrame" title="Recipe"
+        src="about:blank"
+        sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+    </div>
+  </div>
+
+  <div class="window is-hidden" id="igithubWin" data-app="igithub" aria-hidden="true" style="width: 980px; height: 640px;">
+    <div class="topbar draggable" data-drag-handle="igithub">
+      <div class="traffic">
+        <button class="light close" type="button" data-app="igithub" data-action="close" aria-label="Close"></button>
+        <button class="light min" type="button" data-app="igithub" data-action="minimize" aria-label="Minimize"></button>
+        <button class="light max" type="button" data-app="igithub" data-action="maximize" aria-label="Maximize"></button>
+      </div>
+      <div class="title">iGithub</div>
+    </div>
+
+    <div class="content">
+      <iframe class="app-frame" id="igithubFrame" title="iGithub"
+        src="igit/igit-index.html"
+        sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+    </div>
+  </div>
+
+  <div class="window is-hidden" id="musicWin" data-app="music" aria-hidden="true" style="width: 860px; height: 560px;">
+    <div class="topbar draggable" data-drag-handle="music">
+      <div class="traffic">
+        <button class="light close" type="button" data-app="music" data-action="close" aria-label="Close"></button>
+        <button class="light min" type="button" data-app="music" data-action="minimize" aria-label="Minimize"></button>
+        <button class="light max" type="button" data-app="music" data-action="maximize" aria-label="Maximize"></button>
+      </div>
+      <div class="title">Music</div>
+    </div>
+
+    <div class="content">
+      <iframe class="app-frame" id="musicFrame" title="Music"
+        src="music/music-list.html"
+        sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+    </div>
+  </div>
+
+  <div class="window is-hidden" id="binWin" data-app="bin" aria-hidden="true" style="width: 860px; height: 560px;">
+    <div class="topbar draggable" data-drag-handle="bin">
+      <div class="traffic">
+        <button class="light close" type="button" data-app="bin" data-action="close" aria-label="Close"></button>
+        <button class="light min" type="button" data-app="bin" data-action="minimize" aria-label="Minimize"></button>
+        <button class="light max" type="button" data-app="bin" data-action="maximize" aria-label="Maximize"></button>
+      </div>
+      <div class="title">Bin</div>
+    </div>
+
+    <div class="content">
+      <iframe class="app-frame" id="binFrame" title="Bin"
+        src="bin/index_bin.html"
+        sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+    </div>
+  </div>
+
+  <div class="window is-hidden" id="desktopWin" data-app="desktop" aria-hidden="true" style="width: 980px; height: 640px;">
+    <div class="topbar draggable" data-drag-handle="desktop">
+      <div class="traffic">
+        <button class="light close" type="button" data-app="desktop" data-action="close" aria-label="Close"></button>
+        <button class="light min" type="button" data-app="desktop" data-action="minimize" aria-label="Minimize"></button>
+        <button class="light max" type="button" data-app="desktop" data-action="maximize" aria-label="Maximize"></button>
+      </div>
+      <div class="title">Desktop</div>
+    </div>
+
+    <div class="content">
+      <iframe class="app-frame" id="desktopFrame" title="Desktop"
+        src="desktop/index.html"
+        sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+    </div>
+  </div>
+
+  <div class="help-overlay" id="helpOverlay" aria-hidden="true">
+    <div class="help-card">
+      <div class="help-head">
+        <span>About</span>
+        <button class="help-close" id="helpClose" type="button">Close</button>
+      </div>
+      <div class="help-body">
+        <div class="help-photo">
+          <img alt="Soheil" src="https://s8.uupload.ir/files/photo_2026-02-10_18-49-52_fwiq.jpg">
+        </div>
+        <div class="help-text">
+          <div class="name">Soheil OS</div>
+          <div>
+            این پروژه را ساختم تا دستور پخت غذاهای مختلف را برای مامانم یکجا جمع کنم.
+            هدف این بود که دیگر مجبور نباشد بین سایت ها دنبال دستور پخت بگردد.
+            همه چیز داخل همین محیط اجرا میشود.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dock-wrap">
+    <div class="dock">
+      <button class="dock-btn is-running" id="dockFinder" type="button" title="Finder">
+        <img alt="Finder" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+        <span class="dock-dot"></span>
+      </button>
+
+      <button class="dock-btn" id="dockSafari" type="button" title="Safari">
+        <img alt="Safari" src="https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png">
+        <span class="dock-dot"></span>
+      </button>
+
+      <button class="dock-btn" id="dockMusic" type="button" title="Music">
+        <img alt="Music" src="https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png">
+        <span class="dock-dot"></span>
+      </button>
+
+      <button class="dock-btn" id="dockIGithub" type="button" title="iGithub">
+        <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
+        <span class="dock-dot"></span>
+      </button>
+
+      <button class="dock-btn" id="dockSource" type="button" title="Source Code">
+        <img alt="Source" src="https://s8.uupload.ir/files/terminal_macos_bigsur_icon_189655_kepj.png">
+        <span class="dock-dot"></span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function updateClock(){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,"0");
+      const mm = String(now.getMinutes()).padStart(2,"0");
+      document.getElementById("clock").textContent = hh + ":" + mm;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    const state = {
+      z: 1100,
+      safari: { history: [], index: -1 },
+      finderView: "projects"
+    };
+
+    const apps = {
+      finder: {
+        key: "finder",
+        el: document.getElementById("finderWin"),
+        dock: document.getElementById("dockFinder"),
+        isOpen: true,
+        isMin: false
+      },
+      safari: {
+        key: "safari",
+        el: document.getElementById("safariWin"),
+        dock: document.getElementById("dockSafari"),
+        isOpen: false,
+        isMin: false
+      },
+      recipe: {
+        key: "recipe",
+        el: document.getElementById("recipeWin"),
+        dock: null,
+        isOpen: false,
+        isMin: false
+      },
+      igithub: {
+        key: "igithub",
+        el: document.getElementById("igithubWin"),
+        dock: document.getElementById("dockIGithub"),
+        isOpen: false,
+        isMin: false
+      },
+      music: {
+        key: "music",
+        el: document.getElementById("musicWin"),
+        dock: document.getElementById("dockMusic"),
+        isOpen: false,
+        isMin: false
+      },
+      bin: {
+        key: "bin",
+        el: document.getElementById("binWin"),
+        dock: null,
+        isOpen: false,
+        isMin: false
+      },
+      desktop: {
+        key: "desktop",
+        el: document.getElementById("desktopWin"),
+        dock: null,
+        isOpen: false,
+        isMin: false
+      }
+    };
+
+    function markRunning(appKey){
+      const app = apps[appKey];
+      if (!app || !app.dock) return;
+      if (app.isOpen && !app.isMin) app.dock.classList.add("is-running");
+      else if (app.isOpen && app.isMin) app.dock.classList.add("is-running");
+      else app.dock.classList.remove("is-running");
+    }
+
+    function bringToFront(appKey){
+      const app = apps[appKey];
+      if (!app) return;
+      state.z += 1;
+      app.el.style.zIndex = String(state.z);
+    }
+
+    function baseTransform(appEl){
+      return appEl.classList.contains("is-maximized") ? "translate(0,0)" : "translate(-50%,-50%)";
+    }
+
+    function animateOpen(appEl){
+      const base = baseTransform(appEl);
+      appEl.animate(
+        [
+          { opacity: 0, filter: "blur(2px)", transform: base + " scale(0.96)" },
+          { opacity: 1, filter: "blur(0px)", transform: base + " scale(1)" }
+        ],
+        { duration: 220, easing: "cubic-bezier(0.2,0.8,0.2,1)", fill: "forwards" }
+      );
+    }
+
+    function animateClose(appEl){
+      const base = baseTransform(appEl);
+      return appEl.animate(
+        [
+          { opacity: 1, filter: "blur(0px)", transform: base + " scale(1)" },
+          { opacity: 0, filter: "blur(2px)", transform: base + " scale(0.92)" }
+        ],
+        { duration: 210, easing: "cubic-bezier(0.22,0.61,0.36,1)", fill: "forwards" }
+      ).finished;
+    }
+
+    function animateToDock(appEl, dockEl){
+      if (!dockEl) return Promise.resolve();
+      const base = baseTransform(appEl);
+
+      const w = appEl.getBoundingClientRect();
+      const d = dockEl.getBoundingClientRect();
+
+      const dx = (d.left + d.width/2) - (w.left + w.width/2);
+      const dy = (d.top + d.height/2) - (w.top + w.height/2);
+
+      return appEl.animate(
+        [
+          { opacity: 1, filter: "blur(0px)", transform: base + " translate(0px,0px) scale(1)" },
+          { opacity: 0, filter: "blur(2px)", transform: base + " translate(" + dx + "px," + dy + "px) scale(0.08)" }
+        ],
+        { duration: 300, easing: "cubic-bezier(0.22,0.61,0.36,1)", fill: "forwards" }
+      ).finished;
+    }
+
+    function openApp(appKey){
+      const app = apps[appKey];
+      if (!app) return;
+
+      app.el.classList.remove("is-hidden");
+      app.el.setAttribute("aria-hidden","false");
+      app.el.style.display = "flex";
+      app.isOpen = true;
+      app.isMin = false;
+
+      bringToFront(appKey);
+      animateOpen(app.el);
+      markRunning(appKey);
+    }
+
+    function closeApp(appKey){
+      const app = apps[appKey];
+      if (!app || !app.isOpen) return;
+
+      bringToFront(appKey);
+      animateClose(app.el).finally(() => {
+        app.el.style.display = "none";
+        app.el.classList.add("is-hidden");
+        app.el.setAttribute("aria-hidden","true");
+        app.el.style.opacity = "";
+        app.el.style.filter = "";
+        app.el.style.transform = "";
+        app.isOpen = false;
+        app.isMin = false;
+        markRunning(appKey);
+      });
+    }
+
+    function minimizeApp(appKey){
+      const app = apps[appKey];
+      if (!app || !app.isOpen) return;
+
+      bringToFront(appKey);
+      animateToDock(app.el, app.dock).finally(() => {
+        app.el.style.display = "none";
+        app.el.classList.add("is-hidden");
+        app.el.setAttribute("aria-hidden","true");
+        app.el.style.opacity = "";
+        app.el.style.filter = "";
+        app.el.style.transform = "";
+        app.isMin = true;
+        markRunning(appKey);
+      });
+    }
+
+    function restoreApp(appKey){
+      const app = apps[appKey];
+      if (!app || !app.isOpen) return;
+
+      app.el.classList.remove("is-hidden");
+      app.el.setAttribute("aria-hidden","false");
+      app.el.style.display = "flex";
+      app.isMin = false;
+
+      bringToFront(appKey);
+      animateOpen(app.el);
+      markRunning(appKey);
+    }
+
+    function toggleMaximize(appKey){
+      const app = apps[appKey];
+      if (!app || !app.isOpen) return;
+
+      bringToFront(appKey);
+
+      app.el.style.opacity = "";
+      app.el.style.filter = "";
+      app.el.style.transform = "";
+
+      const isMax = app.el.classList.contains("is-maximized");
+      if (!isMax){
+        const r = app.el.getBoundingClientRect();
+        app.el.dataset.prevLeft = String(r.left);
+        app.el.dataset.prevTop = String(r.top);
+        app.el.dataset.prevWidth = String(r.width);
+        app.el.dataset.prevHeight = String(r.height);
+        app.el.dataset.prevTransform = app.el.style.transform || "";
+
+        app.el.classList.add("is-maximized");
+        return;
+      }
+
+      app.el.classList.remove("is-maximized");
+
+      const prevLeft = Number(app.el.dataset.prevLeft || "0");
+      const prevTop = Number(app.el.dataset.prevTop || "0");
+      const prevWidth = Number(app.el.dataset.prevWidth || "820");
+      const prevHeight = Number(app.el.dataset.prevHeight || "540");
+
+      app.el.style.left = prevLeft + "px";
+      app.el.style.top = prevTop + "px";
+      app.el.style.width = prevWidth + "px";
+      app.el.style.height = prevHeight + "px";
+      app.el.style.transform = "translate(0,0)";
+    }
+
+    function handleTraffic(appKey, action){
+      if (action === "close") closeApp(appKey);
+      if (action === "minimize") minimizeApp(appKey);
+      if (action === "maximize") toggleMaximize(appKey);
+    }
+
+    document.querySelectorAll("button.light[data-app][data-action]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleTraffic(btn.dataset.app, btn.dataset.action);
+      });
+    });
+
+    Object.values(apps).forEach((app) => {
+      app.el.addEventListener("pointerdown", () => bringToFront(app.key));
+    });
+
+    function bindDock(appKey){
+      const app = apps[appKey];
+      if (!app || !app.dock) return;
+
+      app.dock.addEventListener("click", () => {
+        if (!app.isOpen) { openApp(appKey); return; }
+        if (app.isMin) { restoreApp(appKey); return; }
+        bringToFront(appKey);
+      });
+    }
+
+    bindDock("finder");
+    bindDock("safari");
+    bindDock("music");
+    bindDock("igithub");
+
+    document.getElementById("dockSource").addEventListener("click", () => {
+      openIGithubRepo("food-recipe");
+    });
+
+    function makeDraggable(appKey){
+      const app = apps[appKey];
+      if (!app) return;
+
+      const el = app.el;
+      const handle = el.querySelector('[data-drag-handle="' + appKey + '"]');
+      if (!handle) return;
+
+      let dragging = false;
+      let startX = 0;
+      let startY = 0;
+      let startLeft = 0;
+      let startTop = 0;
+
+      handle.addEventListener("pointerdown", (e) => {
+        const t = e.target;
+        if (t && (t.closest(".traffic") || t.tagName === "INPUT" || t.tagName === "BUTTON")) return;
+        if (el.classList.contains("is-maximized")) return;
+
+        dragging = true;
+        bringToFront(appKey);
+
+        const r = el.getBoundingClientRect();
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = r.left;
+        startTop = r.top;
+
+        el.style.left = startLeft + "px";
+        el.style.top = startTop + "px";
+        el.style.transform = "translate(0,0)";
+
+        try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+      });
+
+      handle.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        const maxLeft = window.innerWidth - 80;
+        const maxTop = window.innerHeight - 80;
+
+        const nextLeft = Math.min(Math.max(10, startLeft + dx), maxLeft);
+        const nextTop = Math.min(Math.max(44, startTop + dy), maxTop);
+
+        el.style.left = nextLeft + "px";
+        el.style.top = nextTop + "px";
+      });
+
+      function endDrag(){
+        dragging = false;
+      }
+
+      handle.addEventListener("pointerup", endDrag);
+      handle.addEventListener("pointercancel", endDrag);
+    }
+
+    makeDraggable("finder");
+    makeDraggable("safari");
+    makeDraggable("recipe");
+    makeDraggable("igithub");
+    makeDraggable("music");
+    makeDraggable("bin");
+    makeDraggable("desktop");
+
+    const helpOverlay = document.getElementById("helpOverlay");
+    function openHelp(){
+      helpOverlay.classList.add("is-open");
+      helpOverlay.setAttribute("aria-hidden","false");
+    }
+    function closeHelp(){
+      helpOverlay.classList.remove("is-open");
+      helpOverlay.setAttribute("aria-hidden","true");
+    }
+    document.getElementById("helpBtn").addEventListener("click", openHelp);
+    document.getElementById("helpClose").addEventListener("click", closeHelp);
+    helpOverlay.addEventListener("click", (e) => {
+      if (e.target === helpOverlay) closeHelp();
+    });
+
+    document.getElementById("desktopBin").addEventListener("click", () => {
+      if (!apps.bin.isOpen) openApp("bin");
+      else if (apps.bin.isMin) restoreApp("bin");
+      else bringToFront("bin");
+    });
+
+    document.getElementById("openBinFromDesktopFolder").addEventListener("click", () => {
+      if (!apps.bin.isOpen) openApp("bin");
+      else if (apps.bin.isMin) restoreApp("bin");
+      else bringToFront("bin");
+    });
+
+    function setFinderActive(view){
+      state.finderView = view;
+
+      document.querySelectorAll(".side-item[data-finder]").forEach((b) => {
+        b.classList.toggle("is-active", b.getAttribute("data-finder") === view);
+      });
+
+      document.getElementById("projectsView").style.display = view === "projects" ? "block" : "none";
+      document.getElementById("downloadsView").style.display = view === "downloads" ? "block" : "none";
+      document.getElementById("desktopView").style.display = view === "desktop" ? "block" : "none";
+      document.getElementById("igithubHint").style.display = view === "igithub" ? "block" : "none";
+
+      const pathEl = document.getElementById("finderPath");
+      if (view === "projects") pathEl.textContent = "Projects";
+      if (view === "downloads") pathEl.textContent = "Downloads";
+      if (view === "desktop") pathEl.textContent = "Desktop";
+      if (view === "igithub") pathEl.textContent = "iGithub";
+    }
+
+    document.querySelectorAll(".side-item[data-finder]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const view = b.getAttribute("data-finder");
+        bringToFront("finder");
+
+        if (view === "igithub"){
+          setFinderActive("igithub");
+          openApp("igithub");
+          return;
         }
-        setInterval(updateClock, 1000);
-        updateClock();
 
-        const apps = {
-            finder: {
-                el: document.getElementById("mainWindow"),
-                dock: document.getElementById("dockFinder"),
-                isOpen: true
-            },
-            safari: {
-                el: document.getElementById("safariWindow"),
-                dock: document.getElementById("dockSafari"),
-                isOpen: false
-            }
-        };
-
-        let zTop = 1100;
-
-        function bringToFront(appKey) {
-            const app = apps[appKey];
-            if (!app) return;
-            zTop += 1;
-            app.el.style.zIndex = String(zTop);
+        if (view === "desktop"){
+          setFinderActive("desktop");
+          openApp("desktop");
+          return;
         }
 
-        function baselineTransform(el) {
-            return el.classList.contains("is-maximized") ? "translate(0px, 0px)" : "translate(-50%, -50%)";
+        setFinderActive(view);
+      });
+    });
+
+    async function loadRecipes(){
+      const grid = document.getElementById("projectsGrid");
+      const empty = document.getElementById("projectsEmpty");
+      grid.innerHTML = "";
+      empty.style.display = "none";
+
+      try{
+        const res = await fetch("recipes/recipes.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("recipes.json not reachable");
+        const data = await res.json();
+
+        const items = Array.isArray(data) ? data : (data.items || []);
+        if (!items.length){
+          empty.style.display = "block";
+          return;
         }
 
-        function animateOpen(el) {
-            const base = baselineTransform(el);
-            el.animate(
-                [
-                    { opacity: 0, filter: "blur(2px)", transform: `${base} scale(0.96)` },
-                    { opacity: 1, filter: "blur(0px)", transform: `${base} scale(1)` }
-                ],
-                { duration: 240, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", fill: "forwards" }
-            ).finished.finally(() => {
-                el.style.opacity = "";
-                el.style.filter = "";
-                el.style.transform = "";
-            });
-        }
+        items.forEach((it) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "item";
 
-        function animateClose(el) {
-            const base = baselineTransform(el);
-            return el.animate(
-                [
-                    { opacity: 1, filter: "blur(0px)", transform: `${base} scale(1)` },
-                    { opacity: 0, filter: "blur(2px)", transform: `${base} scale(0.92)` }
-                ],
-                { duration: 230, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "forwards" }
-            ).finished;
-        }
+          const coming = it.coming_soon === true || it.type === "coming_soon";
+          if (coming) btn.classList.add("is-disabled");
 
-        function animateToDock(el, dockEl) {
-            const base = baselineTransform(el);
-            const winRect = el.getBoundingClientRect();
-            const dockRect = dockEl.getBoundingClientRect();
+          const img = document.createElement("img");
+          img.alt = it.title_fa || it.title || "Recipe";
+          img.src = it.icon || "https://s8.uupload.ir/files/garlic_bread_krr0.png";
 
-            const winCenterX = winRect.left + winRect.width / 2;
-            const winCenterY = winRect.top + winRect.height / 2;
-            const dockCenterX = dockRect.left + dockRect.width / 2;
-            const dockCenterY = dockRect.top + dockRect.height / 2;
+          const name = document.createElement("div");
+          name.className = "name";
+          name.textContent = it.title_fa || it.title || "Recipe";
 
-            const dx = dockCenterX - winCenterX;
-            const dy = dockCenterY - winCenterY;
+          const sub = document.createElement("div");
+          sub.className = "sub";
+          sub.textContent = it.subtitle_fa || it.subtitle || it.title_en || "";
 
-            return el.animate(
-                [
-                    { opacity: 1, filter: "blur(0px)", transform: `${base} translate(0px, 0px) scale(1)` },
-                    { opacity: 0, filter: "blur(2px)", transform: `${base} translate(${dx}px, ${dy}px) scale(0.08)` }
-                ],
-                { duration: 320, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "forwards" }
-            ).finished;
-        }
+          btn.appendChild(img);
+          btn.appendChild(name);
+          btn.appendChild(sub);
 
-        function openApp(appKey) {
-            const app = apps[appKey];
-            if (!app) return;
+          if (!coming){
+            btn.addEventListener("click", () => openRecipe(it));
+          } else {
+            btn.addEventListener("click", () => {});
+          }
 
-            app.el.classList.remove("is-hidden");
-            app.el.setAttribute("aria-hidden", "false");
-            app.el.style.display = "flex";
-            app.isOpen = true;
-
-            bringToFront(appKey);
-            animateOpen(app.el);
-        }
-
-        function closeApp(appKey) {
-            const app = apps[appKey];
-            if (!app || !app.isOpen) return;
-
-            bringToFront(appKey);
-            animateClose(app.el).finally(() => {
-                app.el.style.display = "none";
-                app.el.classList.add("is-hidden");
-                app.el.setAttribute("aria-hidden", "true");
-                app.el.style.opacity = "";
-                app.el.style.filter = "";
-                app.el.style.transform = "";
-                app.isOpen = false;
-            });
-        }
-
-        function minimizeApp(appKey) {
-            const app = apps[appKey];
-            if (!app || !app.isOpen) return;
-
-            bringToFront(appKey);
-            animateToDock(app.el, app.dock).finally(() => {
-                app.el.style.display = "none";
-                app.el.classList.add("is-hidden");
-                app.el.setAttribute("aria-hidden", "true");
-                app.el.style.opacity = "";
-                app.el.style.filter = "";
-                app.el.style.transform = "";
-
-                app.isOpen = false;
-            });
-            }
-
-
-        function toggleMaximize(appKey) {
-            const app = apps[appKey];
-            if (!app || !app.isOpen) return;
-
-            bringToFront(appKey);
-
-            app.el.style.opacity = "";
-            app.el.style.filter = "";
-            app.el.style.transform = "";
-
-            const isMax = app.el.classList.contains("is-maximized");
-
-            if (!isMax) {
-                app.el.dataset.prevTop = app.el.style.top || "";
-                app.el.dataset.prevLeft = app.el.style.left || "";
-                app.el.dataset.prevWidth = app.el.style.width || "";
-                app.el.dataset.prevHeight = app.el.style.height || "";
-                app.el.dataset.prevTransform = app.el.style.transform || "";
-
-                app.el.style.top = "44px";
-                app.el.style.left = "20px";
-                app.el.style.width = "calc(100vw - 40px)";
-                app.el.style.height = "calc(100vh - 44px - 120px)";
-                app.el.style.transform = "translate(0px, 0px)";
-
-                app.el.classList.add("is-maximized");
-                return;
-            }
-
-            app.el.classList.remove("is-maximized");
-
-            app.el.style.top = app.el.dataset.prevTop || "";
-            app.el.style.left = app.el.dataset.prevLeft || "";
-            app.el.style.width = app.el.dataset.prevWidth || "";
-            app.el.style.height = app.el.dataset.prevHeight || "";
-            app.el.style.transform = app.el.dataset.prevTransform || "";
-            }
-
-
-        document.querySelectorAll(".window").forEach((w) => {
-            w.addEventListener("pointerdown", () => {
-                const key = w.getAttribute("data-app");
-                if (!key) return;
-                bringToFront(key);
-            });
+          grid.appendChild(btn);
         });
+      } catch (e){
+        empty.style.display = "block";
+      }
+    }
 
-        document.addEventListener("keydown", (e) => {
-            if (e.key !== "Escape") return;
+    function openRecipe(it){
+      const title = it.title_fa || it.title || "Recipe";
+      const url = it.url || "";
+      if (!url) return;
 
-            ["finder", "safari"].forEach((k) => {
-                const app = apps[k];
-                if (!app || !app.isOpen) return;
-                app.el.classList.remove("is-maximized");
-                app.el.style.top = "";
-                app.el.style.left = "";
-                app.el.style.width = "";
-                app.el.style.height = "";
-                app.el.style.transform = "";
-            });
-            });
+      document.getElementById("recipeTitle").textContent = title;
+      document.getElementById("recipeAddress").value = url;
+      document.getElementById("recipeFrame").src = url;
 
+      if (!apps.recipe.isOpen) openApp("recipe");
+      else if (apps.recipe.isMin) restoreApp("recipe");
+      else bringToFront("recipe");
+    }
 
-        document.getElementById("dockFinder").addEventListener("click", () => {
-            if (apps.finder.isOpen) bringToFront("finder");
-            else openApp("finder");
-        });
+    loadRecipes();
 
-        function openSafari(target) {
-            if (!apps.safari.isOpen) openApp("safari");
-            else bringToFront("safari");
+    const sFrame = document.getElementById("sFrame");
+    const sAddress = document.getElementById("sAddress");
+    const sBack = document.getElementById("sBack");
+    const sForward = document.getElementById("sForward");
+    const sReload = document.getElementById("sReload");
 
-            if (target) safariNavigate(target, true);
+    function safariSetButtons(){
+      sBack.disabled = state.safari.index <= 0;
+      sForward.disabled = state.safari.index >= state.safari.history.length - 1;
+    }
+
+    function safariResolve(input){
+      const raw = String(input || "").trim();
+      const low = raw.toLowerCase();
+
+      if (!raw || low === "start" || low === "start page" || low === "new tab") return "safari/start.html";
+
+      if (low === "sohgle" || low === "google" || low.includes("google.")) return "safari/sohgle.html";
+      if (low.startsWith("sohgle?") || low.startsWith("sohgle.html")) return "safari/sohgle.html" + (raw.includes("?") ? raw.slice(raw.indexOf("?")) : "");
+
+      if (low === "igithub") return "safari/sohgle.html?q=" + encodeURIComponent("iGithub");
+      if (low === "music") return "safari/sohgle.html?q=" + encodeURIComponent("Music");
+      if (low === "recipes" || low === "projects") return "safari/sohgle.html?q=" + encodeURIComponent("Recipes");
+
+      if (raw.startsWith("safari/") || raw.startsWith("recipes/") || raw.startsWith("music/") || raw.startsWith("igit/") || raw.startsWith("desktop/") || raw.startsWith("bin/")) return raw;
+
+      if (raw.includes(".") || raw.includes("://")) {
+        return "safari/sohgle.html?q=" + encodeURIComponent(raw);
+      }
+
+      return "safari/sohgle.html?q=" + encodeURIComponent(raw);
+    }
+
+    function safariGo(input, push){
+      const url = safariResolve(input);
+
+      if (push){
+        const cur = state.safari.history[state.safari.index];
+        if (cur !== url){
+          state.safari.history = state.safari.history.slice(0, state.safari.index + 1);
+          state.safari.history.push(url);
+          state.safari.index = state.safari.history.length - 1;
         }
+      }
 
-        document.getElementById("dockSafari").addEventListener("click", () => {
-            openSafari("start");
-        });
+      sFrame.src = url;
+      sAddress.value = (url === "safari/start.html") ? "Start Page" : url;
+      safariSetButtons();
+    }
 
-        document.addEventListener("click", (e) => {
-            const link = e.target.closest("a.open-in-safari");
-            if (!link) return;
-            e.preventDefault();
-            openSafari(link.getAttribute("data-safari-url") || link.getAttribute("href"));
-        });
+    function openSafari(target){
+      if (!apps.safari.isOpen) openApp("safari");
+      else if (apps.safari.isMin) restoreApp("safari");
+      else bringToFront("safari");
 
-        const safariFrame = document.getElementById("safariFrame");
-        const safariAddress = document.getElementById("safariAddress");
-        const safariBack = document.getElementById("safariBack");
-        const safariForward = document.getElementById("safariForward");
-        const safariReload = document.getElementById("safariReload");
+      safariGo(target || "start", true);
+    }
 
-        let safariHistory = [];
-        let safariIndex = -1;
+    document.getElementById("dockSafari").addEventListener("dblclick", () => openSafari("start"));
+    document.getElementById("dockSafari").addEventListener("click", () => {
+      if (!apps.safari.isOpen) openSafari("start");
+      else if (apps.safari.isMin) restoreApp("safari");
+      else bringToFront("safari");
+    });
 
-        function resolveSafariUrl(raw) {
-            let value = (raw || "").trim();
-            if (!value) return "./safari/start.html";
+    sAddress.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter") return;
+      safariGo(sAddress.value, true);
+      sAddress.blur();
+    });
 
-            const lower = value.toLowerCase();
+    sBack.addEventListener("click", () => {
+      if (state.safari.index <= 0) return;
+      state.safari.index -= 1;
+      const url = state.safari.history[state.safari.index];
+      sFrame.src = url;
+      sAddress.value = (url === "safari/start.html") ? "Start Page" : url;
+      safariSetButtons();
+    });
 
-            if (lower === "start" || lower === "start page" || lower === "new tab") return "./safari/start.html";
+    sForward.addEventListener("click", () => {
+      if (state.safari.index >= state.safari.history.length - 1) return;
+      state.safari.index += 1;
+      const url = state.safari.history[state.safari.index];
+      sFrame.src = url;
+      sAddress.value = (url === "safari/start.html") ? "Start Page" : url;
+      safariSetButtons();
+    });
 
-            if (lower === "sohgle" || lower === "google" || lower.includes("google.com") || lower.includes("www.google")) {
-                return "./safari/sohgle.html";
-            }
+    sReload.addEventListener("click", () => {
+      const url = state.safari.history[state.safari.index] || "safari/start.html";
+      sFrame.src = url;
+    });
 
-            if (lower === "garlic-bread" || lower === "garlic bread" || lower === "garlic") return "./garlic-bread/index.html";
+    state.safari.history = ["safari/start.html"];
+    state.safari.index = 0;
+    safariSetButtons();
 
-            if (lower === "portfolio") return "https://soheil-aghayani.github.io/Portfolio/";
-            if (lower === "github" || lower === "source") return "https://github.com/Soheil-Aghayani/food-recipe";
+    function openIGithubRepo(repoName){
+      const frame = document.getElementById("igithubFrame");
+      frame.src = "igit/igit-index.html#repo=" + encodeURIComponent(repoName || "");
+      if (!apps.igithub.isOpen) openApp("igithub");
+      else if (apps.igithub.isMin) restoreApp("igithub");
+      else bringToFront("igithub");
+    }
 
-            if (lower.includes("sohgle")) return "./safari/sohgle.html";
+    window.addEventListener("message", (event) => {
+      const d = event.data;
+      if (!d || typeof d !== "object") return;
 
-            if (value.startsWith("./") || value.startsWith("../") || value.startsWith("/")) return value;
+      if (d.type === "safari:navigate"){
+        openSafari(d.url || "start");
+      }
 
-            if (!value.includes("/") && /\.(html?)$/i.test(value)) return value;
-
-            if (value.includes("/") && !value.includes("://")) {
-                const first = value.split("/")[0];
-                if (first && !first.includes(".")) return value;
-            }
-
-            if (value.includes(" ") || !value.includes(".")) {
-                const q = encodeURIComponent(value);
-                return `./safari/sohgle.html?q=${q}`;
-            }
-
-            if (!/^https?:\/\//i.test(value)) value = "https://" + value;
-
-            if (value.includes("google.")) return "./safari/sohgle.html";
-
-            return value;
+      if (d.type === "os:openApp"){
+        const app = d.app || "";
+        if (app === "safari") openSafari(d.url || "start");
+        if (app === "igithub") {
+          if (d.repo) openIGithubRepo(d.repo);
+          else {
+            if (!apps.igithub.isOpen) openApp("igithub");
+            else if (apps.igithub.isMin) restoreApp("igithub");
+            else bringToFront("igithub");
+          }
         }
-
-        function setSafariAddressDisplay(url) {
-            try {
-                const absolute = new URL(url, window.location.href);
-                const path = absolute.pathname || "";
-                const isStart = path.endsWith("/safari/start.html");
-                const isSohgle = path.endsWith("/safari/sohgle.html");
-
-                if (isStart) {
-                    safariAddress.value = "Start Page";
-                    return;
-                }
-
-                if (isSohgle) {
-                    const q = absolute.searchParams.get("q");
-                    safariAddress.value = q ? `Sohgle Search: ${decodeURIComponent(q)}` : "sohgle.com";
-                    return;
-                }
-            } catch (_) {}
-
-            safariAddress.value = url;
+        if (app === "music") {
+          if (!apps.music.isOpen) openApp("music");
+          else if (apps.music.isMin) restoreApp("music");
+          else bringToFront("music");
         }
-
-        function updateSafariNavButtons() {
-            safariBack.disabled = safariIndex <= 0;
-            safariForward.disabled = safariIndex >= safariHistory.length - 1;
+        if (app === "bin") {
+          if (!apps.bin.isOpen) openApp("bin");
+          else if (apps.bin.isMin) restoreApp("bin");
+          else bringToFront("bin");
         }
-
-        function safariGoTo(url, push) {
-            const resolved = resolveSafariUrl(url);
-
-            if (push) {
-                if (safariHistory[safariIndex] !== resolved) {
-                    safariHistory = safariHistory.slice(0, safariIndex + 1);
-                    safariHistory.push(resolved);
-                    safariIndex = safariHistory.length - 1;
-                }
-            }
-
-            safariFrame.src = resolved;
-            setSafariAddressDisplay(resolved);
-            updateSafariNavButtons();
+        if (app === "desktop") {
+          if (!apps.desktop.isOpen) openApp("desktop");
+          else if (apps.desktop.isMin) restoreApp("desktop");
+          else bringToFront("desktop");
         }
-
-        function safariNavigate(input, push) {
-            safariGoTo(input, push);
+        if (app === "finder") {
+          if (apps.finder.isMin) restoreApp("finder");
+          bringToFront("finder");
+          if (d.view) setFinderActive(d.view);
         }
+        if (app === "recipe"){
+          if (d.recipe) openRecipe(d.recipe);
+          else if (d.url){
+            openRecipe({ title_fa: d.title || "Recipe", url: d.url, icon: d.icon || "" });
+          }
+        }
+      }
+    });
 
-        safariBack.addEventListener("click", () => {
-            if (safariIndex <= 0) return;
-            safariIndex -= 1;
-            const url = safariHistory[safariIndex];
-            safariFrame.src = url;
-            setSafariAddressDisplay(url);
-            updateSafariNavButtons();
-        });
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      Object.values(apps).forEach((app) => {
+        if (!app.isOpen) return;
+        app.el.classList.remove("is-maximized");
+      });
+    });
 
-        safariForward.addEventListener("click", () => {
-            if (safariIndex >= safariHistory.length - 1) return;
-            safariIndex += 1;
-            const url = safariHistory[safariIndex];
-            safariFrame.src = url;
-            setSafariAddressDisplay(url);
-            updateSafariNavButtons();
-        });
-
-        safariReload.addEventListener("click", () => {
-            const url = safariHistory[safariIndex] || safariFrame.src || "./safari/start.html";
-            safariFrame.src = url;
-            setSafariAddressDisplay(url);
-        });
-
-        safariAddress.addEventListener("keydown", (e) => {
-            if (e.key !== "Enter") return;
-            safariNavigate(safariAddress.value, true);
-            safariAddress.blur();
-        });
-
-        window.addEventListener("message", (event) => {
-            const data = event.data;
-            if (!data || typeof data !== "object") return;
-
-            if (data.type === "safari:navigate") {
-                openSafari(data.url || "start");
-            }
-
-            if (data.type === "safari:search") {
-                openSafari(`./safari/sohgle.html?q=${encodeURIComponent(data.q || "")}`);
-            }
-        });
-
-        safariHistory = ["./safari/start.html"];
-        safariIndex = 0;
-        updateSafariNavButtons();
-    </script>
+    markRunning("finder");
+  </script>
 </body>
 </html>
