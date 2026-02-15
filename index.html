@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soheil OS | Big Sur</title>
-    
+
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         :root {
-            --bg-glass: rgba(255, 255, 255, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.75);
             --dock-glass: rgba(255, 255, 255, 0.4);
             --sidebar-bg: rgba(235, 235, 235, 0.5);
+            --selection: rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             --border-radius: 12px;
         }
@@ -29,7 +30,10 @@
             user-select: none;
         }
 
-        /* --- Menubar --- */
+        input, textarea, button {
+            font-family: inherit;
+        }
+
         .menubar {
             width: 100%;
             height: 28px;
@@ -46,7 +50,7 @@
             font-weight: 500;
             position: fixed;
             top: 0;
-            z-index: 9999;
+            z-index: 1000;
             box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
 
@@ -54,198 +58,330 @@
         .menu-right { display: flex; gap: 15px; align-items: center; }
         .apple-logo { font-size: 1.1rem; cursor: pointer; }
         .menu-item { cursor: pointer; opacity: 0.9; }
+        .menu-item:hover { opacity: 1; }
+        .menu-bold { font-weight: 700; }
 
-        /* --- Common Window Styles --- */
         .window {
-            position: absolute;
+            width: 740px;
+            height: 480px;
             background: #fff;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-lg);
             border: 1px solid rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* انیمیشن باز شدن */
-            transition: opacity 0.2s, transform 0.2s;
-            opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none; /* وقتی مخفیه کلیک نشه */
+            transition: width 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        height 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        top 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        left 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        border-radius 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .window.open {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: all;
+        .window.is-hidden {
+            display: none;
         }
 
-        /* دکمه‌های ترافیکی */
-        .traffic-lights {
+        .window.is-maximized {
+            top: 44px;
+            left: 20px;
+            width: calc(100vw - 40px);
+            height: calc(100vh - 44px - 120px);
+            transform: translate(0px, 0px);
+            border-radius: 14px;
+        }
+
+        .window-layout {
+            display: flex;
+            flex-grow: 1;
+            height: 100%;
+        }
+
+        .traffic-lights-container {
             display: flex;
             gap: 8px;
+            z-index: 10;
+            align-items: center;
         }
+
+        .finder-traffic {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+        }
+
         .light { 
-            width: 12px; height: 12px; border-radius: 50%; 
-            border: 0.5px solid rgba(0,0,0,0.1); 
+            width: 12px;
+            height: 12px;
+            border-radius: 50%; 
+            border: 0.5px solid rgba(0,0,0,0.12);
+            background: transparent;
+            padding: 0;
+            margin: 0;
             cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            user-select: none;
         }
+
+        .light:active {
+            filter: brightness(0.92);
+        }
+
         .close { background: #ff5f57; }
         .minimize { background: #febc2e; }
         .maximize { background: #28c840; }
 
-
-        /* --- FINDER Window Specifics --- */
-        #finderWindow {
-            width: 740px;
-            height: 480px;
-            top: 50%; left: 50%;
-            margin-top: -240px; margin-left: -370px; /* مرکز چین */
-        }
-
-        .finder-layout { display: flex; height: 100%; }
-        
         .sidebar {
             width: 200px;
             background: var(--sidebar-bg);
             backdrop-filter: blur(50px);
             -webkit-backdrop-filter: blur(50px);
             border-right: 1px solid rgba(0,0,0,0.08);
-            padding: 15px;
+            padding: 40px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .sidebar-title {
+            font-size: 11px;
+            color: #888;
+            font-weight: 600;
+            margin: 15px 12px 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .sidebar-item {
-            display: flex; align-items: center; padding: 6px 12px;
-            border-radius: 6px; font-size: 13px; color: #4a4a4a;
-            cursor: pointer; margin-top: 2px;
-        }
-        .sidebar-item i { width: 20px; margin-right: 10px; font-size: 14px; text-align: center; }
-        .sidebar-item.active { background: rgba(0,0,0,0.06); color: #333; }
-        
-        .main-content { flex-grow: 1; background: #fff; display: flex; flex-direction: column; }
-        .toolbar { height: 50px; display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .files-grid { padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
-        
-        .file-item {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 10px; border-radius: 6px; cursor: pointer; text-decoration: none;
-        }
-        .file-item:hover { background: #e5f1fb; }
-        .file-icon { font-size: 42px; margin-bottom: 8px; }
-        .file-name { font-family: 'Vazirmatn'; color: #333; font-size: 12px; text-align: center; }
-
-        /* --- SAFARI Window Specifics --- */
-        #safariWindow {
-            width: 800px;
-            height: 550px;
-            top: 45%; left: 45%; /* کمی متفاوت از فایندر */
-            background: #f1f1f1;
-        }
-
-        .safari-toolbar {
-            height: 52px;
-            background: #e4e4e4;
             display: flex;
             align-items: center;
-            padding: 0 15px;
-            border-bottom: 1px solid #d1d1d1;
-            gap: 15px;
-        }
-
-        .safari-controls { display: flex; gap: 15px; color: #555; }
-        .safari-btn { font-size: 14px; cursor: pointer; }
-        .safari-btn:hover { color: #000; }
-
-        .address-bar-container {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-        }
-
-        .url-bar {
-            background: #fff;
-            width: 100%;
-            max-width: 500px;
-            height: 28px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #333;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            position: relative;
-        }
-        .url-bar .lock { font-size: 10px; margin-right: 5px; color: #777; }
-
-        .safari-body {
-            flex-grow: 1;
-            background: #fff;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-        }
-
-        /* Safari Start Page Style */
-        .safari-logo { font-size: 60px; color: #999; margin-bottom: 40px; }
-        
-        .favorites-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .fav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #4a4a4a;
             cursor: pointer;
+            transition: background 0.1s;
             text-decoration: none;
         }
 
-        .fav-icon {
-            width: 60px; height: 60px;
-            border-radius: 12px;
-            background: #f5f5f5;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-            color: #555;
-            margin-bottom: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: transform 0.1s;
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            font-size: 14px;
         }
-        .fav-item:hover .fav-icon { transform: scale(1.05); background: #eee; }
-        .fav-title { font-size: 12px; color: #333; }
 
-        /* --- Dock --- */
+        .sidebar-item .fa-hdd { color: #8e8e93; }
+        .sidebar-item .fa-desktop { color: #007aff; }
+        .sidebar-item .fa-download { color: #007aff; }
+        .sidebar-item .fa-cloud { color: #007aff; }
+
+        .sidebar-item.active {
+            background: rgba(0, 0, 0, 0.06);
+            color: #333;
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .toolbar {
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .toolbar-title {
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .files-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            grid-auto-rows: 120px;
+            gap: 10px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover { background: #e5f1fb; }
+
+        .file-icon { 
+            font-size: 42px; 
+            margin-bottom: 8px; 
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); 
+        }
+
+        .file-name { 
+            font-family: 'Vazirmatn', sans-serif;
+            color: #333; 
+            font-size: 12px; 
+            text-align: center; 
+            line-height: 1.4;
+            max-width: 100%;
+        }
+
+        .safari-window {
+            width: 960px;
+            height: 620px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+        }
+
+        .safari-topbar {
+            height: 54px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            box-sizing: border-box;
+            background: rgba(246, 246, 246, 0.86);
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            user-select: none;
+        }
+
+        .safari-nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            border: 1px solid rgba(0,0,0,0.10);
+            background: rgba(255,255,255,0.90);
+            color: rgba(0,0,0,0.72);
+            cursor: pointer;
+            padding: 0;
+            display: grid;
+            place-items: center;
+        }
+
+        .nav-btn:active {
+            filter: brightness(0.96);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+
+        .address-wrap {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .address-input {
+            width: 100%;
+            height: 32px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,0,0,0.12);
+            background: rgba(255,255,255,0.92);
+            padding: 0 12px;
+            font-size: 13px;
+            user-select: text;
+        }
+
+        .address-input:focus {
+            outline: none;
+            border-color: rgba(0,122,255,0.40);
+            box-shadow: 0 0 0 3px rgba(0,122,255,0.14);
+        }
+
+        .safari-view {
+            flex-grow: 1;
+            background: #fff;
+        }
+
+        #safariFrame {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: #fff;
+        }
+
         .dock-container {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            display: flex; justify-content: center; z-index: 10000;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            z-index: 1000;
         }
 
         .dock {
             background: var(--dock-glass);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 20px; padding: 10px 14px;
-            display: flex; gap: 15px; align-items: center;
+            border-radius: 20px;
+            padding: 10px 14px;
+            display: flex;
+            gap: 15px;
             box-shadow: var(--shadow-lg);
+            align-items: center;
         }
 
         .dock-icon {
-            width: 55px; height: 55px;
-            background-size: cover; background-position: center;
-            transition: transform 0.2s; cursor: pointer;
+            width: 55px; 
+            height: 55px; 
+            background-color: transparent; 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer; 
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: block;
+            border: none;
+            outline: none;
         }
+
         .dock-icon:hover { transform: translateY(-12px) scale(1.1); }
 
         @media (max-width: 600px) {
-            .window { width: 95% !important; height: 70vh !important; top: 15% !important; left: 2.5% !important; margin: 0 !important; }
+            .window { width: 94%; height: 70vh; }
             .sidebar { display: none; }
-            .favorites-grid { grid-template-columns: repeat(2, 1fr); }
+            .dock-icon { width: 45px; height: 45px; }
             .menubar { font-size: 11px; }
+            .finder-traffic { position: relative; top: auto; left: auto; padding: 15px; }
+            .window-layout { flex-direction: column; }
+            .safari-window { width: 94%; height: 72vh; }
+            .window.is-maximized { left: 10px; width: calc(100vw - 20px); height: calc(100vh - 44px - 120px); }
         }
     </style>
 </head>
@@ -269,29 +405,56 @@
         </div>
     </div>
 
-    <div class="window open" id="finderWindow" onmousedown="bringToFront('finderWindow')">
-        <div class="finder-layout">
+    <div class="window" id="mainWindow" data-app="finder">
+        <div class="window-layout">
             <div class="sidebar">
-                <div class="traffic-lights" style="margin-bottom: 20px;">
-                    <div class="light close" onclick="toggleWindow('finderWindow')"></div>
-                    <div class="light minimize" onclick="toggleWindow('finderWindow')"></div>
-                    <div class="light maximize"></div>
+                <div class="traffic-lights-container finder-traffic">
+                    <button class="light close" type="button" data-app="finder" data-action="close" aria-label="Close"></button>
+                    <button class="light minimize" type="button" data-app="finder" data-action="minimize" aria-label="Minimize"></button>
+                    <button class="light maximize" type="button" data-app="finder" data-action="maximize" aria-label="Maximize"></button>
                 </div>
-                
-                <div style="font-size: 11px; color: #888; font-weight: 600; margin-bottom: 5px;">Favorites</div>
-                <div class="sidebar-item active"><i class="fas fa-folder-open" style="color: #007aff;"></i>Projects</div>
-                <div class="sidebar-item"><i class="fas fa-desktop" style="color: #007aff;"></i>Desktop</div>
-                <div class="sidebar-item"><i class="fas fa-download" style="color: #007aff;"></i>Downloads</div>
+
+                <div style="height: 20px;"></div>
+
+                <div class="sidebar-title">Favorites</div>
+
+                <div class="sidebar-item active">
+                    <i class="fas fa-folder-open" style="color: #007aff;"></i>
+                    Projects
+                </div>
+
+                <div class="sidebar-item">
+                    <i class="fas fa-desktop"></i>
+                    Desktop
+                </div>
+
+                <div class="sidebar-item">
+                    <i class="fas fa-download"></i>
+                    Downloads
+                </div>
+
+                <div class="sidebar-title">iCloud</div>
+                <div class="sidebar-item">
+                    <i class="fas fa-cloud"></i>
+                    iCloud Drive
+                </div>
             </div>
 
             <div class="main-content">
-                <div class="toolbar" id="finderHeader"> <div style="font-weight: 600; color: #333; font-size: 13px;">Projects</div>
+                <div class="toolbar">
+                    <div class="toolbar-title">
+                        <i class="fas fa-chevron-left" style="color: #aaa; margin-right: 10px;"></i>
+                        <i class="fas fa-chevron-right" style="color: #aaa; margin-right: 15px;"></i>
+                        Projects
+                    </div>
                 </div>
+
                 <div class="files-grid">
-                    <a href="./garlic-bread/index.html" class="file-item">
+                    <a href="./garlic-bread/index.html" class="file-item open-in-safari" data-safari-url="./garlic-bread/index.html">
                         <div class="file-icon">🥖</div>
                         <span class="file-name">نان سیر<br>(Garlic Bread)</span>
                     </a>
+
                     <div class="file-item">
                         <div class="file-icon">🍕</div>
                         <span class="file-name">پیتزا<br>(Coming Soon)</span>
@@ -301,67 +464,64 @@
         </div>
     </div>
 
-    <div class="window" id="safariWindow" onmousedown="bringToFront('safariWindow')">
-        <div class="safari-toolbar" id="safariHeader"> <div class="traffic-lights">
-                <div class="light close" onclick="toggleWindow('safariWindow')"></div>
-                <div class="light minimize" onclick="toggleWindow('safariWindow')"></div>
-                <div class="light maximize"></div>
-            </div>
-            
-            <div class="safari-controls">
-                <i class="fas fa-chevron-left safari-btn"></i>
-                <i class="fas fa-chevron-right safari-btn" style="opacity: 0.5;"></i>
+    <div class="window safari-window is-hidden" id="safariWindow" data-app="safari" aria-hidden="true">
+        <div class="safari-topbar">
+            <div class="traffic-lights-container">
+                <button class="light close" type="button" data-app="safari" data-action="close" aria-label="Close"></button>
+                <button class="light minimize" type="button" data-app="safari" data-action="minimize" aria-label="Minimize"></button>
+                <button class="light maximize" type="button" data-app="safari" data-action="maximize" aria-label="Maximize"></button>
             </div>
 
-            <div class="address-bar-container">
-                <div class="url-bar">
-                    <i class="fas fa-lock lock"></i>
-                    soheil-aghayani.github.io
-                </div>
+            <div class="safari-nav">
+                <button class="nav-btn" id="safariBack" type="button" aria-label="Back">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-btn" id="safariForward" type="button" aria-label="Forward">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="nav-btn" id="safariReload" type="button" aria-label="Reload">
+                    <i class="fas fa-rotate-right"></i>
+                </button>
             </div>
-            
-            <i class="fas fa-redo-alt safari-btn" style="font-size: 12px;"></i>
+
+            <div class="address-wrap">
+                <input id="safariAddress" class="address-input" type="text" value="Start Page" autocomplete="off" spellcheck="false">
+            </div>
         </div>
 
-        <div class="safari-body">
-            <div class="safari-logo">Favorites</div>
-            
-            <div class="favorites-grid">
-                <a href="./garlic-bread/index.html" class="fav-item">
-                    <div class="fav-icon" style="color: #e17055;"><i class="fas fa-utensils"></i></div>
-                    <span class="fav-title">نان سیر</span>
-                </a>
-
-                <a href="https://soheil-aghayani.github.io/Portfolio/" class="fav-item">
-                    <div class="fav-icon" style="color: #333;"><i class="fab fa-github"></i></div>
-                    <span class="fav-title">Portfolio</span>
-                </a>
-
-                <div class="fav-item">
-                    <div class="fav-icon" style="color: #4285F4;"><i class="fab fa-google"></i></div>
-                    <span class="fav-title">Google</span>
-                </div>
-
-                <div class="fav-item">
-                    <div class="fav-icon" style="color: #000;"><i class="fab fa-apple"></i></div>
-                    <span class="fav-title">Apple</span>
-                </div>
-            </div>
+        <div class="safari-view">
+            <iframe id="safariFrame" src="./safari/start.html" title="Safari" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
         </div>
     </div>
 
     <div class="dock-container">
         <div class="dock">
-            <div class="dock-icon" style="background-image: url('https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png');" onclick="toggleWindow('finderWindow')"></div>
-            <div class="dock-icon" style="background-image: url('https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png');" onclick="toggleWindow('safariWindow')"></div>
-            <div class="dock-icon" style="background-image: url('https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png');"></div>
-            <a href="https://soheil-aghayani.github.io/Portfolio/" target="_blank" class="dock-icon" style="background-image: url('https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png');"></a>
-            <a href="https://github.com/Soheil-Aghayani/food-recipe" target="_blank" class="dock-icon" style="background-image: url('https://s8.uupload.ir/files/terminal_macos_bigsur_icon_189655_kepj.png');"></a>
+            <button class="dock-icon" id="dockFinder"
+                 style="background-image: url('https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png');" 
+                 title="Finder" type="button">
+            </button>
+
+            <button class="dock-icon" id="dockSafari"
+                 style="background-image: url('https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png');"
+                 title="Safari" type="button">
+            </button>
+
+            <button class="dock-icon" 
+                 style="background-image: url('https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png');"
+                 title="Music" type="button">
+            </button>
+
+            <a href="https://soheil-aghayani.github.io/Portfolio/" class="dock-icon open-in-safari" data-safari-url="https://soheil-aghayani.github.io/Portfolio/"
+               style="background-image: url('https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png');"
+               title="My Portfolio"></a>
+
+            <a href="https://github.com/Soheil-Aghayani/food-recipe" class="dock-icon open-in-safari" data-safari-url="https://github.com/Soheil-Aghayani/food-recipe"
+               style="background-image: url('https://s8.uupload.ir/files/terminal_macos_bigsur_icon_189655_kepj.png');"
+               title="Source Code"></a>
         </div>
     </div>
 
     <script>
-        // Clock
         function updateClock() {
             const now = new Date();
             let hours = now.getHours();
@@ -373,70 +533,317 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Window Management
-        let zIndexCounter = 100;
-
-        function toggleWindow(id) {
-            const win = document.getElementById(id);
-            if (win.classList.contains('open')) {
-                // اگر باز است، می‌بندیم (یا مینیمایز)
-                win.classList.remove('open');
-            } else {
-                // اگر بسته است، باز می‌کنیم
-                win.classList.add('open');
-                bringToFront(id);
+        const apps = {
+            finder: {
+                el: document.getElementById("mainWindow"),
+                dock: document.getElementById("dockFinder"),
+                isOpen: true
+            },
+            safari: {
+                el: document.getElementById("safariWindow"),
+                dock: document.getElementById("dockSafari"),
+                isOpen: false
             }
+        };
+
+        let zTop = 1100;
+
+        function bringToFront(appKey) {
+            const app = apps[appKey];
+            if (!app) return;
+            zTop += 1;
+            app.el.style.zIndex = String(zTop);
         }
 
-        function bringToFront(id) {
-            zIndexCounter++;
-            document.getElementById(id).style.zIndex = zIndexCounter;
+        function baselineTransform(el) {
+            return el.classList.contains("is-maximized") ? "translate(0px, 0px)" : "translate(-50%, -50%)";
         }
 
-        // Generic Drag Function
-        function makeDraggable(elementId, handleId) {
-            const el = document.getElementById(elementId);
-            const handle = document.getElementById(handleId);
-            let isDragging = false;
-            let startX, startY, initialLeft, initialTop;
-
-            handle.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                const rect = el.getBoundingClientRect();
-                
-                // اگر پنجره وسط‌چین شده باشد، باید آفست را محاسبه کنیم
-                // اما چون پوزیشن ابسولوت است، مقادیر top/left را می‌خوانیم
-                // اگر مقدار ست نشده باشد، از استایل محاسبه شده استفاده می‌کنیم
-                initialLeft = el.offsetLeft;
-                initialTop = el.offsetTop;
-                
-                bringToFront(elementId); // وقتی درگ میشه بیاد رو
-                handle.style.cursor = 'grabbing';
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-                
-                // حذف margin منفی برای درگ صحیح (چون وسط‌چین با مارجین بود)
-                el.style.margin = '0'; 
-                el.style.left = `${initialLeft + dx}px`;
-                el.style.top = `${initialTop + dy}px`;
-            });
-
-            window.addEventListener('mouseup', () => {
-                isDragging = false;
-                handle.style.cursor = 'default';
+        function animateOpen(el) {
+            const base = baselineTransform(el);
+            el.animate(
+                [
+                    { opacity: 0, filter: "blur(2px)", transform: `${base} scale(0.96)` },
+                    { opacity: 1, filter: "blur(0px)", transform: `${base} scale(1)` }
+                ],
+                { duration: 240, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)", fill: "forwards" }
+            ).finished.finally(() => {
+                el.style.opacity = "";
+                el.style.filter = "";
+                el.style.transform = "";
             });
         }
 
-        // فعال‌سازی درگ برای هر دو پنجره
-        makeDraggable('finderWindow', 'finderHeader');
-        makeDraggable('safariWindow', 'safariHeader');
+        function animateClose(el) {
+            const base = baselineTransform(el);
+            return el.animate(
+                [
+                    { opacity: 1, filter: "blur(0px)", transform: `${base} scale(1)` },
+                    { opacity: 0, filter: "blur(2px)", transform: `${base} scale(0.92)` }
+                ],
+                { duration: 230, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "forwards" }
+            ).finished;
+        }
 
+        function animateToDock(el, dockEl) {
+            const base = baselineTransform(el);
+            const winRect = el.getBoundingClientRect();
+            const dockRect = dockEl.getBoundingClientRect();
+
+            const winCenterX = winRect.left + winRect.width / 2;
+            const winCenterY = winRect.top + winRect.height / 2;
+            const dockCenterX = dockRect.left + dockRect.width / 2;
+            const dockCenterY = dockRect.top + dockRect.height / 2;
+
+            const dx = dockCenterX - winCenterX;
+            const dy = dockCenterY - winCenterY;
+
+            return el.animate(
+                [
+                    { opacity: 1, filter: "blur(0px)", transform: `${base} translate(0px, 0px) scale(1)` },
+                    { opacity: 0, filter: "blur(2px)", transform: `${base} translate(${dx}px, ${dy}px) scale(0.08)` }
+                ],
+                { duration: 320, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "forwards" }
+            ).finished;
+        }
+
+        function openApp(appKey) {
+            const app = apps[appKey];
+            if (!app) return;
+
+            app.el.classList.remove("is-hidden");
+            app.el.setAttribute("aria-hidden", "false");
+            app.el.style.display = "flex";
+            app.isOpen = true;
+
+            bringToFront(appKey);
+            animateOpen(app.el);
+        }
+
+        function closeApp(appKey) {
+            const app = apps[appKey];
+            if (!app || !app.isOpen) return;
+
+            bringToFront(appKey);
+            animateClose(app.el).finally(() => {
+                app.el.style.display = "none";
+                app.el.classList.add("is-hidden");
+                app.el.setAttribute("aria-hidden", "true");
+                app.el.style.opacity = "";
+                app.el.style.filter = "";
+                app.el.style.transform = "";
+                app.isOpen = false;
+            });
+        }
+
+        function minimizeApp(appKey) {
+            const app = apps[appKey];
+            if (!app || !app.isOpen) return;
+
+            bringToFront(appKey);
+            animateToDock(app.el, app.dock).finally(() => {
+                app.el.style.display = "none";
+                app.el.classList.add("is-hidden");
+                app.el.setAttribute("aria-hidden", "true");
+                app.el.style.opacity = "";
+                app.el.style.filter = "";
+                app.el.style.transform = "";
+            });
+        }
+
+        function toggleMaximize(appKey) {
+            const app = apps[appKey];
+            if (!app || !app.isOpen) return;
+
+            bringToFront(appKey);
+            app.el.classList.toggle("is-maximized");
+        }
+
+        document.querySelectorAll(".window").forEach((w) => {
+            w.addEventListener("pointerdown", () => {
+                const key = w.getAttribute("data-app");
+                if (!key) return;
+                bringToFront(key);
+            });
+        });
+
+        document.addEventListener("click", (e) => {
+            const btn = e.target.closest("[data-app][data-action]");
+            if (!btn) return;
+
+            const appKey = btn.getAttribute("data-app");
+            const action = btn.getAttribute("data-action");
+
+            if (action === "close") closeApp(appKey);
+            if (action === "minimize") minimizeApp(appKey);
+            if (action === "maximize") toggleMaximize(appKey);
+        });
+
+        document.getElementById("dockFinder").addEventListener("click", () => {
+            if (apps.finder.isOpen) bringToFront("finder");
+            else openApp("finder");
+        });
+
+        function openSafari(target) {
+            if (!apps.safari.isOpen) openApp("safari");
+            else bringToFront("safari");
+
+            if (target) safariNavigate(target, true);
+        }
+
+        document.getElementById("dockSafari").addEventListener("click", () => {
+            openSafari("start");
+        });
+
+        document.addEventListener("click", (e) => {
+            const link = e.target.closest("a.open-in-safari");
+            if (!link) return;
+            e.preventDefault();
+            openSafari(link.getAttribute("data-safari-url") || link.getAttribute("href"));
+        });
+
+        const safariFrame = document.getElementById("safariFrame");
+        const safariAddress = document.getElementById("safariAddress");
+        const safariBack = document.getElementById("safariBack");
+        const safariForward = document.getElementById("safariForward");
+        const safariReload = document.getElementById("safariReload");
+
+        let safariHistory = [];
+        let safariIndex = -1;
+
+        function resolveSafariUrl(raw) {
+            let value = (raw || "").trim();
+            if (!value) return "./safari/start.html";
+
+            const lower = value.toLowerCase();
+
+            if (lower === "start" || lower === "start page" || lower === "new tab") return "./safari/start.html";
+
+            if (lower === "sohgle" || lower === "google" || lower.includes("google.com") || lower.includes("www.google")) {
+                return "./safari/sohgle.html";
+            }
+
+            if (lower === "garlic-bread" || lower === "garlic bread" || lower === "garlic") return "./garlic-bread/index.html";
+
+            if (lower === "portfolio") return "https://soheil-aghayani.github.io/Portfolio/";
+            if (lower === "github" || lower === "source") return "https://github.com/Soheil-Aghayani/food-recipe";
+
+            if (lower.includes("sohgle")) return "./safari/sohgle.html";
+
+            if (value.startsWith("./") || value.startsWith("../") || value.startsWith("/")) return value;
+
+            if (!value.includes("/") && /\.(html?)$/i.test(value)) return value;
+
+            if (value.includes("/") && !value.includes("://")) {
+                const first = value.split("/")[0];
+                if (first && !first.includes(".")) return value;
+            }
+
+            if (value.includes(" ") || !value.includes(".")) {
+                const q = encodeURIComponent(value);
+                return `./safari/sohgle.html?q=${q}`;
+            }
+
+            if (!/^https?:\/\//i.test(value)) value = "https://" + value;
+
+            if (value.includes("google.")) return "./safari/sohgle.html";
+
+            return value;
+        }
+
+        function setSafariAddressDisplay(url) {
+            try {
+                const absolute = new URL(url, window.location.href);
+                const path = absolute.pathname || "";
+                const isStart = path.endsWith("/safari/start.html");
+                const isSohgle = path.endsWith("/safari/sohgle.html");
+
+                if (isStart) {
+                    safariAddress.value = "Start Page";
+                    return;
+                }
+
+                if (isSohgle) {
+                    const q = absolute.searchParams.get("q");
+                    safariAddress.value = q ? `Sohgle Search: ${decodeURIComponent(q)}` : "sohgle.com";
+                    return;
+                }
+            } catch (_) {}
+
+            safariAddress.value = url;
+        }
+
+        function updateSafariNavButtons() {
+            safariBack.disabled = safariIndex <= 0;
+            safariForward.disabled = safariIndex >= safariHistory.length - 1;
+        }
+
+        function safariGoTo(url, push) {
+            const resolved = resolveSafariUrl(url);
+
+            if (push) {
+                if (safariHistory[safariIndex] !== resolved) {
+                    safariHistory = safariHistory.slice(0, safariIndex + 1);
+                    safariHistory.push(resolved);
+                    safariIndex = safariHistory.length - 1;
+                }
+            }
+
+            safariFrame.src = resolved;
+            setSafariAddressDisplay(resolved);
+            updateSafariNavButtons();
+        }
+
+        function safariNavigate(input, push) {
+            safariGoTo(input, push);
+        }
+
+        safariBack.addEventListener("click", () => {
+            if (safariIndex <= 0) return;
+            safariIndex -= 1;
+            const url = safariHistory[safariIndex];
+            safariFrame.src = url;
+            setSafariAddressDisplay(url);
+            updateSafariNavButtons();
+        });
+
+        safariForward.addEventListener("click", () => {
+            if (safariIndex >= safariHistory.length - 1) return;
+            safariIndex += 1;
+            const url = safariHistory[safariIndex];
+            safariFrame.src = url;
+            setSafariAddressDisplay(url);
+            updateSafariNavButtons();
+        });
+
+        safariReload.addEventListener("click", () => {
+            const url = safariHistory[safariIndex] || safariFrame.src || "./safari/start.html";
+            safariFrame.src = url;
+            setSafariAddressDisplay(url);
+        });
+
+        safariAddress.addEventListener("keydown", (e) => {
+            if (e.key !== "Enter") return;
+            safariNavigate(safariAddress.value, true);
+            safariAddress.blur();
+        });
+
+        window.addEventListener("message", (event) => {
+            const data = event.data;
+            if (!data || typeof data !== "object") return;
+
+            if (data.type === "safari:navigate") {
+                openSafari(data.url || "start");
+            }
+
+            if (data.type === "safari:search") {
+                openSafari(`./safari/sohgle.html?q=${encodeURIComponent(data.q || "")}`);
+            }
+        });
+
+        safariHistory = ["./safari/start.html"];
+        safariIndex = 0;
+        updateSafariNavButtons();
     </script>
 </body>
 </html>
