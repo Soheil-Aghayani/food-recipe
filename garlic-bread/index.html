@@ -13,7 +13,6 @@
       --text: #333;
       --bg: #fdfbf7;
       --card: #ffffff;
-      --border: rgba(0,0,0,0.08);
 
       --mac-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 3l0 22l6-6l4 9l3-1l-4-9l8 0z' fill='%23000'/%3E%3Cpath d='M7.5 5.3l0 16.1l4.4-4.4l1-.9l.5 1.2l3.2 7.5l.9-.4l-3.2-7.5l-.5-1.2l1.3 0l6.2 0z' fill='%23fff' opacity='0.35'/%3E%3C/svg%3E") 1 1;
     }
@@ -65,23 +64,10 @@
       box-sizing: border-box;
     }
 
-    .intro-box{
-      background: var(--card);
-      padding: 16px 16px;
-      border-radius: 12px;
-      border-right: 5px solid var(--primary);
-      margin-bottom: 30px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-      font-size: 1.02rem;
-      line-height: 1.9;
-      color: rgba(0,0,0,0.68);
-      user-select: text;
-    }
-
     h2{
       font-size: 1.45rem;
       color: #2d3436;
-      margin: 36px 0 14px;
+      margin: 22px 0 14px;
       display:flex;
       align-items:center;
       gap: 10px;
@@ -190,11 +176,6 @@
   </div>
 
   <div class="recipe-container">
-    <div class="intro-box">
-      این دستور پخت داخل Soheil OS اجرا میشود.
-      اگر لینک یا کلیکی داشته باشد, داخل همین محیط میماند.
-    </div>
-
     <h2>مواد لازم</h2>
     <div class="ingredients-list" id="ing-list"></div>
 
@@ -287,12 +268,6 @@
       });
 
       container.appendChild(div);
-    });
-
-    document.addEventListener("click", (e) => {
-      const a = e.target.closest("a");
-      if (!a) return;
-      e.preventDefault();
     });
   </script>
 </body>

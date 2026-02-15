@@ -1,163 +1,118 @@
-<!DOCTYPE html>
-<html lang="fa">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Start Page</title>
-
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-
+  <link rel="preload" as="image" href="https://s8.uupload.ir/files/download_0b5s.jpg">
   <style>
-    html, body { height: 100%; }
+    html,body{height:100%;}
     body{
       margin:0;
-      font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: url("https://s8.uupload.ir/files/download_0b5s.jpg") no-repeat center center fixed;
+      font-family:"Vazirmatn",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background: #0b0f1a;
+      background-image: url("https://s8.uupload.ir/files/download_0b5s.jpg");
       background-size: cover;
+      background-position: center;
       overflow:hidden;
-      user-select:none;
     }
-
-    .overlay{
-      position:absolute;
-      inset:0;
-      background: rgba(0,0,0,0.08);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+    .shade{
+      position:fixed;inset:0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.20), rgba(0,0,0,0.35));
     }
-
     .wrap{
-      position: relative;
-      z-index: 1;
-      height: 100%;
+      position:relative;
+      height:100%;
       display:flex;
-      flex-direction: column;
       align-items:center;
       justify-content:center;
+      padding: 24px;
+      box-sizing:border-box;
+    }
+    .panel{
+      width:min(720px, 92vw);
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 18px;
       padding: 18px;
       box-sizing:border-box;
     }
-
-    .search{
-      width: min(720px, 92vw);
-      display:flex;
-      align-items:center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(255,255,255,0.30);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+    .title{
+      color: rgba(255,255,255,0.92);
+      font-weight: 800;
+      font-size: 18px;
+      margin: 0 0 14px 0;
     }
-
-    .search input{
-      border:0;
-      outline:none;
-      background: transparent;
-      width: 100%;
-      font-size: 14px;
-      padding: 6px 4px;
-      user-select: text;
-    }
-
     .grid{
-      width: min(780px, 92vw);
       display:grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
     }
-
     .tile{
-      border: 1px solid rgba(0,0,0,0.08);
-      background: rgba(255,255,255,0.72);
+      border:0;
+      background: rgba(255,255,255,0.20);
+      border: 1px solid rgba(255,255,255,0.14);
       border-radius: 16px;
       padding: 14px 12px;
-      cursor: pointer;
       display:flex;
-      flex-direction: column;
       align-items:center;
-      gap: 10px;
-      box-shadow: 0 14px 28px rgba(0,0,0,0.12);
+      gap: 12px;
+      color: rgba(255,255,255,0.92);
+      font-size: 13px;
     }
-    .tile:active{ transform: scale(0.99); }
-
-    .tile img{
-      width: 44px;
-      height: 44px;
-      object-fit: contain;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
-    }
-
-    .tile .label{
-      font-size: 12px;
-      color: rgba(0,0,0,0.72);
-      text-align:center;
-    }
-
-    @media (max-width: 560px){
-      .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
+    .tile:active{ filter: brightness(0.95); }
+    .tile img{ width: 34px; height: 34px; object-fit: contain; }
+    .sub{ font-size: 11px; opacity: 0.80; margin-top: 2px; }
   </style>
 </head>
-
 <body>
-  <div class="overlay"></div>
-
+  <div class="shade"></div>
   <div class="wrap">
-    <div class="search">
-      <input id="q" type="text" placeholder="Search with Sohgle" autocomplete="off" spellcheck="false">
-    </div>
+    <div class="panel">
+      <div class="title">Start Page</div>
 
-    <div class="grid">
-      <button class="tile" type="button" data-go="sohgle">
-        <img alt="Sohgle" src="https://s8.uupload.ir/files/sohgle_mh26.png">
-        <div class="label">Sohgle</div>
-      </button>
+      <div class="grid">
+        <button class="tile" id="goSohgle" type="button">
+          <img alt="Sohgle" src="https://s8.uupload.ir/files/sohgle_mh26.png">
+          <div>
+            <div>Sohgle</div>
+            <div class="sub">Search</div>
+          </div>
+        </button>
 
-      <button class="tile" type="button" data-app="finder" data-view="projects">
-        <img alt="Projects" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
-        <div class="label">Projects</div>
-      </button>
+        <button class="tile" id="openIGithub" type="button">
+          <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
+          <div>
+            <div>iGithub</div>
+            <div class="sub">Repos</div>
+          </div>
+        </button>
 
-      <button class="tile" type="button" data-app="igithub">
-        <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
-        <div class="label">iGithub</div>
-      </button>
-
-      <button class="tile" type="button" data-app="music">
-        <img alt="Music" src="https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png">
-        <div class="label">Music</div>
-      </button>
+        <button class="tile" id="openMusic" type="button">
+          <img alt="Music" src="https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png">
+          <div>
+            <div>Music</div>
+            <div class="sub">Zero</div>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
-    function post(msg){
-      window.parent.postMessage(msg, "*");
-    }
-
-    document.querySelectorAll("[data-go]").forEach((b) => {
-      b.addEventListener("click", () => {
-        const go = b.getAttribute("data-go");
-        post({ type: "safari:navigate", url: go });
-      });
+    document.getElementById("goSohgle").addEventListener("click", () => {
+      location.href = "sohgle.html";
     });
 
-    document.querySelectorAll("[data-app]").forEach((b) => {
-      b.addEventListener("click", () => {
-        const app = b.getAttribute("data-app");
-        const view = b.getAttribute("data-view");
-        post({ type: "os:openApp", app, view });
-      });
+    document.getElementById("openIGithub").addEventListener("click", () => {
+      parent.postMessage({ type: "os:openApp", app: "igithub" }, "*");
     });
 
-    const q = document.getElementById("q");
-    q.addEventListener("keydown", (e) => {
-      if (e.key !== "Enter") return;
-      const val = q.value.trim();
-      post({ type: "safari:navigate", url: "sohgle?q=" + encodeURIComponent(val) });
-      q.blur();
+    document.getElementById("openMusic").addEventListener("click", () => {
+      parent.postMessage({ type: "os:openApp", app: "music" }, "*");
     });
   </script>
 </body>

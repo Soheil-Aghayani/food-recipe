@@ -8,19 +8,18 @@
   <link rel="icon" type="image/png" href="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
   <link rel="apple-touch-icon" href="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
 
+  <link rel="prefetch" href="safari/start.html">
+  <link rel="prefetch" href="safari/sohgle.html">
+  <link rel="preconnect" href="https://s8.uupload.ir" crossorigin>
+
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
 
   <style>
     :root{
       --os-bg: url("https://s8.uupload.ir/files/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-2880x1800-1455_hxwe.jpg");
-      --glass: rgba(255,255,255,0.72);
-      --glass-2: rgba(255,255,255,0.42);
       --border: rgba(0,0,0,0.10);
       --shadow: 0 22px 44px rgba(0,0,0,0.22);
       --radius: 12px;
-      --text: rgba(0,0,0,0.84);
-      --muted: rgba(0,0,0,0.55);
-      --blue: rgba(0,122,255,1);
       --dock-h: 88px;
       --menu-h: 28px;
 
@@ -41,7 +40,6 @@
 
     button{ cursor: var(--mac-arrow), pointer; }
     input, textarea{ cursor: text; }
-
     button, input { font-family: inherit; }
 
     .menubar{
@@ -73,7 +71,6 @@
       border-radius: 8px;
     }
     .menu-help:active{ background: rgba(255,255,255,0.12); }
-
     .menu-right{ display:flex; align-items:center; gap:10px; opacity: 0.95; }
 
     .desktop-icons{
@@ -366,7 +363,6 @@
       padding: 0 14px;
       border-bottom: 1px solid rgba(0,0,0,0.06);
       background: rgba(255,255,255,0.86);
-      touch-action: none;
     }
 
     .finder-toolbar .path{
@@ -584,7 +580,7 @@
         </div>
 
         <div class="finder-main">
-          <div class="finder-toolbar" data-drag-handle="finder">
+          <div class="finder-toolbar">
             <div class="path" id="finderPath">Projects</div>
           </div>
 
@@ -596,16 +592,6 @@
 
             <div id="downloadsView" style="display:none;">
               <div class="empty">Downloads folder is empty</div>
-            </div>
-
-            <div id="desktopView" style="display:none;">
-              <div class="grid">
-                <button class="item" type="button" id="openBinFromDesktopFolder">
-                  <img alt="Bin" src="https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png">
-                  <div class="name">Bin</div>
-                  <div class="sub">Trash</div>
-                </button>
-              </div>
             </div>
 
             <div id="igithubHint" style="display:none;">
@@ -788,18 +774,19 @@
 
     const state = {
       z: 1100,
-      safari: { history: [], index: -1 },
+      active: "finder",
+      safari: { history: ["safari/start.html"], index: 0 },
       finderView: "projects"
     };
 
     const apps = {
-      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), isOpen:true, isMin:false },
-      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  isOpen:false, isMin:false },
-      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, isOpen:false, isMin:false },
-      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), isOpen:false, isMin:false },
-      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), isOpen:false, isMin:false },
-      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, isOpen:false, isMin:false },
-      desktop: { key:"desktop", el: document.getElementById("desktopWin"), dock: null, isOpen:false, isMin:false }
+      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), isOpen:true, isMin:false, busy:false },
+      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  isOpen:false, isMin:false, busy:false },
+      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, isOpen:false, isMin:false, busy:false },
+      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), isOpen:false, isMin:false, busy:false },
+      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), isOpen:false, isMin:false, busy:false },
+      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, isOpen:false, isMin:false, busy:false },
+      desktop: { key:"desktop", el: document.getElementById("desktopWin"), dock: null, isOpen:false, isMin:false, busy:false }
     };
 
     function markRunning(appKey){
@@ -812,6 +799,7 @@
     function bringToFront(appKey){
       const app = apps[appKey];
       if (!app) return;
+      state.active = appKey;
       state.z += 1;
       app.el.style.zIndex = String(state.z);
     }
@@ -822,24 +810,33 @@
 
     function animateOpen(appEl){
       const base = baseTransform(appEl);
+      appEl.style.pointerEvents = "none";
       appEl.animate(
         [
           { opacity: 0, filter: "blur(2px)", transform: base + " scale(0.96)" },
           { opacity: 1, filter: "blur(0px)", transform: base + " scale(1)" }
         ],
         { duration: 220, easing: "cubic-bezier(0.2,0.8,0.2,1)", fill: "forwards" }
-      );
+      ).finished.finally(() => {
+        appEl.style.pointerEvents = "";
+        appEl.style.opacity = "";
+        appEl.style.filter = "";
+        appEl.style.transform = "";
+      });
     }
 
     function animateClose(appEl){
       const base = baseTransform(appEl);
+      appEl.style.pointerEvents = "none";
       return appEl.animate(
         [
           { opacity: 1, filter: "blur(0px)", transform: base + " scale(1)" },
           { opacity: 0, filter: "blur(2px)", transform: base + " scale(0.92)" }
         ],
         { duration: 210, easing: "cubic-bezier(0.22,0.61,0.36,1)", fill: "forwards" }
-      ).finished;
+      ).finished.finally(() => {
+        appEl.style.pointerEvents = "";
+      });
     }
 
     function animateToDock(appEl, dockEl){
@@ -852,18 +849,21 @@
       const dx = (d.left + d.width/2) - (w.left + w.width/2);
       const dy = (d.top + d.height/2) - (w.top + w.height/2);
 
+      appEl.style.pointerEvents = "none";
       return appEl.animate(
         [
           { opacity: 1, filter: "blur(0px)", transform: base + " translate(0px,0px) scale(1)" },
           { opacity: 0, filter: "blur(2px)", transform: base + " translate(" + dx + "px," + dy + "px) scale(0.08)" }
         ],
         { duration: 300, easing: "cubic-bezier(0.22,0.61,0.36,1)", fill: "forwards" }
-      ).finished;
+      ).finished.finally(() => {
+        appEl.style.pointerEvents = "";
+      });
     }
 
     function openApp(appKey){
       const app = apps[appKey];
-      if (!app) return;
+      if (!app || app.busy) return;
 
       app.el.classList.remove("is-hidden");
       app.el.setAttribute("aria-hidden","false");
@@ -876,11 +876,23 @@
       markRunning(appKey);
     }
 
+    function resetSafariState(){
+      state.safari.history = ["safari/start.html"];
+      state.safari.index = 0;
+      const sFrame = document.getElementById("sFrame");
+      const sAddress = document.getElementById("sAddress");
+      sFrame.src = "safari/start.html";
+      sAddress.value = "Start Page";
+      safariSetButtons();
+    }
+
     function closeApp(appKey){
       const app = apps[appKey];
-      if (!app || !app.isOpen) return;
+      if (!app || !app.isOpen || app.busy) return;
 
+      app.busy = true;
       bringToFront(appKey);
+
       animateClose(app.el).finally(() => {
         app.el.style.display = "none";
         app.el.classList.add("is-hidden");
@@ -888,17 +900,23 @@
         app.el.style.opacity = "";
         app.el.style.filter = "";
         app.el.style.transform = "";
+        app.busy = false;
+
         app.isOpen = false;
         app.isMin = false;
         markRunning(appKey);
+
+        if (appKey === "safari") resetSafariState();
       });
     }
 
     function minimizeApp(appKey){
       const app = apps[appKey];
-      if (!app || !app.isOpen) return;
+      if (!app || !app.isOpen || app.busy) return;
 
+      app.busy = true;
       bringToFront(appKey);
+
       animateToDock(app.el, app.dock).finally(() => {
         app.el.style.display = "none";
         app.el.classList.add("is-hidden");
@@ -906,6 +924,8 @@
         app.el.style.opacity = "";
         app.el.style.filter = "";
         app.el.style.transform = "";
+        app.busy = false;
+
         app.isMin = true;
         markRunning(appKey);
       });
@@ -913,7 +933,7 @@
 
     function restoreApp(appKey){
       const app = apps[appKey];
-      if (!app || !app.isOpen) return;
+      if (!app || !app.isOpen || app.busy) return;
 
       app.el.classList.remove("is-hidden");
       app.el.setAttribute("aria-hidden","false");
@@ -943,28 +963,28 @@
 
     function toggleMaximize(appKey){
       const app = apps[appKey];
-      if (!app || !app.isOpen) return;
+      if (!app || !app.isOpen || app.busy) return;
 
       bringToFront(appKey);
-
       const el = app.el;
       const isMax = el.classList.contains("is-maximized");
 
       if (!isMax){
         saveWindowInline(el);
-
         el.style.left = "";
         el.style.top = "";
         el.style.width = "";
         el.style.height = "";
         el.style.transform = "";
-
         el.classList.add("is-maximized");
         return;
       }
 
       el.classList.remove("is-maximized");
       restoreWindowInline(el);
+      if (!el.style.left && !el.style.top) {
+        el.style.transform = "";
+      }
     }
 
     function handleTraffic(appKey, action){
@@ -1002,7 +1022,9 @@
     bindDock("igithub");
 
     document.getElementById("dockSource").addEventListener("click", () => {
-      openIGithubRepo("food-recipe");
+      if (!apps.igithub.isOpen) openApp("igithub");
+      else if (apps.igithub.isMin) restoreApp("igithub");
+      else bringToFront("igithub");
     });
 
     function makeDraggable(appKey){
@@ -1019,19 +1041,40 @@
       let startLeft = 0;
       let startTop = 0;
 
-      let raf = 0;
-      let nextLeft = 0;
-      let nextTop = 0;
+      function isInteractiveTarget(target){
+        if (!target) return false;
+        if (target.closest(".traffic")) return true;
+        const tag = target.tagName;
+        return tag === "INPUT" || tag === "BUTTON" || tag === "A" || tag === "TEXTAREA" || tag === "SELECT";
+      }
 
-      function apply(){
-        raf = 0;
+      function onMove(e){
+        if (!dragging) return;
+
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        const minLeft = 10;
+        const minTop = 44;
+        const maxLeft = window.innerWidth - 80;
+        const maxTop = window.innerHeight - 80;
+
+        const nextLeft = Math.min(Math.max(minLeft, startLeft + dx), maxLeft);
+        const nextTop = Math.min(Math.max(minTop, startTop + dy), maxTop);
+
         el.style.left = nextLeft + "px";
         el.style.top = nextTop + "px";
       }
 
+      function end(){
+        dragging = false;
+        window.removeEventListener("pointermove", onMove);
+        window.removeEventListener("pointerup", end);
+        window.removeEventListener("pointercancel", end);
+      }
+
       handle.addEventListener("pointerdown", (e) => {
-        const t = e.target;
-        if (t && (t.closest(".traffic") || t.tagName === "INPUT" || t.tagName === "BUTTON")) return;
+        if (isInteractiveTarget(e.target)) return;
         if (el.classList.contains("is-maximized")) return;
 
         dragging = true;
@@ -1047,34 +1090,12 @@
         el.style.top = startTop + "px";
         el.style.transform = "translate(0,0)";
 
+        window.addEventListener("pointermove", onMove);
+        window.addEventListener("pointerup", end);
+        window.addEventListener("pointercancel", end);
+
         try { handle.setPointerCapture(e.pointerId); } catch (_) {}
       });
-
-      handle.addEventListener("pointermove", (e) => {
-        if (!dragging) return;
-
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-
-        const minLeft = 10;
-        const minTop = 44;
-        const maxLeft = window.innerWidth - 80;
-        const maxTop = window.innerHeight - 80;
-
-        nextLeft = Math.min(Math.max(minLeft, startLeft + dx), maxLeft);
-        nextTop = Math.min(Math.max(minTop, startTop + dy), maxTop);
-
-        if (!raf) raf = requestAnimationFrame(apply);
-      });
-
-      function end(){
-        dragging = false;
-        if (raf) cancelAnimationFrame(raf);
-        raf = 0;
-      }
-
-      handle.addEventListener("pointerup", end);
-      handle.addEventListener("pointercancel", end);
     }
 
     makeDraggable("finder");
@@ -1106,12 +1127,6 @@
       else bringToFront("bin");
     });
 
-    document.getElementById("openBinFromDesktopFolder").addEventListener("click", () => {
-      if (!apps.bin.isOpen) openApp("bin");
-      else if (apps.bin.isMin) restoreApp("bin");
-      else bringToFront("bin");
-    });
-
     function setFinderActive(view){
       state.finderView = view;
 
@@ -1121,13 +1136,11 @@
 
       document.getElementById("projectsView").style.display = view === "projects" ? "block" : "none";
       document.getElementById("downloadsView").style.display = view === "downloads" ? "block" : "none";
-      document.getElementById("desktopView").style.display = view === "desktop" ? "block" : "none";
       document.getElementById("igithubHint").style.display = view === "igithub" ? "block" : "none";
 
       const pathEl = document.getElementById("finderPath");
       if (view === "projects") pathEl.textContent = "Projects";
       if (view === "downloads") pathEl.textContent = "Downloads";
-      if (view === "desktop") pathEl.textContent = "Desktop";
       if (view === "igithub") pathEl.textContent = "iGithub";
     }
 
@@ -1136,19 +1149,18 @@
         const view = b.getAttribute("data-finder");
         bringToFront("finder");
 
+        if (view === "desktop"){
+          if (!apps.desktop.isOpen) openApp("desktop");
+          else if (apps.desktop.isMin) restoreApp("desktop");
+          else bringToFront("desktop");
+          return;
+        }
+
         if (view === "igithub"){
           setFinderActive("igithub");
           if (!apps.igithub.isOpen) openApp("igithub");
           else if (apps.igithub.isMin) restoreApp("igithub");
           else bringToFront("igithub");
-          return;
-        }
-
-        if (view === "desktop"){
-          setFinderActive("desktop");
-          if (!apps.desktop.isOpen) openApp("desktop");
-          else if (apps.desktop.isMin) restoreApp("desktop");
-          else bringToFront("desktop");
           return;
         }
 
@@ -1233,6 +1245,7 @@
       sBack.disabled = state.safari.index <= 0;
       sForward.disabled = state.safari.index >= state.safari.history.length - 1;
     }
+    safariSetButtons();
 
     function safariResolve(input){
       const raw = String(input || "").trim();
@@ -1307,36 +1320,17 @@
       sFrame.src = url;
     });
 
-    state.safari.history = ["safari/start.html"];
-    state.safari.index = 0;
-    safariSetButtons();
-
-    function openIGithubRepo(repoName){
-      const frame = document.getElementById("igithubFrame");
-      frame.src = "igit/igit-index.html#repo=" + encodeURIComponent(repoName || "");
-      if (!apps.igithub.isOpen) openApp("igithub");
-      else if (apps.igithub.isMin) restoreApp("igithub");
-      else bringToFront("igithub");
-    }
-
     window.addEventListener("message", (event) => {
       const d = event.data;
       if (!d || typeof d !== "object") return;
-
-      if (d.type === "safari:navigate"){
-        openSafari(d.url || "start");
-      }
 
       if (d.type === "os:openApp"){
         const app = d.app || "";
         if (app === "safari") openSafari(d.url || "start");
         if (app === "igithub") {
-          if (d.repo) openIGithubRepo(d.repo);
-          else {
-            if (!apps.igithub.isOpen) openApp("igithub");
-            else if (apps.igithub.isMin) restoreApp("igithub");
-            else bringToFront("igithub");
-          }
+          if (!apps.igithub.isOpen) openApp("igithub");
+          else if (apps.igithub.isMin) restoreApp("igithub");
+          else bringToFront("igithub");
         }
         if (app === "music") {
           if (!apps.music.isOpen) openApp("music");
@@ -1353,11 +1347,6 @@
           else if (apps.desktop.isMin) restoreApp("desktop");
           else bringToFront("desktop");
         }
-        if (app === "finder") {
-          if (apps.finder.isMin) restoreApp("finder");
-          bringToFront("finder");
-          if (d.view) setFinderActive(d.view);
-        }
         if (app === "recipe"){
           if (d.recipe) openRecipe(d.recipe);
           else if (d.url){
@@ -1369,16 +1358,17 @@
 
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
-      Object.values(apps).forEach((app) => {
-        if (!app || !app.isOpen) return;
-        const el = app.el;
-        if (el.classList.contains("is-maximized")){
-          el.classList.remove("is-maximized");
-          restoreWindowInline(el);
-        }
-      });
+      const k = state.active;
+      const app = apps[k];
+      if (!app || !app.isOpen) return;
+      const el = app.el;
+      if (el.classList.contains("is-maximized")){
+        el.classList.remove("is-maximized");
+        restoreWindowInline(el);
+      }
     });
 
+    setFinderActive("projects");
     markRunning("finder");
   </script>
 </body>
