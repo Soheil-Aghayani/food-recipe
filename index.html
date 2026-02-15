@@ -10,10 +10,12 @@
 
     <style>
         :root {
-            --bg-glass: rgba(255, 255, 255, 0.65);
+            --bg-glass: rgba(255, 255, 255, 0.75);
             --dock-glass: rgba(255, 255, 255, 0.4);
+            --sidebar-bg: rgba(235, 235, 235, 0.5);
+            --selection: rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            --border-radius: 18px;
+            --border-radius: 12px;
         }
 
         body {
@@ -22,8 +24,7 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            /* فونت سیستم مکینتاش برای رابط کاربری */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: url('https://s8.uupload.ir/files/macos-big-sur-apple-layers-fluidic-colorful-wwdc-stock-2880x1800-1455_hxwe.jpg') no-repeat center center fixed;
             background-size: cover;
             user-select: none;
@@ -42,154 +43,178 @@
             padding: 0 20px;
             box-sizing: border-box;
             color: white;
-            font-size: 0.85rem;
+            font-size: 13px;
             font-weight: 500;
             position: fixed;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
 
         .menu-left { display: flex; gap: 20px; align-items: center; }
         .menu-right { display: flex; gap: 15px; align-items: center; }
         .apple-logo { font-size: 1.1rem; cursor: pointer; }
-        .menu-item { cursor: pointer; padding: 0 5px; }
-        .menu-item:hover { opacity: 0.8; }
+        .menu-item { cursor: pointer; opacity: 0.9; }
+        .menu-item:hover { opacity: 1; }
         .menu-bold { font-weight: 700; }
 
         /* --- Window --- */
         .window {
-            width: 700px;
-            height: 450px;
-            background: var(--bg-glass);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
+            width: 740px;
+            height: 480px;
+            background: #fff;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             display: flex;
             flex-direction: column;
-            animation: popIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            transition: width 0.3s, height 0.3s, top 0.3s, left 0.3s, transform 0.3s;
+            overflow: hidden;
+            animation: popIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .window.maximized {
-            width: 100% !important;
-            height: calc(100% - 28px) !important;
-            top: 28px !important;
-            left: 0 !important;
-            transform: none !important;
-            border-radius: 0;
+        .window-layout {
+            display: flex;
+            flex-grow: 1;
+            height: 100%;
         }
 
-        .title-bar {
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(50px);
+            -webkit-backdrop-filter: blur(50px);
+            border-right: 1px solid rgba(0,0,0,0.08);
+            padding: 40px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .traffic-lights-container {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .light { 
+            width: 12px; height: 12px; border-radius: 50%; 
+            border: 0.5px solid rgba(0,0,0,0.1); 
+        }
+        
+        .close { background: #ff5f57; }
+        .minimize { background: #febc2e; }
+        .maximize { background: #28c840; }
+
+        .sidebar-title {
+            font-size: 11px;
+            color: #888;
+            font-weight: 600;
+            margin: 15px 12px 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #4a4a4a;
+            cursor: pointer;
+            transition: background 0.1s;
+            text-decoration: none;
+        }
+
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        
+        .sidebar-item .fa-hdd { color: #8e8e93; }
+        .sidebar-item .fa-desktop { color: #007aff; }
+        .sidebar-item .fa-download { color: #007aff; }
+        .sidebar-item .fa-cloud { color: #007aff; }
+
+        .sidebar-item.active {
+            background: rgba(0, 0, 0, 0.06);
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .toolbar {
             height: 50px;
             display: flex;
             align-items: center;
             padding: 0 20px;
-            cursor: move;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-
-        .traffic-lights {
-            display: flex;
-            gap: 8px;
-        }
-
-        .light { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; position: relative; }
-        .light::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; opacity: 0; transition: opacity 0.1s; display: flex; align-items: center; justify-content: center; font-size: 8px; color: rgba(0,0,0,0.5); font-family: sans-serif; }
-        .traffic-lights:hover .light::before { opacity: 1; }
         
-        .close { background: #ff5f57; border: 1px solid #e0443e; }
-        .close::before { content: '✕'; }
-        .minimize { background: #febc2e; border: 1px solid #d89e24; }
-        .minimize::before { content: '─'; }
-        .maximize { background: #28c840; border: 1px solid #1aab29; }
-        .maximize::before { content: '┼'; }
-
         .toolbar-title {
-            margin-left: 20px;
-            color: #333;
             font-weight: 600;
+            color: #333;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: 14px;
         }
 
-        .window-body {
-            display: flex;
-            height: 100%;
-        }
-
-        /* Sidebar (Left) */
-        .sidebar {
-            width: 180px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-right: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .sidebar-item {
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            color: #444;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
-
-        .sidebar-item.active {
-            background: rgba(0, 0, 0, 0.1);
-            color: #000;
-        }
-
-        .sidebar-title {
-            font-size: 0.75rem;
-            color: #666;
-            margin: 10px 10px 5px;
-            font-weight: bold;
-        }
-
-        /* Content */
-        .content-area {
-            flex-grow: 1;
+        .files-grid {
             padding: 20px;
-            background: rgba(255,255,255,0.4);
-            border-bottom-right-radius: var(--border-radius);
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            grid-auto-rows: 110px;
+            grid-auto-rows: 120px;
             gap: 10px;
+            overflow-y: auto;
         }
 
         .file-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: flex-start;
             text-decoration: none;
             padding: 10px;
-            border-radius: 8px;
-            transition: background 0.2s;
+            border-radius: 6px;
             cursor: pointer;
+            transition: background 0.2s;
         }
 
-        .file-item:hover { background: rgba(0,0,0,0.05); }
-        .file-icon { font-size: 3.5rem; margin-bottom: 8px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1)); }
+        .file-item:hover { background: #e5f1fb; }
         
-        /* فقط اسم فایل‌ها فارسی و وزیرمتن باشه */
+        .file-icon { 
+            font-size: 42px; 
+            margin-bottom: 8px; 
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); 
+        }
+        
         .file-name { 
             font-family: 'Vazirmatn', sans-serif;
             color: #333; 
-            font-size: 0.9rem; 
+            font-size: 12px; 
             text-align: center; 
-            text-shadow: 0 1px 0 rgba(255,255,255,0.5); 
+            line-height: 1.4;
+            max-width: 100%;
         }
 
         /* --- Dock --- */
@@ -208,37 +233,44 @@
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 24px;
-            padding: 10px;
+            border-radius: 20px;
+            padding: 10px 14px; /* تنظیم پدینگ برای زیبایی بیشتر */
             display: flex;
-            gap: 12px;
+            gap: 15px; /* فاصله بین آیکون‌ها */
             box-shadow: var(--shadow-lg);
+            align-items: center; /* تراز عمودی آیکون‌ها */
         }
 
+        /* استایل جدید آیکون‌های تصویری داک */
         .dock-icon {
-            width: 55px; height: 55px; border-radius: 14px; background: white;
-            display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
-            cursor: pointer; transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 55px; 
+            height: 55px; 
+            /* حذف پس‌زمینه سفید برای آیکون‌های شفاف */
+            background-color: transparent; 
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer; 
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* حذف سایه CSS چون خود عکس‌ها معمولا سایه دارند یا نیاز نیست */
+            /* filter: drop-shadow(0 4px 5px rgba(0,0,0,0.2)); */
+            display: block; /* برای تگ‌های a */
         }
 
-        .dock-icon:hover { transform: translateY(-15px) scale(1.1); margin: 0 5px; }
-        .icon-finder { background: linear-gradient(#1e90ff, #00bfff); color: white; }
-        .icon-safari { background: white; color: #00a8ff; }
-        .icon-messages { background: #2ed573; color: white; }
-        .icon-music { background: #ff4757; color: white; }
+        .dock-icon:hover { transform: translateY(-12px) scale(1.1); }
 
         @keyframes popIn {
-            from { opacity: 0; transform: translate(-50%, -40%) scale(0.95); }
+            from { opacity: 0; transform: translate(-50%, -45%) scale(0.96); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
 
         @media (max-width: 600px) {
-            .window { width: 90%; height: 60vh; }
+            .window { width: 94%; height: 70vh; }
             .sidebar { display: none; }
             .dock-icon { width: 45px; height: 45px; }
-            .menubar { font-size: 0.7rem; }
-            .menu-left { gap: 10px; }
+            .menubar { font-size: 11px; }
+            .traffic-lights-container { position: relative; top: auto; left: auto; padding: 15px; }
+            .window-layout { flex-direction: column; }
         }
     </style>
 </head>
@@ -247,7 +279,7 @@
     <div class="menubar">
         <div class="menu-left">
             <i class="fab fa-apple apple-logo"></i>
-            <span class="menu-item menu-bold">Finder</span>
+            <span class="menu-item menu-bold" style="margin-left: 15px;">Finder</span>
             <span class="menu-item">File</span>
             <span class="menu-item">Edit</span>
             <span class="menu-item">View</span>
@@ -258,122 +290,123 @@
         <div class="menu-right">
             <i class="fas fa-wifi"></i>
             <i class="fas fa-battery-three-quarters"></i>
-            <span id="clock">12:00</span>
+            <span id="clock">12:00 PM</span>
         </div>
     </div>
 
     <div class="window" id="mainWindow">
-        <div class="title-bar" id="dragHandle">
-            <div class="traffic-lights">
-                <div class="light close" onclick="closeWindow()"></div>
-                <div class="light minimize" onclick="minimizeWindow()"></div>
-                <div class="light maximize" onclick="maximizeWindow()"></div>
-            </div>
-            <div class="toolbar-title">
-                <i class="fas fa-folder" style="color: #74b9ff;"></i>
-                Projects
-            </div>
-        </div>
         
-        <div class="window-body">
+        <div class="window-layout">
             <div class="sidebar">
-                <div class="sidebar-title">Favorites</div>
-                <div class="sidebar-item active"><i class="fas fa-hdd" style="color: #aaa;"></i> Macintosh HD</div>
-                <div class="sidebar-item"><i class="fas fa-desktop" style="color: #aaa;"></i> Desktop</div>
-                <div class="sidebar-item"><i class="fas fa-download" style="color: #aaa;"></i> Downloads</div>
-                <div class="sidebar-title">iCloud</div>
-                <div class="sidebar-item"><i class="fas fa-cloud" style="color: #aaa;"></i> iCloud Drive</div>
-            </div>
-            
-            <div class="content-area">
-                
-                <a href="./garlic-bread/index.html" class="file-item">
-                    <div class="file-icon">🥖</div>
-                    <span class="file-name">نان سیر</span>
-                </a>
-
-                <div class="file-item">
-                    <div class="file-icon">🍕</div>
-                    <span class="file-name">پیتزا (بزودی)</span>
+                <div class="traffic-lights-container">
+                    <div class="light close" onclick="closeWindow()"></div>
+                    <div class="light minimize" onclick="closeWindow()"></div>
+                    <div class="light maximize"></div>
                 </div>
 
+                <div style="height: 20px;"></div>
+
+                <div class="sidebar-title">Favorites</div>
+                
+                <div class="sidebar-item active">
+                    <i class="fas fa-folder-open" style="color: #007aff;"></i>
+                    Projects
+                </div>
+                
+                <div class="sidebar-item">
+                    <i class="fas fa-desktop"></i>
+                    Desktop
+                </div>
+                
+                <div class="sidebar-item">
+                    <i class="fas fa-download"></i>
+                    Downloads
+                </div>
+
+                <div class="sidebar-title">iCloud</div>
+                <div class="sidebar-item">
+                    <i class="fas fa-cloud"></i>
+                    iCloud Drive
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="toolbar">
+                    <div class="toolbar-title">
+                        <i class="fas fa-chevron-left" style="color: #aaa; margin-right: 10px;"></i>
+                        <i class="fas fa-chevron-right" style="color: #aaa; margin-right: 15px;"></i>
+                        Projects
+                    </div>
+                </div>
+
+                <div class="files-grid">
+                    <a href="./garlic-bread/index.html" class="file-item">
+                        <div class="file-icon">🥖</div>
+                        <span class="file-name">نان سیر<br>(Garlic Bread)</span>
+                    </a>
+
+                    <div class="file-item">
+                        <div class="file-icon">🍕</div>
+                        <span class="file-name">پیتزا<br>(Coming Soon)</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="dock-container">
         <div class="dock">
-            <div class="dock-icon icon-finder" onclick="openWindow()"><i class="fas fa-face-smile"></i></div>
-            <div class="dock-icon icon-safari"><i class="fab fa-safari"></i></div>
-            <div class="dock-icon icon-messages"><i class="fas fa-comment"></i></div>
-            <div class="dock-icon icon-music"><i class="fas fa-music"></i></div>
-            <div class="dock-icon" style="background:#333; color:white;"><i class="fas fa-terminal"></i></div>
+            <div class="dock-icon" 
+                 style="background-image: url('https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png');" 
+                 onclick="openWindow()"
+                 title="Finder">
+            </div>
+
+            <div class="dock-icon" 
+                 style="background-image: url('https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png');"
+                 title="Safari">
+            </div>
+
+            <div class="dock-icon" 
+                 style="background-image: url('https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png');"
+                 title="Music">
+            </div>
+            
+            <a href="https://soheil-aghayani.github.io/Portfolio/" target="_blank" class="dock-icon" 
+               style="background-image: url('https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png');"
+               title="My Portfolio">
+            </a>
+
+            <a href="https://github.com/Soheil-Aghayani/food-recipe" target="_blank" class="dock-icon" 
+               style="background-image: url('https://s8.uupload.ir/files/terminal_macos_bigsur_icon_189655_kepj.png');"
+               title="Source Code">
+            </a>
         </div>
     </div>
 
     <script>
-        // 1. Clock
         function updateClock() {
             const now = new Date();
-            const hours = now.getHours();
+            let hours = now.getHours();
             const minutes = now.getMinutes().toString().padStart(2, '0');
-            // فرمت ساعت انگلیسی
             const ampm = hours >= 12 ? 'PM' : 'AM';
-            const showHours = hours % 12 || 12;
-            document.getElementById('clock').textContent = `${showHours}:${minutes} ${ampm}`;
+            hours = hours % 12 || 12;
+            document.getElementById('clock').textContent = `${hours}:${minutes} ${ampm}`;
         }
         setInterval(updateClock, 1000);
         updateClock();
 
         const windowEl = document.getElementById("mainWindow");
-        const handle = document.getElementById("dragHandle");
-        let isDragging = false, startX, startY, initialLeft, initialTop;
 
-        // 2. Drag Logic
-        handle.addEventListener("mousedown", (e) => {
-            if (windowEl.classList.contains('maximized')) return;
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            const rect = windowEl.getBoundingClientRect();
-            initialLeft = rect.left + (rect.width / 2);
-            initialTop = rect.top + (rect.height / 2);
-        });
-
-        window.addEventListener("mousemove", (e) => {
-            if (!isDragging) return;
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            windowEl.style.left = `${initialLeft + dx}px`;
-            windowEl.style.top = `${initialTop + dy}px`;
-        });
-
-        window.addEventListener("mouseup", () => {
-            isDragging = false;
-        });
-
-        // 3. Window Controls
         function closeWindow() {
             windowEl.style.display = 'none';
         }
 
-        function minimizeWindow() {
-            windowEl.style.display = 'none';
-        }
-
-        function maximizeWindow() {
-            windowEl.classList.toggle('maximized');
-        }
-
         function openWindow() {
             windowEl.style.display = 'flex';
-            if (!windowEl.classList.contains('maximized')) {
-                windowEl.style.top = '50%';
-                windowEl.style.left = '50%';
-            }
             windowEl.style.animation = 'none';
-            windowEl.offsetHeight;
-            windowEl.style.animation = 'popIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            windowEl.offsetHeight; 
+            windowEl.style.animation = 'popIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
         }
     </script>
 </body>
