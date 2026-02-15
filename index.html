@@ -50,7 +50,7 @@
             font-weight: 500;
             position: fixed;
             top: 0;
-            z-index: 1000;
+            z-index: 30000;
             box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
 
@@ -341,7 +341,7 @@
             transform: translateX(-50%);
             display: flex;
             justify-content: center;
-            z-index: 1000;
+            z-index: 25000;
         }
 
         .dock {
@@ -659,8 +659,39 @@
             if (!app || !app.isOpen) return;
 
             bringToFront(appKey);
-            app.el.classList.toggle("is-maximized");
-        }
+
+            app.el.style.opacity = "";
+            app.el.style.filter = "";
+            app.el.style.transform = "";
+
+            const isMax = app.el.classList.contains("is-maximized");
+
+            if (!isMax) {
+                app.el.dataset.prevTop = app.el.style.top || "";
+                app.el.dataset.prevLeft = app.el.style.left || "";
+                app.el.dataset.prevWidth = app.el.style.width || "";
+                app.el.dataset.prevHeight = app.el.style.height || "";
+                app.el.dataset.prevTransform = app.el.style.transform || "";
+
+                app.el.style.top = "44px";
+                app.el.style.left = "20px";
+                app.el.style.width = "calc(100vw - 40px)";
+                app.el.style.height = "calc(100vh - 44px - 120px)";
+                app.el.style.transform = "translate(0px, 0px)";
+
+                app.el.classList.add("is-maximized");
+                return;
+            }
+
+            app.el.classList.remove("is-maximized");
+
+            app.el.style.top = app.el.dataset.prevTop || "";
+            app.el.style.left = app.el.dataset.prevLeft || "";
+            app.el.style.width = app.el.dataset.prevWidth || "";
+            app.el.style.height = app.el.dataset.prevHeight || "";
+            app.el.style.transform = app.el.dataset.prevTransform || "";
+            }
+
 
         document.querySelectorAll(".window").forEach((w) => {
             w.addEventListener("pointerdown", () => {
@@ -670,17 +701,21 @@
             });
         });
 
-        document.addEventListener("click", (e) => {
-            const btn = e.target.closest("[data-app][data-action]");
-            if (!btn) return;
+        document.addEventListener("keydown", (e) => {
+            if (e.key !== "Escape") return;
 
-            const appKey = btn.getAttribute("data-app");
-            const action = btn.getAttribute("data-action");
+            ["finder", "safari"].forEach((k) => {
+                const app = apps[k];
+                if (!app || !app.isOpen) return;
+                app.el.classList.remove("is-maximized");
+                app.el.style.top = "";
+                app.el.style.left = "";
+                app.el.style.width = "";
+                app.el.style.height = "";
+                app.el.style.transform = "";
+            });
+            });
 
-            if (action === "close") closeApp(appKey);
-            if (action === "minimize") minimizeApp(appKey);
-            if (action === "maximize") toggleMaximize(appKey);
-        });
 
         document.getElementById("dockFinder").addEventListener("click", () => {
             if (apps.finder.isOpen) bringToFront("finder");
