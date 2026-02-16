@@ -80,7 +80,7 @@
       display:flex;
       flex-direction: column;
       gap: 16px;
-      z-index: 1200;
+      z-index: 100;
       pointer-events: auto;
     }
 
@@ -573,13 +573,25 @@
       }
 
       .window{
-        width: 94vw;
-        height: calc(100vh - var(--dock-h) - var(--menu-h) - 50px);
-        max-height: 80vh;
+        width: 96vw;
+        height: calc(100vh - var(--menu-h) - var(--dock-h) - 20px);
+        max-height: none;
+        top: calc(var(--menu-h) + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .window.is-maximized{
+        top: calc(var(--menu-h) + 4px);
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - var(--menu-h) - var(--dock-h) - 10px);
+        border-radius: 0;
+        transform: none;
       }
 
       .topbar{
-        height: 60px;
+        height: 50px;
       }
 
       .nav-btn{
@@ -622,11 +634,24 @@
       .side-item{
         width: auto;
         flex: 0 0 auto;
-        padding: 8px 10px;
+        padding: 6px 8px;
+        font-size: 12px;
       }
 
       .grid{
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
+      }
+
+      .item{
+        padding: 8px 4px;
+      }
+      .item img{
+        width: 48px;
+        height: 48px;
+      }
+      .item .name{
+        font-size: 11px;
       }
     }
   </style>

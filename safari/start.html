@@ -63,6 +63,22 @@
       color: rgba(255,255,255,0.92);
       font-size: 13px;
     }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      }
+      .tile {
+        flex-direction: column;
+        text-align: center;
+        padding: 12px;
+        gap: 8px;
+      }
+      .tile img {
+        width: 42px;
+        height: 42px;
+      }
+    }
     .tile:active{ filter: brightness(0.95); }
     .tile img{ width: 34px; height: 34px; object-fit: contain; }
     .sub{ font-size: 11px; opacity: 0.80; margin-top: 2px; }
