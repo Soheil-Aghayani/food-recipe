@@ -91,5 +91,16 @@
     });
   }
 
-  window.SoheilDrag = { makeDraggable: makeDraggable };
+  const SoheilDrag = {
+    makeDraggable: makeDraggable,
+    clamp: clamp,
+  };
+
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = SoheilDrag;
+  }
+
+  if (typeof window !== "undefined") {
+    window.SoheilDrag = SoheilDrag;
+  }
 })();

@@ -1,0 +1,19 @@
+{
+  "name": "soheil-os",
+  "version": "1.0.0",
+  "description": "Soheil OS with recipe management",
+  "main": "drag/drag.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "os",
+    "drag",
+    "recipe"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
