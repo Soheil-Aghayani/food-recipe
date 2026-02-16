@@ -36,6 +36,7 @@
       font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
       user-select: none;
       cursor: var(--mac-arrow), default;
+      -webkit-tap-highlight-color: transparent;
     }
 
     button{ cursor: var(--mac-arrow), pointer; }
@@ -117,6 +118,45 @@
       bottom: 14px;
       z-index: 25000;
       pointer-events: auto;
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .min-tray{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 16px 34px rgba(0,0,0,0.18);
+      max-width: min(92vw, 720px);
+      overflow-x: auto;
+      display:none;
+    }
+
+    .tray-btn{
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.20);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 0;
+      flex: 0 0 auto;
+    }
+    .tray-btn img{
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.16));
     }
 
     .dock{
@@ -131,6 +171,8 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       box-shadow: var(--shadow);
+      max-width: min(92vw, 860px);
+      overflow-x: auto;
     }
 
     .dock-btn{
@@ -145,6 +187,7 @@
       padding: 0;
       position: relative;
       transition: transform 0.18s cubic-bezier(0.2,0.8,0.2,1);
+      flex: 0 0 auto;
     }
     .dock-btn:hover{ transform: translateY(-10px) scale(1.08); }
     .dock-btn:active{ transform: translateY(-7px) scale(1.05); }
@@ -194,7 +237,7 @@
       left: 14px;
       transform: translate(0,0);
       width: calc(100vw - 28px);
-      height: calc(100vh - var(--menu-h) - var(--dock-h) - 44px);
+      height: calc(100vh - var(--menu-h) - var(--dock-h) - 64px);
       border-radius: 14px;
     }
 
@@ -254,6 +297,7 @@
       padding: 0 12px;
       font-size: 13px;
       user-select: text;
+      min-width: 120px;
     }
     .address:focus{
       outline: none;
@@ -273,6 +317,7 @@
       justify-content:center;
       color: rgba(0,0,0,0.72);
       font-size: 13px;
+      flex: 0 0 auto;
     }
     .nav-btn:disabled{ opacity: 0.35; cursor: default; }
 
@@ -308,6 +353,7 @@
       padding: 10px 10px 10px;
       box-sizing: border-box;
       position: relative;
+      overflow: hidden;
     }
 
     .side-section{
@@ -517,9 +563,54 @@
     }
 
     @media (max-width: 720px){
-      .window{ width: 94vw; height: 72vh; }
-      .finder-side{ width: 190px; }
-      .grid{ grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+      :root{ --dock-h: 74px; }
+
+      .window{
+        width: 96vw;
+        height: 78vh;
+      }
+
+      .dock{
+        padding: 8px 10px;
+        gap: 10px;
+        border-radius: 18px;
+      }
+
+      .dock-btn{
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+      }
+
+      .dock-btn img{
+        width: 46px;
+        height: 46px;
+      }
+
+      .finder-layout{ flex-direction: column; }
+
+      .finder-side{
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        display:flex;
+        align-items:center;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 10px;
+      }
+
+      .side-section{ display:none; }
+
+      .side-item{
+        width: auto;
+        flex: 0 0 auto;
+        padding: 8px 10px;
+      }
+
+      .grid{
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      }
     }
   </style>
 </head>
@@ -588,6 +679,11 @@
             <div id="projectsView">
               <div class="grid" id="projectsGrid"></div>
               <div class="empty" id="projectsEmpty" style="display:none;">No recipes yet</div>
+            </div>
+
+            <div id="desktopView" style="display:none;">
+              <div class="grid" id="desktopGrid"></div>
+              <div class="empty" id="desktopEmpty" style="display:none;">Desktop is empty</div>
             </div>
 
             <div id="downloadsView" style="display:none;">
@@ -694,23 +790,6 @@
     </div>
   </div>
 
-  <div class="window is-hidden" id="desktopWin" data-app="desktop" aria-hidden="true" style="width: 980px; height: 640px;">
-    <div class="topbar" data-drag-handle="desktop">
-      <div class="traffic">
-        <button class="light close" type="button" data-app="desktop" data-action="close" aria-label="Close"></button>
-        <button class="light min" type="button" data-app="desktop" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="desktop" data-action="maximize" aria-label="Maximize"></button>
-      </div>
-      <div class="title">Desktop</div>
-    </div>
-
-    <div class="content">
-      <iframe class="app-frame" id="desktopFrame" title="Desktop"
-        src="desktop/index.html"
-        sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
-    </div>
-  </div>
-
   <div class="help-overlay" id="helpOverlay" aria-hidden="true">
     <div class="help-card">
       <div class="help-head">
@@ -734,6 +813,8 @@
   </div>
 
   <div class="dock-wrap">
+    <div class="min-tray" id="minTray"></div>
+
     <div class="dock">
       <button class="dock-btn is-running" id="dockFinder" type="button" title="Finder">
         <img alt="Finder" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
@@ -762,6 +843,9 @@
     </div>
   </div>
 
+  <script src="drag/drag.js"></script>
+  <script src="lights/light-index.js"></script>
+
   <script>
     function updateClock(){
       const now = new Date();
@@ -779,14 +863,49 @@
       finderView: "projects"
     };
 
+    const minTray = document.getElementById("minTray");
+    const trayMap = new Map();
+
+    function trayRefreshVisibility(){
+      minTray.style.display = trayMap.size ? "flex" : "none";
+    }
+
+    function trayEnsure(appKey, iconUrl, title){
+      if (trayMap.has(appKey)) return trayMap.get(appKey);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tray-btn";
+      btn.title = title || appKey;
+
+      const img = document.createElement("img");
+      img.alt = title || appKey;
+      img.src = iconUrl;
+
+      btn.appendChild(img);
+      minTray.appendChild(btn);
+
+      trayMap.set(appKey, btn);
+      trayRefreshVisibility();
+
+      return btn;
+    }
+
+    function trayRemove(appKey){
+      const btn = trayMap.get(appKey);
+      if (!btn) return;
+      btn.remove();
+      trayMap.delete(appKey);
+      trayRefreshVisibility();
+    }
+
     const apps = {
-      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), isOpen:true, isMin:false, busy:false },
-      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  isOpen:false, isMin:false, busy:false },
-      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, isOpen:false, isMin:false, busy:false },
-      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), isOpen:false, isMin:false, busy:false },
-      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), isOpen:false, isMin:false, busy:false },
-      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, isOpen:false, isMin:false, busy:false },
-      desktop: { key:"desktop", el: document.getElementById("desktopWin"), dock: null, isOpen:false, isMin:false, busy:false }
+      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), icon:"https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png", isOpen:true, isMin:false, busy:false },
+      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  icon:"https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png", isOpen:false, isMin:false, busy:false },
+      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, icon:"https://s8.uupload.ir/files/garlic_bread_krr0.png", isOpen:false, isMin:false, busy:false },
+      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), icon:"https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png", isOpen:false, isMin:false, busy:false },
+      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), icon:"https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png", isOpen:false, isMin:false, busy:false },
+      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, icon:"https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png", isOpen:false, isMin:false, busy:false }
     };
 
     function markRunning(appKey){
@@ -804,63 +923,6 @@
       app.el.style.zIndex = String(state.z);
     }
 
-    function baseTransform(appEl){
-      return appEl.classList.contains("is-maximized") ? "translate(0,0)" : "translate(-50%,-50%)";
-    }
-
-    function animateOpen(appEl){
-      const base = baseTransform(appEl);
-      appEl.style.pointerEvents = "none";
-      appEl.animate(
-        [
-          { opacity: 0, filter: "blur(2px)", transform: base + " scale(0.96)" },
-          { opacity: 1, filter: "blur(0px)", transform: base + " scale(1)" }
-        ],
-        { duration: 220, easing: "cubic-bezier(0.2,0.8,0.2,1)", fill: "forwards" }
-      ).finished.finally(() => {
-        appEl.style.pointerEvents = "";
-        appEl.style.opacity = "";
-        appEl.style.filter = "";
-        appEl.style.transform = "";
-      });
-    }
-
-    function animateClose(appEl){
-      const base = baseTransform(appEl);
-      appEl.style.pointerEvents = "none";
-      return appEl.animate(
-        [
-          { opacity: 1, filter: "blur(0px)", transform: base + " scale(1)" },
-          { opacity: 0, filter: "blur(2px)", transform: base + " scale(0.92)" }
-        ],
-        { duration: 210, easing: "cubic-bezier(0.22,0.61,0.36,1)", fill: "forwards" }
-      ).finished.finally(() => {
-        appEl.style.pointerEvents = "";
-      });
-    }
-
-    function animateToDock(appEl, dockEl){
-      if (!dockEl) return Promise.resolve();
-      const base = baseTransform(appEl);
-
-      const w = appEl.getBoundingClientRect();
-      const d = dockEl.getBoundingClientRect();
-
-      const dx = (d.left + d.width/2) - (w.left + w.width/2);
-      const dy = (d.top + d.height/2) - (w.top + w.height/2);
-
-      appEl.style.pointerEvents = "none";
-      return appEl.animate(
-        [
-          { opacity: 1, filter: "blur(0px)", transform: base + " translate(0px,0px) scale(1)" },
-          { opacity: 0, filter: "blur(2px)", transform: base + " translate(" + dx + "px," + dy + "px) scale(0.08)" }
-        ],
-        { duration: 300, easing: "cubic-bezier(0.22,0.61,0.36,1)", fill: "forwards" }
-      ).finished.finally(() => {
-        appEl.style.pointerEvents = "";
-      });
-    }
-
     function openApp(appKey){
       const app = apps[appKey];
       if (!app || app.busy) return;
@@ -871,18 +933,18 @@
       app.isOpen = true;
       app.isMin = false;
 
+      trayRemove(appKey);
+
       bringToFront(appKey);
-      animateOpen(app.el);
+      window.SoheilLights.animateOpen(app.el);
       markRunning(appKey);
     }
 
     function resetSafariState(){
       state.safari.history = ["safari/start.html"];
       state.safari.index = 0;
-      const sFrame = document.getElementById("sFrame");
-      const sAddress = document.getElementById("sAddress");
-      sFrame.src = "safari/start.html";
-      sAddress.value = "Start Page";
+      document.getElementById("sFrame").src = "safari/start.html";
+      document.getElementById("sAddress").value = "Start Page";
       safariSetButtons();
     }
 
@@ -893,7 +955,7 @@
       app.busy = true;
       bringToFront(appKey);
 
-      animateClose(app.el).finally(() => {
+      window.SoheilLights.animateClose(app.el).finally(() => {
         app.el.style.display = "none";
         app.el.classList.add("is-hidden");
         app.el.setAttribute("aria-hidden","true");
@@ -904,6 +966,8 @@
 
         app.isOpen = false;
         app.isMin = false;
+
+        trayRemove(appKey);
         markRunning(appKey);
 
         if (appKey === "safari") resetSafariState();
@@ -917,7 +981,13 @@
       app.busy = true;
       bringToFront(appKey);
 
-      animateToDock(app.el, app.dock).finally(() => {
+      const trayBtn = trayEnsure(appKey, app.icon, appKey);
+
+      let targetRect = null;
+      if (app.dock) targetRect = app.dock.getBoundingClientRect();
+      else targetRect = trayBtn.getBoundingClientRect();
+
+      window.SoheilLights.animateMinimizeTo(app.el, targetRect).finally(() => {
         app.el.style.display = "none";
         app.el.classList.add("is-hidden");
         app.el.setAttribute("aria-hidden","true");
@@ -940,49 +1010,55 @@
       app.el.style.display = "flex";
       app.isMin = false;
 
+      trayRemove(appKey);
+
       bringToFront(appKey);
-      animateOpen(app.el);
+      window.SoheilLights.animateOpen(app.el);
       markRunning(appKey);
-    }
-
-    function saveWindowInline(appEl){
-      appEl.dataset.prevLeft = appEl.style.left || "";
-      appEl.dataset.prevTop = appEl.style.top || "";
-      appEl.dataset.prevWidth = appEl.style.width || "";
-      appEl.dataset.prevHeight = appEl.style.height || "";
-      appEl.dataset.prevTransform = appEl.style.transform || "";
-    }
-
-    function restoreWindowInline(appEl){
-      appEl.style.left = appEl.dataset.prevLeft || "";
-      appEl.style.top = appEl.dataset.prevTop || "";
-      appEl.style.width = appEl.dataset.prevWidth || "";
-      appEl.style.height = appEl.dataset.prevHeight || "";
-      appEl.style.transform = appEl.dataset.prevTransform || "";
     }
 
     function toggleMaximize(appKey){
       const app = apps[appKey];
       if (!app || !app.isOpen || app.busy) return;
 
-      bringToFront(appKey);
       const el = app.el;
-      const isMax = el.classList.contains("is-maximized");
+      bringToFront(appKey);
 
-      if (!isMax){
-        saveWindowInline(el);
+      if (!el.classList.contains("is-maximized")){
+        const r = el.getBoundingClientRect();
+        el.dataset.prevLeft = String(r.left);
+        el.dataset.prevTop = String(r.top);
+        el.dataset.prevWidth = String(r.width);
+        el.dataset.prevHeight = String(r.height);
+
         el.style.left = "";
         el.style.top = "";
         el.style.width = "";
         el.style.height = "";
         el.style.transform = "";
+
         el.classList.add("is-maximized");
         return;
       }
 
       el.classList.remove("is-maximized");
-      restoreWindowInline(el);
-      if (!el.style.left && !el.style.top) {
+
+      const pl = Number(el.dataset.prevLeft || "");
+      const pt = Number(el.dataset.prevTop || "");
+      const pw = Number(el.dataset.prevWidth || "");
+      const ph = Number(el.dataset.prevHeight || "");
+
+      if (Number.isFinite(pl) && Number.isFinite(pt) && Number.isFinite(pw) && Number.isFinite(ph)){
+        el.style.left = pl + "px";
+        el.style.top = pt + "px";
+        el.style.width = pw + "px";
+        el.style.height = ph + "px";
+        el.style.transform = "translate(0,0)";
+      } else {
+        el.style.left = "";
+        el.style.top = "";
+        el.style.width = "";
+        el.style.height = "";
         el.style.transform = "";
       }
     }
@@ -993,12 +1069,18 @@
       if (action === "maximize") toggleMaximize(appKey);
     }
 
-    document.querySelectorAll("button.light[data-app][data-action]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleTraffic(btn.dataset.app, btn.dataset.action);
-      });
+    document.addEventListener("click", (e) => {
+      const t = e.target;
+      if (!t) return;
+      if (!t.classList.contains("light")) return;
+
+      const appKey = t.getAttribute("data-app");
+      const action = t.getAttribute("data-action");
+      if (!appKey || !action) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      handleTraffic(appKey, action);
     });
 
     Object.values(apps).forEach((app) => {
@@ -1027,84 +1109,19 @@
       else bringToFront("igithub");
     });
 
-    function makeDraggable(appKey){
-      const app = apps[appKey];
-      if (!app) return;
-
-      const el = app.el;
-      const handle = el.querySelector('[data-drag-handle="' + appKey + '"]');
-      if (!handle) return;
-
-      let dragging = false;
-      let startX = 0;
-      let startY = 0;
-      let startLeft = 0;
-      let startTop = 0;
-
-      function isInteractiveTarget(target){
-        if (!target) return false;
-        if (target.closest(".traffic")) return true;
-        const tag = target.tagName;
-        return tag === "INPUT" || tag === "BUTTON" || tag === "A" || tag === "TEXTAREA" || tag === "SELECT";
-      }
-
-      function onMove(e){
-        if (!dragging) return;
-
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
-
-        const minLeft = 10;
-        const minTop = 44;
-        const maxLeft = window.innerWidth - 80;
-        const maxTop = window.innerHeight - 80;
-
-        const nextLeft = Math.min(Math.max(minLeft, startLeft + dx), maxLeft);
-        const nextTop = Math.min(Math.max(minTop, startTop + dy), maxTop);
-
-        el.style.left = nextLeft + "px";
-        el.style.top = nextTop + "px";
-      }
-
-      function end(){
-        dragging = false;
-        window.removeEventListener("pointermove", onMove);
-        window.removeEventListener("pointerup", end);
-        window.removeEventListener("pointercancel", end);
-      }
-
-      handle.addEventListener("pointerdown", (e) => {
-        if (isInteractiveTarget(e.target)) return;
-        if (el.classList.contains("is-maximized")) return;
-
-        dragging = true;
-        bringToFront(appKey);
-
-        const r = el.getBoundingClientRect();
-        startX = e.clientX;
-        startY = e.clientY;
-        startLeft = r.left;
-        startTop = r.top;
-
-        el.style.left = startLeft + "px";
-        el.style.top = startTop + "px";
-        el.style.transform = "translate(0,0)";
-
-        window.addEventListener("pointermove", onMove);
-        window.addEventListener("pointerup", end);
-        window.addEventListener("pointercancel", end);
-
-        try { handle.setPointerCapture(e.pointerId); } catch (_) {}
-      });
+    function bindTrayRestore(appKey){
+      const btn = trayMap.get(appKey);
+      if (!btn) return;
+      btn.onclick = () => {
+        if (!apps[appKey].isOpen) return;
+        restoreApp(appKey);
+      };
     }
 
-    makeDraggable("finder");
-    makeDraggable("safari");
-    makeDraggable("recipe");
-    makeDraggable("igithub");
-    makeDraggable("music");
-    makeDraggable("bin");
-    makeDraggable("desktop");
+    const trayObserver = new MutationObserver(() => {
+      trayMap.forEach((btn, key) => bindTrayRestore(key));
+    });
+    trayObserver.observe(minTray, { childList: true });
 
     const helpOverlay = document.getElementById("helpOverlay");
     function openHelp(){
@@ -1135,11 +1152,13 @@
       });
 
       document.getElementById("projectsView").style.display = view === "projects" ? "block" : "none";
+      document.getElementById("desktopView").style.display = view === "desktop" ? "block" : "none";
       document.getElementById("downloadsView").style.display = view === "downloads" ? "block" : "none";
       document.getElementById("igithubHint").style.display = view === "igithub" ? "block" : "none";
 
       const pathEl = document.getElementById("finderPath");
       if (view === "projects") pathEl.textContent = "Projects";
+      if (view === "desktop") pathEl.textContent = "Desktop";
       if (view === "downloads") pathEl.textContent = "Downloads";
       if (view === "igithub") pathEl.textContent = "iGithub";
     }
@@ -1148,13 +1167,6 @@
       b.addEventListener("click", () => {
         const view = b.getAttribute("data-finder");
         bringToFront("finder");
-
-        if (view === "desktop"){
-          if (!apps.desktop.isOpen) openApp("desktop");
-          else if (apps.desktop.isMin) restoreApp("desktop");
-          else bringToFront("desktop");
-          return;
-        }
 
         if (view === "igithub"){
           setFinderActive("igithub");
@@ -1219,6 +1231,56 @@
       }
     }
 
+    function renderDesktopFolder(){
+      const grid = document.getElementById("desktopGrid");
+      const empty = document.getElementById("desktopEmpty");
+      grid.innerHTML = "";
+      empty.style.display = "none";
+
+      const items = [
+        {
+          name: "Bin",
+          sub: "Trash",
+          icon: "https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png",
+          onClick: () => {
+            if (!apps.bin.isOpen) openApp("bin");
+            else if (apps.bin.isMin) restoreApp("bin");
+            else bringToFront("bin");
+          }
+        }
+      ];
+
+      if (!items.length){
+        empty.style.display = "block";
+        return;
+      }
+
+      items.forEach((it) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "item";
+
+        const img = document.createElement("img");
+        img.alt = it.name;
+        img.src = it.icon;
+
+        const name = document.createElement("div");
+        name.className = "name";
+        name.textContent = it.name;
+
+        const sub = document.createElement("div");
+        sub.className = "sub";
+        sub.textContent = it.sub;
+
+        btn.appendChild(img);
+        btn.appendChild(name);
+        btn.appendChild(sub);
+
+        btn.addEventListener("click", it.onClick);
+        grid.appendChild(btn);
+      });
+    }
+
     function openRecipe(it){
       const title = it.title_fa || it.title || "Recipe";
       const url = it.url || "";
@@ -1234,6 +1296,7 @@
     }
 
     loadRecipes();
+    renderDesktopFolder();
 
     const sFrame = document.getElementById("sFrame");
     const sAddress = document.getElementById("sAddress");
@@ -1253,9 +1316,8 @@
 
       if (!raw || low === "start" || low === "start page" || low === "new tab") return "safari/start.html";
       if (low === "sohgle" || low === "google" || low.includes("google.")) return "safari/sohgle.html";
-      if (low.startsWith("sohgle?") || low.startsWith("sohgle.html")) return "safari/sohgle.html" + (raw.includes("?") ? raw.slice(raw.indexOf("?")) : "");
 
-      if (raw.startsWith("safari/") || raw.startsWith("recipes/") || raw.startsWith("music/") || raw.startsWith("igit/") || raw.startsWith("desktop/") || raw.startsWith("bin/") || raw.startsWith("garlic-bread/")) return raw;
+      if (raw.startsWith("safari/") || raw.startsWith("recipes/") || raw.startsWith("music/") || raw.startsWith("igit/") || raw.startsWith("bin/") || raw.startsWith("garlic-bread/")) return raw;
 
       return "safari/sohgle.html?q=" + encodeURIComponent(raw);
     }
@@ -1342,11 +1404,6 @@
           else if (apps.bin.isMin) restoreApp("bin");
           else bringToFront("bin");
         }
-        if (app === "desktop") {
-          if (!apps.desktop.isOpen) openApp("desktop");
-          else if (apps.desktop.isMin) restoreApp("desktop");
-          else bringToFront("desktop");
-        }
         if (app === "recipe"){
           if (d.recipe) openRecipe(d.recipe);
           else if (d.url){
@@ -1364,9 +1421,36 @@
       const el = app.el;
       if (el.classList.contains("is-maximized")){
         el.classList.remove("is-maximized");
-        restoreWindowInline(el);
+        const pl = Number(el.dataset.prevLeft || "");
+        const pt = Number(el.dataset.prevTop || "");
+        const pw = Number(el.dataset.prevWidth || "");
+        const ph = Number(el.dataset.prevHeight || "");
+        if (Number.isFinite(pl) && Number.isFinite(pt) && Number.isFinite(pw) && Number.isFinite(ph)){
+          el.style.left = pl + "px";
+          el.style.top = pt + "px";
+          el.style.width = pw + "px";
+          el.style.height = ph + "px";
+          el.style.transform = "translate(0,0)";
+        }
       }
     });
+
+    function initDrag(){
+      const d = window.SoheilDrag;
+      if (!d || !d.makeDraggable) return;
+
+      Object.values(apps).forEach((app) => {
+        const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
+        d.makeDraggable({
+          el: app.el,
+          handle,
+          onFocus: () => bringToFront(app.key),
+          isLocked: () => app.el.classList.contains("is-maximized")
+        });
+      });
+    }
+
+    initDrag();
 
     setFinderActive("projects");
     markRunning("finder");
