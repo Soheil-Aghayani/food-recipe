@@ -1,4 +1,61 @@
-const { clamp } = require('./drag.js');
+const { clamp, isInteractiveTarget } = require('./drag.js');
+
+describe('isInteractiveTarget function', () => {
+  test('should return false if target is falsy', () => {
+    expect(isInteractiveTarget(null)).toBe(false);
+    expect(isInteractiveTarget(undefined)).toBe(false);
+  });
+
+  test('should return true if target is in .traffic element', () => {
+    const target = {
+      closest: jest.fn((selector) => selector === '.traffic'),
+    };
+    expect(isInteractiveTarget(target)).toBe(true);
+    expect(target.closest).toHaveBeenCalledWith('.traffic');
+  });
+
+  test('should return true for interactive tag names', () => {
+    const interactiveTags = ['INPUT', 'BUTTON', 'A', 'TEXTAREA', 'SELECT', 'LABEL'];
+    interactiveTags.forEach((tag) => {
+      const target = { tagName: tag };
+      expect(isInteractiveTarget(target)).toBe(true);
+    });
+  });
+
+  test('should return true for interactive tag names regardless of case', () => {
+    const interactiveTags = ['input', 'Button', 'a', 'TextArea', 'SELECT', 'label'];
+    interactiveTags.forEach((tag) => {
+      const target = { tagName: tag };
+      expect(isInteractiveTarget(target)).toBe(true);
+    });
+  });
+
+  test('should return false for non-interactive tag names', () => {
+    const nonInteractiveTags = ['DIV', 'SPAN', 'P', 'SECTION'];
+    nonInteractiveTags.forEach((tag) => {
+      const target = { tagName: tag };
+      expect(isInteractiveTarget(target)).toBe(false);
+    });
+  });
+
+  test('should return false if tagName is missing', () => {
+    const target = {};
+    expect(isInteractiveTarget(target)).toBe(false);
+  });
+
+  test('should handle target with closest returning null', () => {
+    const target = {
+      closest: () => null,
+      tagName: 'DIV',
+    };
+    expect(isInteractiveTarget(target)).toBe(false);
+  });
+
+  test('should not crash if target.closest is undefined', () => {
+    const target = { tagName: 'DIV' }; // closest is undefined
+    expect(isInteractiveTarget(target)).toBe(false);
+  });
+});
 
 describe('clamp function', () => {
   test('should return v if v is within [min, max]', () => {

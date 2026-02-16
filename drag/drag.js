@@ -94,6 +94,7 @@
   const SoheilDrag = {
     makeDraggable: makeDraggable,
     clamp: clamp,
+    isInteractiveTarget: isInteractiveTarget,
   };
 
   if (typeof module !== "undefined" && module.exports) {
