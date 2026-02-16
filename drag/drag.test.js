@@ -1,4 +1,59 @@
-const { clamp, isInteractiveTarget } = require('./drag.js');
+const { clamp, isInteractiveTarget, makeDraggable } = require('./drag.js');
+
+describe('makeDraggable function', () => {
+  let originalWindow;
+
+  beforeAll(() => {
+    originalWindow = global.window;
+    // Mock window object
+    global.window = {
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      innerWidth: 1024,
+      innerHeight: 768,
+    };
+  });
+
+  afterAll(() => {
+    global.window = originalWindow;
+  });
+
+  test('should log warning when setPointerCapture fails', () => {
+    const el = {
+      style: {},
+      getBoundingClientRect: jest.fn(() => ({ left: 0, top: 0, width: 100, height: 100 })),
+    };
+    const handle = {
+      addEventListener: jest.fn(),
+      setPointerCapture: jest.fn(() => {
+        throw new Error('Capture failed');
+      }),
+    };
+
+    makeDraggable({ el, handle });
+
+    expect(handle.addEventListener).toHaveBeenCalledWith('pointerdown', expect.any(Function));
+    const pointerDownHandler = handle.addEventListener.mock.calls[0][1];
+
+    const event = {
+      target: handle,
+      clientX: 10,
+      clientY: 10,
+      pointerId: 1,
+    };
+
+    // Spy on console.warn
+    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    // Execute the handler
+    pointerDownHandler(event);
+
+    expect(handle.setPointerCapture).toHaveBeenCalledWith(1);
+    expect(consoleSpy).toHaveBeenCalledWith('SoheilDrag: setPointerCapture failed', expect.any(Error));
+
+    consoleSpy.mockRestore();
+  });
+});
 
 describe('isInteractiveTarget function', () => {
   test('should return false if target is falsy', () => {
@@ -87,11 +142,8 @@ describe('clamp function', () => {
   });
 
   test('should handle min > max by returning max (current behavior)', () => {
-    // Math.min(Math.max(5, 10), 0) -> Math.min(10, 0) -> 0
     expect(clamp(5, 10, 0)).toBe(0);
-    // Math.min(Math.max(15, 10), 0) -> Math.min(15, 0) -> 0
     expect(clamp(15, 10, 0)).toBe(0);
-    // Math.min(Math.max(-5, 10), 0) -> Math.min(10, 0) -> 0
     expect(clamp(-5, 10, 0)).toBe(0);
   });
 });

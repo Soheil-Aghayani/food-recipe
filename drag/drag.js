@@ -91,7 +91,7 @@
       window.addEventListener("pointerup", end);
       window.addEventListener("pointercancel", end);
 
-      try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+      try { handle.setPointerCapture(e.pointerId); } catch (err) { console.warn("SoheilDrag: setPointerCapture failed", err); }
     });
   }
 
