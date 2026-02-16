@@ -18,16 +18,14 @@ describe('makeDraggable function', () => {
     global.window = originalWindow;
   });
 
-  test('should log warning when setPointerCapture fails', () => {
+  test('should not call setPointerCapture', () => {
     const el = {
       style: {},
       getBoundingClientRect: jest.fn(() => ({ left: 0, top: 0, width: 100, height: 100 })),
     };
     const handle = {
       addEventListener: jest.fn(),
-      setPointerCapture: jest.fn(() => {
-        throw new Error('Capture failed');
-      }),
+      setPointerCapture: jest.fn(),
     };
 
     makeDraggable({ el, handle });
@@ -42,16 +40,10 @@ describe('makeDraggable function', () => {
       pointerId: 1,
     };
 
-    // Spy on console.warn
-    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
-
     // Execute the handler
     pointerDownHandler(event);
 
-    expect(handle.setPointerCapture).toHaveBeenCalledWith(1);
-    expect(consoleSpy).toHaveBeenCalledWith('SoheilDrag: setPointerCapture failed', expect.any(Error));
-
-    consoleSpy.mockRestore();
+    expect(handle.setPointerCapture).not.toHaveBeenCalled();
   });
 });
 
