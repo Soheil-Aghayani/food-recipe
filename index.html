@@ -1231,7 +1231,7 @@
       empty.style.display = "none";
 
       try{
-        const res = await fetch("recipes/recipes.json", { cache: "no-store" });
+        const res = await fetch("recipes/recipes.json");
         if (!res.ok) throw new Error("recipes.json not reachable");
         const items = await res.json();
 
