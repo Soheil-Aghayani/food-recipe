@@ -1,4 +1,8 @@
 (function () {
+  const DRAG_MIN_X = 10;
+  const DRAG_MIN_Y = 44;
+  const DRAG_BOUNDARY_OFFSET = 80;
+
   function isInteractiveTarget(target) {
     if (!target) return false;
     if (target.closest && target.closest(".traffic")) return true;
@@ -31,10 +35,10 @@
     function applyMove() {
       raf = 0;
 
-      const minLeft = 10;
-      const minTop = 44;
-      const maxLeft = window.innerWidth - 80;
-      const maxTop = window.innerHeight - 80;
+      const minLeft = DRAG_MIN_X;
+      const minTop = DRAG_MIN_Y;
+      const maxLeft = window.innerWidth - DRAG_BOUNDARY_OFFSET;
+      const maxTop = window.innerHeight - DRAG_BOUNDARY_OFFSET;
 
       const x = clamp(nextX, minLeft, maxLeft);
       const y = clamp(nextY, minTop, maxTop);
