@@ -10,7 +10,6 @@
 
   <link rel="prefetch" href="safari/start.html">
   <link rel="prefetch" href="safari/sohgle.html">
-  <link rel="preconnect" href="https://s8.uupload.ir" crossorigin>
 
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
 
@@ -565,9 +564,27 @@
     @media (max-width: 720px){
       :root{ --dock-h: 74px; }
 
+      .light {
+        width: 18px;
+        height: 18px;
+      }
+      .traffic {
+        gap: 12px;
+      }
+
       .window{
-        width: 96vw;
-        height: 78vh;
+        width: 94vw;
+        height: calc(100vh - var(--dock-h) - var(--menu-h) - 50px);
+        max-height: 80vh;
+      }
+
+      .topbar{
+        height: 60px;
+      }
+
+      .nav-btn{
+        width: 36px;
+        height: 36px;
       }
 
       .dock{
@@ -627,7 +644,7 @@
 
   <div class="desktop-icons">
     <button class="desktop-icon" id="desktopBin" type="button" title="Bin">
-      <img alt="Bin" src="https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png">
+      <img alt="Bin" src="assets/icons/bin.png">
       <span>Bin</span>
     </button>
   </div>
@@ -648,24 +665,24 @@
           <div class="side-section">Favorites</div>
 
           <button class="side-item is-active" type="button" data-finder="projects">
-            <img alt="Projects" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+            <img alt="Projects" src="assets/icons/finder.png">
             Projects
           </button>
 
           <button class="side-item" type="button" data-finder="desktop">
-            <img alt="Desktop" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+            <img alt="Desktop" src="assets/icons/finder.png">
             Desktop
           </button>
 
           <button class="side-item" type="button" data-finder="downloads">
-            <img alt="Downloads" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+            <img alt="Downloads" src="assets/icons/finder.png">
             Downloads
           </button>
 
           <div class="side-section" style="margin-top:14px;">iGithub</div>
 
           <button class="side-item" type="button" data-finder="igithub">
-            <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
+            <img alt="iGithub" src="assets/icons/github.png">
             iGithub
           </button>
         </div>
@@ -798,7 +815,7 @@
       </div>
       <div class="help-body">
         <div class="help-photo">
-          <img alt="Soheil" src="https://s8.uupload.ir/files/photo_2026-02-10_18-49-52_fwiq.jpg">
+          <img alt="Soheil" src="assets/profile/me.jpg">
         </div>
         <div class="help-text">
           <div class="name">Soheil OS v1.0.0</div>
@@ -817,27 +834,27 @@
 
     <div class="dock">
       <button class="dock-btn is-running" id="dockFinder" type="button" title="Finder">
-        <img alt="Finder" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
+        <img alt="Finder" src="assets/icons/finder.png">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockSafari" type="button" title="Safari">
-        <img alt="Safari" src="https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png">
+        <img alt="Safari" src="assets/icons/safari.png">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockMusic" type="button" title="Music">
-        <img alt="Music" src="https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png">
+        <img alt="Music" src="assets/icons/music.png">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockIGithub" type="button" title="iGithub">
-        <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
+        <img alt="iGithub" src="assets/icons/github.png">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockSource" type="button" title="Source Code">
-        <img alt="Source" src="https://s8.uupload.ir/files/terminal_macos_bigsur_icon_189655_kepj.png">
+        <img alt="Source" src="assets/icons/terminal.png">
         <span class="dock-dot"></span>
       </button>
     </div>
@@ -900,12 +917,12 @@
     }
 
     const apps = {
-      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), icon:"https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png", isOpen:true, isMin:false, busy:false },
-      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  icon:"https://s8.uupload.ir/files/safari_macos_bigsur_icon_189770_ye5.png", isOpen:false, isMin:false, busy:false },
-      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, icon:"https://s8.uupload.ir/files/garlic_bread_krr0.png", isOpen:false, isMin:false, busy:false },
-      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), icon:"https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png", isOpen:false, isMin:false, busy:false },
-      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), icon:"https://s8.uupload.ir/files/apple_music_macos_bigsur_icon_190383_q9sn.png", isOpen:false, isMin:false, busy:false },
-      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, icon:"https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png", isOpen:false, isMin:false, busy:false }
+      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), icon:"assets/icons/finder.png", isOpen:true, isMin:false, busy:false },
+      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  icon:"assets/icons/safari.png", isOpen:false, isMin:false, busy:false },
+      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, icon:"assets/icons/garlic.png", isOpen:false, isMin:false, busy:false },
+      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), icon:"assets/icons/github.png", isOpen:false, isMin:false, busy:false },
+      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), icon:"assets/icons/music.png", isOpen:false, isMin:false, busy:false },
+      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, icon:"assets/icons/bin.png", isOpen:false, isMin:false, busy:false }
     };
 
     function markRunning(appKey){
@@ -1206,7 +1223,7 @@
 
           const img = document.createElement("img");
           img.alt = it.title_fa || it.title || "Recipe";
-          img.src = it.icon || "https://s8.uupload.ir/files/garlic_bread_krr0.png";
+          img.src = it.icon || "assets/icons/garlic.png";
 
           const name = document.createElement("div");
           name.className = "name";
@@ -1241,7 +1258,7 @@
         {
           name: "Bin",
           sub: "Trash",
-          icon: "https://s8.uupload.ir/files/recycle_bin_icon-icons.com_55510_vtjw.png",
+          icon: "assets/icons/bin.png",
           onClick: () => {
             if (!apps.bin.isOpen) openApp("bin");
             else if (apps.bin.isMin) restoreApp("bin");

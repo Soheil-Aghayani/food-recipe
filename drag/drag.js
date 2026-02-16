@@ -1,8 +1,4 @@
 (function () {
-  function isMobileLike() {
-    return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
-  }
-
   function isInteractiveTarget(target) {
     if (!target) return false;
     if (target.closest && target.closest(".traffic")) return true;
@@ -71,7 +67,6 @@
     }
 
     handle.addEventListener("pointerdown", function (e) {
-      if (isMobileLike()) return;
       if (isLocked()) return;
       if (isInteractiveTarget(e.target)) return;
 
