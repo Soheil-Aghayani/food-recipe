@@ -18,7 +18,7 @@ describe('makeDraggable function', () => {
     global.window = originalWindow;
   });
 
-  test('should not call setPointerCapture', () => {
+  test('should not add event listeners (disabled)', () => {
     const el = {
       style: {},
       getBoundingClientRect: jest.fn(() => ({ left: 0, top: 0, width: 100, height: 100 })),
@@ -30,20 +30,7 @@ describe('makeDraggable function', () => {
 
     makeDraggable({ el, handle });
 
-    expect(handle.addEventListener).toHaveBeenCalledWith('pointerdown', expect.any(Function));
-    const pointerDownHandler = handle.addEventListener.mock.calls[0][1];
-
-    const event = {
-      target: handle,
-      clientX: 10,
-      clientY: 10,
-      pointerId: 1,
-    };
-
-    // Execute the handler
-    pointerDownHandler(event);
-
-    expect(handle.setPointerCapture).not.toHaveBeenCalled();
+    expect(handle.addEventListener).not.toHaveBeenCalled();
   });
 });
 
