@@ -890,6 +890,7 @@
 
   <script src="drag/drag.js"></script>
   <script src="lights/light-index.js"></script>
+  <script src="safari/safari.js"></script>
 
   <script>
     function updateClock(){
@@ -1361,20 +1362,8 @@
     }
     safariSetButtons();
 
-    function safariResolve(input){
-      const raw = String(input || "").trim();
-      const low = raw.toLowerCase();
-
-      if (!raw || low === "start" || low === "start page" || low === "new tab") return "safari/start.html";
-      if (low === "sohgle" || low === "google" || low.includes("google.")) return "safari/sohgle.html";
-
-      if (raw.startsWith("safari/") || raw.startsWith("recipes/") || raw.startsWith("music/") || raw.startsWith("igit/") || raw.startsWith("bin/") || raw.startsWith("garlic-bread/")) return raw;
-
-      return "safari/sohgle.html?q=" + encodeURIComponent(raw);
-    }
-
     function safariGo(input, push){
-      const url = safariResolve(input);
+      const url = window.SoheilSafari.resolve(input);
 
       if (push){
         const cur = state.safari.history[state.safari.index];
