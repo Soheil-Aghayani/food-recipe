@@ -665,24 +665,24 @@
           <div class="side-section">Favorites</div>
 
           <button class="side-item is-active" type="button" data-finder="projects">
-            <img alt="Projects" src="assets/icons/finder.png">
+            <img alt="Projects" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
             Projects
           </button>
 
           <button class="side-item" type="button" data-finder="desktop">
-            <img alt="Desktop" src="assets/icons/finder.png">
+            <img alt="Desktop" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
             Desktop
           </button>
 
           <button class="side-item" type="button" data-finder="downloads">
-            <img alt="Downloads" src="assets/icons/finder.png">
+            <img alt="Downloads" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
             Downloads
           </button>
 
           <div class="side-section" style="margin-top:14px;">iGithub</div>
 
           <button class="side-item" type="button" data-finder="igithub">
-            <img alt="iGithub" src="assets/icons/github.png">
+            <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
             iGithub
           </button>
         </div>
@@ -1102,6 +1102,12 @@
 
     Object.values(apps).forEach((app) => {
       app.el.addEventListener("pointerdown", () => bringToFront(app.key));
+
+      // Prevent dragging when interacting with window controls (lights)
+      const traffic = app.el.querySelector(".traffic");
+      if (traffic) {
+        traffic.addEventListener("pointerdown", (e) => e.stopPropagation());
+      }
     });
 
     function bindDock(appKey){
@@ -1462,7 +1468,7 @@
           el: app.el,
           handle,
           onFocus: () => bringToFront(app.key),
-          isLocked: () => app.el.classList.contains("is-maximized")
+          isLocked: () => app.el.classList.contains("is-maximized") || app.busy
         });
       });
     }
