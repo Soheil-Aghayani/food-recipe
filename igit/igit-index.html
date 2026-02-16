@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>iGithub</title>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     html,body{height:100%;}
     body{
@@ -79,6 +81,7 @@
       color: rgba(0,0,0,0.58);
       line-height: 1.6;
       user-select:text;
+      margin-top: 4px;
     }
     .meta{
       margin-top: 6px;
@@ -95,36 +98,52 @@
     .card{
       border: 1px solid rgba(0,0,0,0.08);
       border-radius: 18px;
-      padding: 14px;
+      padding: 24px;
       box-sizing:border-box;
       background: #fff;
       box-shadow: 0 10px 24px rgba(0,0,0,0.06);
       min-height: 140px;
       display:none;
+      max-width: 900px;
+      margin: 0 auto;
     }
     .card h2{
       margin:0 0 8px 0;
-      font-size: 16px;
+      font-size: 22px;
       user-select:text;
     }
     .card p{
-      margin: 0 0 10px 0;
+      margin: 0 0 16px 0;
       color: rgba(0,0,0,0.62);
-      line-height: 1.8;
+      line-height: 1.6;
       user-select:text;
+      font-size: 14px;
     }
     .chips{
       display:flex;
       flex-wrap: wrap;
       gap: 8px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
     }
     .chip{
-      font-size: 11px;
+      font-size: 12px;
       border: 1px solid rgba(0,0,0,0.10);
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 999px;
       color: rgba(0,0,0,0.64);
       user-select:text;
+      background: rgba(0,0,0,0.02);
+    }
+    .readme-wrap{
+      margin-top: 20px;
+      padding-top: 20px;
+    }
+    .markdown-body {
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+      font-size: 14px;
+      line-height: 1.6;
     }
     .loading{
       font-size: 13px;
@@ -157,9 +176,13 @@
 
     <div class="right">
       <div class="card" id="card">
-        <h2 id="cName"></h2>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <h2 id="cName"></h2>
+          <a id="cLink" href="#" target="_blank" style="font-size:12px; color:#0366d6; text-decoration:none;">View on GitHub &rarr;</a>
+        </div>
         <p id="cDesc"></p>
         <div class="chips" id="chips"></div>
+        <div id="readme" class="markdown-body"></div>
       </div>
     </div>
   </div>
@@ -176,7 +199,9 @@
     const card = document.getElementById("card");
     const cName = document.getElementById("cName");
     const cDesc = document.getElementById("cDesc");
+    const cLink = document.getElementById("cLink");
     const chips = document.getElementById("chips");
+    const readme = document.getElementById("readme");
 
     let repos = [];
     let activeId = "";
@@ -206,9 +231,11 @@
           return a.includes(q) || b.includes(q);
         })
         .forEach(r => {
-          const btn = document.createElement("button");
-          btn.type = "button";
+          const btn = document.createElement("div");
           btn.className = "row" + (r.id === activeId ? " is-active" : "");
+          btn.style.cursor = "pointer";
+          btn.setAttribute("role", "button");
+          btn.tabIndex = 0;
 
           const ico = document.createElement("img");
           ico.className = "ico";
@@ -218,9 +245,30 @@
           const box = document.createElement("div");
           box.style.flex = "1";
 
-          const name = document.createElement("div");
+          const nameWrap = document.createElement("div");
+          nameWrap.style.display = "flex";
+          nameWrap.style.justifyContent = "space-between";
+          nameWrap.style.alignItems = "center";
+
+          const name = document.createElement("span");
           name.className = "name";
           name.textContent = r.name || "";
+
+          const link = document.createElement("a");
+          link.href = r.html_url;
+          link.target = "_blank";
+          link.innerHTML = "&#x2197;"; // External link icon
+          link.style.textDecoration = "none";
+          link.style.color = "#0366d6";
+          link.style.fontSize = "18px";
+          link.style.padding = "0 6px";
+          link.title = "View Source";
+
+          // Stop propagation so clicking the link doesn't select the row
+          link.addEventListener("click", (e) => e.stopPropagation());
+
+          nameWrap.appendChild(name);
+          nameWrap.appendChild(link);
 
           const desc = document.createElement("div");
           desc.className = "desc";
@@ -230,7 +278,7 @@
           meta.className = "meta";
           meta.textContent = "Updated: " + fmtDate(r.updated_at || "");
 
-          box.appendChild(name);
+          box.appendChild(nameWrap);
           if (r.description) box.appendChild(desc);
           box.appendChild(meta);
 
@@ -247,10 +295,27 @@
         });
     }
 
+    async function fetchReadme(repoFullName){
+      readme.innerHTML = '<div style="color:#666; font-style:italic;">Loading README...</div>';
+      try {
+        const res = await fetch(`https://api.github.com/repos/${repoFullName}/readme`);
+        if (!res.ok) throw new Error("No README found");
+        const data = await res.json();
+        // GitHub API returns content in base64
+        const content = atob(data.content);
+        // Use marked to parse
+        readme.innerHTML = marked.parse(content);
+      } catch (e) {
+        readme.innerHTML = '<div style="color:#999; font-style:italic;">No README available.</div>';
+      }
+    }
+
     function renderCard(r){
       chips.innerHTML = "";
       cName.textContent = r.name || "";
       cDesc.textContent = r.description || "";
+      cLink.href = r.html_url;
+
       const arr = [
         ["Language", r.language || "Unknown"],
         ["Stars", String(r.stargazers_count || 0)],
@@ -264,6 +329,8 @@
         chips.appendChild(c);
       });
       card.style.display = "block";
+
+      fetchReadme(r.full_name);
     }
 
     async function load(){
