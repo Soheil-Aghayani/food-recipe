@@ -160,9 +160,13 @@
     }
 
     @media (max-width: 768px){
-      .recipe-header h1{ font-size: 1.9rem; }
+      .recipe-header{ height: 240px; padding-bottom: 24px; }
+      .recipe-header h1{ font-size: 1.7rem; }
+      .recipe-container{ padding: 18px 14px 80px; }
       .step-row{ flex-direction: column; gap: 10px; }
       .step-number{ width: 36px; height: 36px; font-size: 1.1rem; border-radius: 10px; }
+      .ingredients-list { grid-template-columns: 1fr; }
+      .step-content p { font-size: 1.05rem; line-height: 1.8; }
     }
   </style>
 </head>

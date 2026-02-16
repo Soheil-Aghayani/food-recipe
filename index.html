@@ -80,7 +80,7 @@
       display:flex;
       flex-direction: column;
       gap: 16px;
-      z-index: 1200;
+      z-index: 100;
       pointer-events: auto;
     }
 
@@ -565,26 +565,34 @@
       :root{ --dock-h: 74px; }
 
       .light {
-        width: 18px;
-        height: 18px;
+        width: 24px;
+        height: 24px;
       }
       .traffic {
-        gap: 12px;
+        gap: 14px;
+        margin-left: 2px;
       }
 
-      .window{
-        width: 94vw;
-        height: calc(100vh - var(--dock-h) - var(--menu-h) - 50px);
-        max-height: 80vh;
+      .window, .window.is-maximized{
+        width: 100vw !important;
+        height: calc(100vh - var(--menu-h) - var(--dock-h) - 10px) !important;
+        max-height: none !important;
+        top: calc(var(--menu-h) + 4px) !important;
+        left: 0 !important;
+        transform: none !important;
+        border-radius: 0 0 16px 16px !important;
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.06);
+        border: 0 !important;
       }
 
       .topbar{
-        height: 60px;
+        height: 58px;
+        padding: 0 16px;
       }
 
       .nav-btn{
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
       }
 
       .dock{
@@ -622,11 +630,24 @@
       .side-item{
         width: auto;
         flex: 0 0 auto;
-        padding: 8px 10px;
+        padding: 6px 8px;
+        font-size: 12px;
       }
 
       .grid{
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
+      }
+
+      .item{
+        padding: 8px 4px;
+      }
+      .item img{
+        width: 48px;
+        height: 48px;
+      }
+      .item .name{
+        font-size: 11px;
       }
     }
   </style>
@@ -665,24 +686,24 @@
           <div class="side-section">Favorites</div>
 
           <button class="side-item is-active" type="button" data-finder="projects">
-            <img alt="Projects" src="assets/icons/finder.png">
+            <img alt="Projects" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
             Projects
           </button>
 
           <button class="side-item" type="button" data-finder="desktop">
-            <img alt="Desktop" src="assets/icons/finder.png">
+            <img alt="Desktop" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
             Desktop
           </button>
 
           <button class="side-item" type="button" data-finder="downloads">
-            <img alt="Downloads" src="assets/icons/finder.png">
+            <img alt="Downloads" src="https://s8.uupload.ir/files/finder_macos_bigsur_icon_190173_8v55.png">
             Downloads
           </button>
 
           <div class="side-section" style="margin-top:14px;">iGithub</div>
 
           <button class="side-item" type="button" data-finder="igithub">
-            <img alt="iGithub" src="assets/icons/github.png">
+            <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
             iGithub
           </button>
         </div>
@@ -1102,6 +1123,12 @@
 
     Object.values(apps).forEach((app) => {
       app.el.addEventListener("pointerdown", () => bringToFront(app.key));
+
+      // Prevent dragging when interacting with window controls (lights)
+      const traffic = app.el.querySelector(".traffic");
+      if (traffic) {
+        traffic.addEventListener("pointerdown", (e) => e.stopPropagation());
+      }
     });
 
     function bindDock(appKey){
@@ -1462,7 +1489,7 @@
           el: app.el,
           handle,
           onFocus: () => bringToFront(app.key),
-          isLocked: () => app.el.classList.contains("is-maximized")
+          isLocked: () => app.el.classList.contains("is-maximized") || app.busy
         });
       });
     }
