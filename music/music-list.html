@@ -421,72 +421,28 @@
     });
 
     // --- 4. قابلیت درگ و جابجایی پنجره (Draggable) ---
-    let isDragging = false;
-    let initialX, initialY;
-    let xOffset = 0, yOffset = 0;
-
     // شروع درگ
     dragHeader.addEventListener("mousedown", dragStart);
-    // پایان درگ
-    document.addEventListener("mouseup", dragEnd);
-    // حین حرکت
-    document.addEventListener("mousemove", drag);
 
     function dragStart(e) {
       // فقط اگر دکمه‌های پنجره کلیک نشده باشند درگ کن
       if(e.target.classList.contains('win-btn')) return;
 
-      // محاسبه موقعیت اولیه با توجه به اینکه ترنسفرم داریم یا نه
-      // چون وقتی درگ میکنیم ترنسفرم رو برمیداریم، باید آفست رو درست حساب کنیم
-      
-      // اگر اولین بار است، پوزیشن فعلی (که وسط صفحه است) را محاسبه کن
-      if (xOffset === 0 && yOffset === 0) {
-          const rect = playerCard.getBoundingClientRect();
-          // ست کردن مقدار اولیه بر اساس پوزیشن فعلی
-          xOffset = rect.left;
-          yOffset = rect.top;
-      }
-      
-      initialX = e.clientX - xOffset;
-      initialY = e.clientY - yOffset;
-
       if (e.target === dragHeader || dragHeader.contains(e.target)) {
-        isDragging = true;
+        // ارسال پیام به والد برای شروع درگ پنجره اصلی
+        window.parent.postMessage({
+           type: 'os:startDrag',
+           app: 'music',
+           x: e.clientX,
+           y: e.clientY
+        }, '*');
       }
-    }
-
-    function dragEnd() {
-      initialX = xOffset;
-      initialY = yOffset;
-      isDragging = false;
-    }
-
-    function drag(e) {
-      if (isDragging) {
-        e.preventDefault();
-        
-        const currentX = e.clientX - initialX;
-        const currentY = e.clientY - initialY;
-
-        xOffset = currentX;
-        yOffset = currentY;
-
-        setTranslate(currentX, currentY, playerCard);
-      }
-    }
-
-    function setTranslate(xPos, yPos, el) {
-      // حذف transform پیش‌فرض (که مرکزچین بود) و اعمال مختصات جدید
-      // از top/left استفاده میکنیم که راحت تر باشد
-      el.style.transform = "none"; 
-      el.style.left = xPos + "px";
-      el.style.top = yPos + "px";
     }
 
     // --- 5. دکمه‌های پنجره ---
     window.handleWindow = function(action) {
       if(action === 'close') {
-        playerCard.style.transform = "scale(0)";
+        playerCard.style.transform = "translate(-50%, -50%) scale(0)";
         audio.pause();
       } else if (action === 'minimize') {
         playerCard.style.opacity = "0.2";

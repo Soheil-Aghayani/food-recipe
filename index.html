@@ -823,7 +823,7 @@
     </div>
   </div>
 
-  <div class="window is-hidden" id="musicWin" data-app="music" aria-hidden="true" style="width: 860px; height: 560px;">
+  <div class="window is-hidden" id="musicWin" data-app="music" aria-hidden="true" style="width: 480px; height: 720px;">
     <div class="topbar" data-drag-handle="music">
       <div class="traffic">
         <button class="light close" type="button" data-app="music" data-action="close" aria-label="Close"></button>
@@ -1449,6 +1449,32 @@
     window.addEventListener("message", (event) => {
       const d = event.data;
       if (!d || typeof d !== "object") return;
+
+      if (d.type === "os:startDrag") {
+        const appKey = d.app;
+        if (!appKey) return;
+
+        const app = apps[appKey];
+        if (!app || !app.isOpen) return;
+
+        const iframe = app.el.querySelector("iframe");
+        const rect = iframe.getBoundingClientRect();
+
+        const startX = rect.left + d.x;
+        const startY = rect.top + d.y;
+
+        iframe.style.pointerEvents = "none";
+
+        bringToFront(appKey);
+
+        window.SoheilDrag.startManualDrag(app.el, startX, startY,
+           null,
+           () => {
+              iframe.style.pointerEvents = "";
+           }
+        );
+        return;
+      }
 
       if (d.type === "os:openApp"){
         const app = d.app || "";

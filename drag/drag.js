@@ -95,8 +95,65 @@
     });
   }
 
+  function startManualDrag(el, startX, startY, onStart, onEnd) {
+    let dragging = true;
+    let raf = 0;
+    let nextX = 0;
+    let nextY = 0;
+
+    const r = el.getBoundingClientRect();
+    const startLeft = r.left;
+    const startTop = r.top;
+
+    if (onStart) onStart();
+
+    function applyMove() {
+      raf = 0;
+      const minLeft = DRAG_MIN_X;
+      const minTop = DRAG_MIN_Y;
+      const maxLeft = window.innerWidth - DRAG_BOUNDARY_OFFSET;
+      const maxTop = window.innerHeight - DRAG_BOUNDARY_OFFSET;
+
+      const x = clamp(nextX, minLeft, maxLeft);
+      const y = clamp(nextY, minTop, maxTop);
+
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+      el.style.transform = "translate(0,0)";
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      nextX = startLeft + dx;
+      nextY = startTop + dy;
+
+      if (!raf) raf = requestAnimationFrame(applyMove);
+    }
+
+    function end() {
+      dragging = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+
+      if (onEnd) onEnd();
+    }
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+  }
+
   const SoheilDrag = {
     makeDraggable: makeDraggable,
+    startManualDrag: startManualDrag,
     clamp: clamp,
     isInteractiveTarget: isInteractiveTarget,
   };
