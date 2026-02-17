@@ -1,5 +1,3 @@
-<!doctype html>
-<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -62,6 +60,14 @@
       
       /* انیمیشن نرم برای سایه */
       transition: box-shadow 0.3s ease;
+
+
+
+
+
+
+
+
     }
     
     /* کلاس کمکی وقتی موزیک پخش می‌شود */
@@ -88,6 +94,8 @@
     
     .top-section:active {
       cursor: grabbing;
+
+
     }
 
     .window-controls {
@@ -103,6 +111,10 @@
       height: 12px;
       border-radius: 50%;
       cursor: pointer;
+
+
+
+
       transition: transform 0.1s;
     }
     .win-btn:active { transform: scale(0.9); }
@@ -123,6 +135,7 @@
       justify-content: center;
       pointer-events: none; /* جلوگیری از تداخل با درگ */
     }
+
 
     .cover-img {
       width: 100%;
@@ -180,6 +193,9 @@
     }
     .progress-fill {
       height: 100%;
+
+
+
       width: 0%;
       background: var(--primary-color);
       border-radius: 10px;
@@ -251,6 +267,10 @@
 </head>
 <body>
 
+
+
+
+
   <div class="player-card" id="playerWindow">
     <div class="window-controls">
       <div class="win-btn close-btn" onclick="handleWindow('close')"></div>
@@ -262,6 +282,9 @@
       <div class="cover-art-container">
         <img id="coverImage" class="cover-img" alt="Cover Art" crossorigin="anonymous">
         <span class="material-icons default-icon" id="defaultIcon">music_note</span>
+
+
+
       </div>
     </div>
 
@@ -289,6 +312,8 @@
         <button class="btn-control" id="nextBtn"><span class="material-icons">skip_next</span></button>
       </div>
     </div>
+
+
   </div>
 
   <audio id="audio" src="zero.mp3"></audio>
@@ -388,12 +413,18 @@
         playIcon.textContent = "pause";
         // شروع انیمیشن تپش
         playerCard.classList.add("playing");
+
+
+
+
       } else {
         audio.pause();
+
         playIcon.textContent = "play_arrow";
         playerCard.classList.remove("playing");
       }
     }
+
     playBtn.addEventListener("click", togglePlay);
     
     // آپدیت نوار زمان
@@ -405,6 +436,7 @@
       const s = Math.floor(audio.currentTime % 60);
       currTime.textContent = `${m}:${s < 10 ? '0'+s : s}`;
     });
+
     audio.addEventListener("loadedmetadata", () => {
       const m = Math.floor(audio.duration / 60);
       const s = Math.floor(audio.duration % 60);
@@ -415,7 +447,9 @@
       const clickX = e.offsetX;
       audio.currentTime = (clickX / width) * audio.duration;
     });
+
     audio.addEventListener("ended", () => {
+
       playIcon.textContent = "play_arrow";
       progFill.style.width = "0%";
       playerCard.classList.remove("playing");
@@ -425,6 +459,9 @@
     let isDragging = false;
     let initialX, initialY;
     let xOffset = 0, yOffset = 0;
+
+
+
 
     // شروع درگ
     dragHeader.addEventListener("mousedown", dragStart);
