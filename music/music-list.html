@@ -22,7 +22,7 @@
     body {
       margin: 0;
       height: 100vh;
-      background: #e0e5ec; /* رنگ پس‌زمینه کل صفحه */
+      background: transparent; /* رنگ پس‌زمینه کل صفحه */
       font-family: "Vazirmatn", sans-serif;
       overflow: hidden; /* جلوگیری از اسکرول هنگام درگ کردن */
       user-select: none;
@@ -45,7 +45,6 @@
     .player-card {
       width: 340px;
       height: 520px;
-      background: #fff;
       border-radius: 30px;
       /* پوزیشن ابسولوت برای قابلیت جابجایی */
       position: absolute; 
@@ -76,7 +75,7 @@
     }
 
     .top-section {
-      flex: 1.5;
+      flex: 1.2;
       /* گرادینت با زاویه -45 درجه و سایز بزرگتر برای حرکت */
       background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-1));
       background-size: 400% 400%;
