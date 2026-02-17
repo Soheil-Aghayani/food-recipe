@@ -3,174 +3,299 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Music</title>
+  <title>Music Player</title>
+  
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js"></script>
+
   <style>
-    html,body{height:100%;}
-    body{
-      margin:0;
-      font-family:"Vazirmatn",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      background:#fff;
-      color: #333;
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    :root {
+      --primary-color: #ff7675;
+      --primary-shadow: rgba(255, 118, 117, 0.4);
+      /* رنگ‌های گرادینت متحرک */
+      --bg-1: #ff9a9e;
+      --bg-2: #fecfef;
+      --bg-3: #ff9a9e;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #e0e5ec; /* رنگ پس‌زمینه کل صفحه */
+      font-family: "Vazirmatn", sans-serif;
+      overflow: hidden; /* جلوگیری از اسکرول هنگام درگ کردن */
       user-select: none;
     }
-    .player-card{
-      width: 320px;
+
+    /* انیمیشن برای حرکت گرادینت */
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* انیمیشن تپش (Pulse) برای سایه */
+    @keyframes pulseShadow {
+      0% { box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+      50% { box-shadow: 0 25px 60px rgba(0,0,0,0.2); }
+      100% { box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+    }
+
+    .player-card {
+      width: 340px;
+      height: 520px;
       background: #fff;
-      border-radius: 24px;
-      box-shadow: 0 18px 48px rgba(0,0,0,0.12);
+      border-radius: 30px;
+      /* پوزیشن ابسولوت برای قابلیت جابجایی */
+      position: absolute; 
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); /* مرکز چین اولیه */
+      
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
       overflow: hidden;
-      display:flex;
+      display: flex;
       flex-direction: column;
-      align-items: center;
-      padding-bottom: 24px;
+      
+      /* انیمیشن نرم برای سایه */
+      transition: box-shadow 0.3s ease;
     }
-    .cover-art{
-      width: 100%;
-      height: 240px;
-      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-      display:flex;
-      align-items:center;
-      justify-content:center;
+    
+    /* کلاس کمکی وقتی موزیک پخش می‌شود */
+    .player-card.playing {
+      animation: pulseShadow 2s infinite ease-in-out;
+    }
+
+    .top-section {
+      flex: 1.5;
+      /* گرادینت با زاویه -45 درجه و سایز بزرگتر برای حرکت */
+      background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-1));
+      background-size: 400% 400%;
+      /* اجرای انیمیشن حرکت پس‌زمینه */
+      animation: gradientFlow 10s ease infinite;
+      
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      /* نشانگر موس برای درگ کردن */
+      cursor: grab; 
     }
-    .cover-icon{
-      font-size: 84px;
-      color: rgba(255,255,255,0.8);
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    
+    .top-section:active {
+      cursor: grabbing;
     }
-    .info{
-      text-align:center;
-      margin-top: 20px;
-      padding: 0 20px;
+
+    .window-controls {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
     }
-    .title{
-      font-size: 20px;
-      font-weight: 800;
-      margin: 0;
-      color: #2d3436;
-    }
-    .artist{
-      font-size: 14px;
-      color: #636e72;
-      margin-top: 6px;
-      font-weight: 500;
-    }
-    .controls{
-      display:flex;
-      align-items:center;
-      gap: 20px;
-      margin-top: 24px;
-    }
-    .btn-control{
-      border:0;
-      background: transparent;
-      color: #2d3436;
+    .win-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
       cursor: pointer;
-      padding: 0;
-      display:flex;
-      align-items:center;
-      justify-content:center;
       transition: transform 0.1s;
     }
-    .btn-control:active{ transform: scale(0.92); }
-    .btn-control .material-icons{ font-size: 28px; }
+    .win-btn:active { transform: scale(0.9); }
+    .close-btn { background: #ff5f57; }
+    .min-btn { background: #febc2e; }
+    .max-btn { background: #28c840; }
 
-    .btn-play{
-      width: 64px;
-      height: 64px;
-      background: #ff7675;
-      border-radius: 999px;
+    .cover-art-container {
+      width: 180px;
+      height: 180px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none; /* جلوگیری از تداخل با درگ */
+    }
+
+    .cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none; 
+    }
+    
+    .default-icon {
+      font-size: 64px;
       color: #fff;
-      box-shadow: 0 8px 16px rgba(255,118,117,0.35);
+      display: block;
     }
-    .btn-play .material-icons{ font-size: 36px; }
 
-    .progress-wrap{
-      width: 100%;
-      padding: 0 32px;
-      margin-top: 24px;
-      box-sizing: border-box;
+    .bottom-section {
+      flex: 1;
+      padding: 20px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: #fff;
     }
-    .progress-bar{
+
+    .track-info {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .track-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #333;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .track-artist {
+      font-size: 14px;
+      color: #888;
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    .progress-area {
       width: 100%;
+      margin-bottom: 25px;
+    }
+    .progress-bar {
       height: 6px;
-      background: rgba(0,0,0,0.06);
-      border-radius: 99px;
-      position: relative;
+      width: 100%;
+      background: #eee;
+      border-radius: 10px;
       cursor: pointer;
+      position: relative;
     }
-    .progress-fill{
-      position: absolute;
-      left:0;
-      top:0;
-      bottom:0;
+    .progress-fill {
+      height: 100%;
       width: 0%;
-      background: #ff7675;
-      border-radius: 99px;
-      transition: width 0.1s linear;
+      background: var(--primary-color);
+      border-radius: 10px;
+      position: relative;
+      transition: background 1s ease;
     }
-    .time-wrap{
-      display:flex;
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: -3px;
+      width: 12px;
+      height: 12px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      box-shadow: 0 0 5px var(--primary-shadow);
+      opacity: 0; 
+      transition: opacity 0.2s;
+    }
+    .progress-area:hover .progress-fill::after { opacity: 1; }
+
+    .timer {
+      display: flex;
       justify-content: space-between;
       margin-top: 8px;
-      font-size: 11px;
-      color: #b2bec3;
+      font-size: 12px;
+      color: #aaa;
       font-weight: 600;
     }
-    .status-msg{
-      margin-top: 12px;
-      font-size: 12px;
-      color: #ff7675;
-      min-height: 18px;
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
     }
+    .btn-control {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #333;
+      transition: transform 0.1s;
+    }
+    .btn-control:active { transform: scale(0.9); }
+    .btn-control span { font-size: 30px; color: #555; }
+
+    .play-pause-btn {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 20px var(--primary-shadow);
+      border: none; 
+      outline: none;
+      cursor: pointer;
+      transition: transform 0.1s, background 1s ease, box-shadow 1s ease;
+    }
+    .play-pause-btn:active { transform: scale(0.95); }
+    
+    .play-pause-btn span {
+      color: #fff;
+      font-size: 32px;
+    }
+
   </style>
 </head>
 <body>
-  <div class="player-card">
-    <div class="cover-art">
-      <span class="material-icons cover-icon">music_note</span>
+
+  <div class="player-card" id="playerWindow">
+    <div class="window-controls">
+      <div class="win-btn close-btn" onclick="handleWindow('close')"></div>
+      <div class="win-btn min-btn" onclick="handleWindow('minimize')"></div>
+      <div class="win-btn max-btn" onclick="handleWindow('maximize')"></div>
     </div>
 
-    <div class="info">
-      <h2 class="title">Zero</h2>
-      <div class="artist">Imagine Dragons</div>
-    </div>
-
-    <div class="progress-wrap">
-      <div class="progress-bar" id="progBar">
-        <div class="progress-fill" id="progFill"></div>
-      </div>
-      <div class="time-wrap">
-        <span id="currTime">0:00</span>
-        <span id="durTime">0:00</span>
+    <div class="top-section" id="dragHeader">
+      <div class="cover-art-container">
+        <img id="coverImage" class="cover-img" alt="Cover Art" crossorigin="anonymous">
+        <span class="material-icons default-icon" id="defaultIcon">music_note</span>
       </div>
     </div>
 
-    <div class="controls">
-      <button class="btn-control" id="prevBtn" type="button" aria-label="Previous">
-        <span class="material-icons">skip_previous</span>
-      </button>
+    <div class="bottom-section">
+      <div class="track-info">
+        <h2 class="track-title" id="title">Loading...</h2>
+        <div class="track-artist" id="artist">Please wait</div>
+      </div>
 
-      <button class="btn-control btn-play" id="playBtn" type="button" aria-label="Play">
-        <span class="material-icons" id="playIcon">play_arrow</span>
-      </button>
+      <div class="progress-area">
+        <div class="progress-bar" id="progBar">
+          <div class="progress-fill" id="progFill"></div>
+        </div>
+        <div class="timer">
+          <span id="currTime">0:00</span>
+          <span id="durTime">0:00</span>
+        </div>
+      </div>
 
-      <button class="btn-control" id="nextBtn" type="button" aria-label="Next">
-        <span class="material-icons">skip_next</span>
-      </button>
+      <div class="controls">
+        <button class="btn-control" id="prevBtn"><span class="material-icons">skip_previous</span></button>
+        <button class="play-pause-btn" id="playBtn">
+          <span class="material-icons" id="playIcon">play_arrow</span>
+        </button>
+        <button class="btn-control" id="nextBtn"><span class="material-icons">skip_next</span></button>
+      </div>
     </div>
-
-    <div class="status-msg" id="status"></div>
   </div>
 
-  <audio id="audio" src="zero.mp3" preload="metadata"></audio>
+  <audio id="audio" src="zero.mp3"></audio>
 
   <script>
+    const playerCard = document.getElementById("playerWindow");
+    const dragHeader = document.getElementById("dragHeader");
     const audio = document.getElementById("audio");
     const playBtn = document.getElementById("playBtn");
     const playIcon = document.getElementById("playIcon");
@@ -178,69 +303,200 @@
     const progFill = document.getElementById("progFill");
     const currTime = document.getElementById("currTime");
     const durTime = document.getElementById("durTime");
-    const status = document.getElementById("status");
+    const titleEl = document.getElementById("title");
+    const artistEl = document.getElementById("artist");
+    const coverImg = document.getElementById("coverImage");
+    const defaultIcon = document.getElementById("defaultIcon");
+    
+    const colorThief = new ColorThief();
 
-    let isPlaying = false;
-
-    function fmtTime(s){
-      const m = Math.floor(s / 60);
-      const sc = Math.floor(s % 60);
-      return m + ":" + String(sc).padStart(2,"0");
+    // --- 1. تنظیمات رنگ و گرادینت متحرک ---
+    function applyThemeFromImage(imageElement) {
+      try {
+        if (imageElement.complete) extractColor(imageElement);
+        else imageElement.addEventListener('load', () => extractColor(imageElement));
+      } catch (e) { console.log(e); }
     }
 
+    function extractColor(img) {
+        const dominantColor = colorThief.getColor(img);
+        const palette = colorThief.getPalette(img, 3); // گرفتن 3 رنگ
+
+        // تبدیل آرایه به رشته RGB
+        const rgb = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
+        
+        const domRGB = rgb(dominantColor);
+        const shadowRGB = `rgba(${dominantColor[0]},${dominantColor[1]},${dominantColor[2]}, 0.4)`;
+        
+        // رنگ‌های پالت برای گرادینت
+        const col1 = palette[0] ? rgb(palette[0]) : domRGB;
+        const col2 = palette[1] ? rgb(palette[1]) : domRGB;
+        const col3 = palette[2] ? rgb(palette[2]) : col1;
+
+        // اعمال به متغیرهای CSS
+        document.documentElement.style.setProperty('--primary-color', domRGB);
+        document.documentElement.style.setProperty('--primary-shadow', shadowRGB);
+        
+        // تنظیم گرادینت (3 رنگ مختلف برای ایجاد حرکت زیبا)
+        document.documentElement.style.setProperty('--bg-1', col1);
+        document.documentElement.style.setProperty('--bg-2', col2);
+        document.documentElement.style.setProperty('--bg-3', col3);
+    }
+
+    // --- 2. لود متادیتا ---
+    function loadMetadata() {
+      fetch("zero.mp3")
+        .then(res => res.blob())
+        .then(blob => {
+            jsmediatags.read(blob, {
+                onSuccess: function(tag) {
+                    const tags = tag.tags;
+                    titleEl.textContent = tags.title || "Unknown Title";
+                    artistEl.textContent = tags.artist || "Unknown Artist";
+
+                    if (tags.picture) {
+                        const data = tags.picture.data;
+                        const format = tags.picture.format;
+                        let base64String = "";
+                        for (let i = 0; i < data.length; i++) base64String += String.fromCharCode(data[i]);
+                        
+                        coverImg.src = `data:${format};base64,${window.btoa(base64String)}`;
+                        coverImg.style.display = "block";
+                        defaultIcon.style.display = "none";
+                        applyThemeFromImage(coverImg);
+                    } else {
+                        fallbackDefault();
+                    }
+                },
+                onError: fallbackDefault
+            });
+        })
+        .catch(fallbackDefault);
+    }
+    
+    function fallbackDefault() {
+        titleEl.textContent = "Zero";
+        artistEl.textContent = "Imagine Dragons";
+        coverImg.style.display = "none";
+        defaultIcon.style.display = "block";
+    }
+
+    // --- 3. کنترل پخش ---
     function togglePlay(){
       if (audio.paused){
-        audio.play().then(() => {
-          isPlaying = true;
-          playIcon.textContent = "pause";
-          status.textContent = "";
-        }).catch((e) => {
-          console.warn(e);
-          status.textContent = "Playback blocked";
-        });
+        audio.play();
+        playIcon.textContent = "pause";
+        // شروع انیمیشن تپش
+        playerCard.classList.add("playing");
       } else {
         audio.pause();
-        isPlaying = false;
         playIcon.textContent = "play_arrow";
+        playerCard.classList.remove("playing");
+      }
+    }
+    playBtn.addEventListener("click", togglePlay);
+    
+    // آپدیت نوار زمان
+    audio.addEventListener("timeupdate", () => {
+      if(!audio.duration) return;
+      const pct = (audio.currentTime / audio.duration) * 100;
+      progFill.style.width = pct + "%";
+      const m = Math.floor(audio.currentTime / 60);
+      const s = Math.floor(audio.currentTime % 60);
+      currTime.textContent = `${m}:${s < 10 ? '0'+s : s}`;
+    });
+    audio.addEventListener("loadedmetadata", () => {
+      const m = Math.floor(audio.duration / 60);
+      const s = Math.floor(audio.duration % 60);
+      durTime.textContent = `${m}:${s < 10 ? '0'+s : s}`;
+    });
+    progBar.addEventListener("click", (e) => {
+      const width = progBar.clientWidth;
+      const clickX = e.offsetX;
+      audio.currentTime = (clickX / width) * audio.duration;
+    });
+    audio.addEventListener("ended", () => {
+      playIcon.textContent = "play_arrow";
+      progFill.style.width = "0%";
+      playerCard.classList.remove("playing");
+    });
+
+    // --- 4. قابلیت درگ و جابجایی پنجره (Draggable) ---
+    let isDragging = false;
+    let initialX, initialY;
+    let xOffset = 0, yOffset = 0;
+
+    // شروع درگ
+    dragHeader.addEventListener("mousedown", dragStart);
+    // پایان درگ
+    document.addEventListener("mouseup", dragEnd);
+    // حین حرکت
+    document.addEventListener("mousemove", drag);
+
+    function dragStart(e) {
+      // فقط اگر دکمه‌های پنجره کلیک نشده باشند درگ کن
+      if(e.target.classList.contains('win-btn')) return;
+
+      // محاسبه موقعیت اولیه با توجه به اینکه ترنسفرم داریم یا نه
+      // چون وقتی درگ میکنیم ترنسفرم رو برمیداریم، باید آفست رو درست حساب کنیم
+      
+      // اگر اولین بار است، پوزیشن فعلی (که وسط صفحه است) را محاسبه کن
+      if (xOffset === 0 && yOffset === 0) {
+          const rect = playerCard.getBoundingClientRect();
+          // ست کردن مقدار اولیه بر اساس پوزیشن فعلی
+          xOffset = rect.left;
+          yOffset = rect.top;
+      }
+      
+      initialX = e.clientX - xOffset;
+      initialY = e.clientY - yOffset;
+
+      if (e.target === dragHeader || dragHeader.contains(e.target)) {
+        isDragging = true;
       }
     }
 
-    playBtn.addEventListener("click", togglePlay);
+    function dragEnd() {
+      initialX = xOffset;
+      initialY = yOffset;
+      isDragging = false;
+    }
 
-    audio.addEventListener("timeupdate", () => {
-      if (!audio.duration) return;
-      const pct = (audio.currentTime / audio.duration) * 100;
-      progFill.style.width = pct + "%";
-      currTime.textContent = fmtTime(audio.currentTime);
-    });
+    function drag(e) {
+      if (isDragging) {
+        e.preventDefault();
+        
+        const currentX = e.clientX - initialX;
+        const currentY = e.clientY - initialY;
 
-    audio.addEventListener("loadedmetadata", () => {
-      durTime.textContent = fmtTime(audio.duration);
-    });
+        xOffset = currentX;
+        yOffset = currentY;
 
-    audio.addEventListener("ended", () => {
-      isPlaying = false;
-      playIcon.textContent = "play_arrow";
-      progFill.style.width = "0%";
-      currTime.textContent = "0:00";
-    });
+        setTranslate(currentX, currentY, playerCard);
+      }
+    }
 
-    progBar.addEventListener("click", (e) => {
-      if (!audio.duration) return;
-      const r = progBar.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const pct = Math.max(0, Math.min(1, x / r.width));
-      audio.currentTime = pct * audio.duration;
-    });
+    function setTranslate(xPos, yPos, el) {
+      // حذف transform پیش‌فرض (که مرکزچین بود) و اعمال مختصات جدید
+      // از top/left استفاده میکنیم که راحت تر باشد
+      el.style.transform = "none"; 
+      el.style.left = xPos + "px";
+      el.style.top = yPos + "px";
+    }
 
-    // Mock buttons
-    document.getElementById("prevBtn").addEventListener("click", () => {
-      audio.currentTime = 0;
-    });
-    document.getElementById("nextBtn").addEventListener("click", () => {
-      // No next track
-    });
+    // --- 5. دکمه‌های پنجره ---
+    window.handleWindow = function(action) {
+      if(action === 'close') {
+        playerCard.style.transform = "scale(0)";
+        audio.pause();
+      } else if (action === 'minimize') {
+        playerCard.style.opacity = "0.2";
+      } else if (action === 'maximize') {
+        playerCard.style.opacity = "1";
+      }
+    }
 
+    window.addEventListener('DOMContentLoaded', loadMetadata);
   </script>
 </body>
 </html>
