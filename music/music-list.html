@@ -1,85 +1,7 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Music</title>
-  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-  <style>
-    html,body{height:100%;}
-    body{
-      margin:0;
-      font-family:"Vazirmatn",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      background:#fff;
-      color: rgba(0,0,0,0.82);
-    }
-    .wrap{
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding: 18px;
-      box-sizing:border-box;
-    }
-    .card{
-      width:min(640px, 94vw);
-      border: 1px solid rgba(0,0,0,0.10);
-      border-radius: 18px;
-      padding: 16px;
-      box-sizing:border-box;
-      box-shadow: 0 14px 32px rgba(0,0,0,0.08);
-    }
-    .row{display:flex;gap:12px;align-items:center;}
-    .ico{width: 46px;height:46px;object-fit:contain;}
-    .title{font-weight:900;font-size:16px;}
-    .sub{font-size:12px;color:rgba(0,0,0,0.55);margin-top:2px;}
-    .btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
-    .btn{
-      border: 1px solid rgba(0,0,0,0.10);
-      background: rgba(0,0,0,0.03);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 13px;
-    }
-    .btn:active{ filter: brightness(0.96); }
-    .status{
-      margin-top: 12px;
-      font-size: 12px;
-      color: rgba(0,0,0,0.60);
-      line-height:1.7;
-      min-height: 18px;
-    }
-    audio{ width: 100%; margin-top: 12px; }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <div class="row">
-        <img class="ico" alt="Music" src="../assets/icons/music.png">
-        <div>
-          <div class="title">Imagine Dragons, Zero</div>
-          <div class="sub">Click play to load</div>
-        </div>
-      </div>
-
-      <div class="btns">
-        <button class="btn" id="load" type="button">Load</button>
-        <button class="btn" id="play" type="button">Play</button>
-        <button class="btn" id="pause" type="button">Pause</button>
-        <button class="btn" id="retry" type="button">Retry</button>
-      </div>
-
-      <div class="status" id="status"></div>
-
-      <audio id="audio" controls preload="none"></audio>
-    </div>
-  </div>
-
-  <script>
     const URL_MP3 = "zero.mp3";
     const audio = document.getElementById("audio");
     const status = document.getElementById("status");
+    const subtitle = document.querySelector(".subtitle");
 
     let loaded = false;
 
@@ -89,35 +11,44 @@
       if (loaded && audio.src) return;
       loaded = true;
       audio.src = URL_MP3;
-      setStatus("Loading");
+      subtitle.textContent = "Buffering...";
     }
 
     document.getElementById("load").addEventListener("click", doLoad);
 
     document.getElementById("play").addEventListener("click", async () => {
       try{
-        doLoad();
+        if(!loaded) doLoad();
         await audio.play();
         setStatus("");
+        subtitle.textContent = "Playing";
       } catch(e){
         setStatus("Playback blocked. Click play again.");
+        subtitle.textContent = "Paused";
       }
     });
 
     document.getElementById("pause").addEventListener("click", () => {
       audio.pause();
+      subtitle.textContent = "Paused";
     });
 
     document.getElementById("retry").addEventListener("click", () => {
       loaded = false;
       audio.removeAttribute("src");
       audio.load();
-      setStatus("Reset. Click load.");
+      setStatus("");
+      subtitle.textContent = "Click play to load";
     });
 
-    audio.addEventListener("waiting", () => setStatus("Buffering"));
-    audio.addEventListener("canplay", () => setStatus(""));
-    audio.addEventListener("error", () => setStatus("Audio failed to load. Retry."));
-  </script>
-</body>
-</html>
+    audio.addEventListener("waiting", () => subtitle.textContent = "Buffering...");
+    audio.addEventListener("canplay", () => {
+        if(audio.paused) subtitle.textContent = "Ready";
+        setStatus("");
+    });
+    audio.addEventListener("play", () => subtitle.textContent = "Playing");
+    audio.addEventListener("pause", () => subtitle.textContent = "Paused");
+    audio.addEventListener("error", () => {
+        setStatus("Audio failed to load.");
+        subtitle.textContent = "Error";
+    });
