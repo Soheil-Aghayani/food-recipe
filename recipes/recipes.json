@@ -2,7 +2,6 @@
   {
     "id": "garlic-bread",
     "title_fa": "نان سیر پنیری",
-    "title_en": "Garlic Bread",
     "icon": "assets/icons/garlic.png",
     "url": "garlic-bread/index.html",
     "coming_soon": false
