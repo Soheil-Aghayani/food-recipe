@@ -95,8 +95,65 @@
     });
   }
 
+  function startManualDrag(el, startX, startY, onFocus, isLocked) {
+    if (!el) return;
+    if (isLocked && isLocked()) return;
+
+    if (onFocus) onFocus();
+
+    const r = el.getBoundingClientRect();
+    const startLeft = r.left;
+    const startTop = r.top;
+
+    el.style.left = startLeft + "px";
+    el.style.top = startTop + "px";
+    el.style.transform = "translate(0,0)";
+
+    let nextX = startLeft;
+    let nextY = startTop;
+    let raf = 0;
+
+    function applyMove() {
+      raf = 0;
+      const minLeft = DRAG_MIN_X;
+      const minTop = DRAG_MIN_Y;
+      const maxLeft = window.innerWidth - DRAG_BOUNDARY_OFFSET;
+      const maxTop = window.innerHeight - DRAG_BOUNDARY_OFFSET;
+
+      const x = clamp(nextX, minLeft, maxLeft);
+      const y = clamp(nextY, minTop, maxTop);
+
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+    }
+
+    function onMove(e) {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+
+      nextX = startLeft + dx;
+      nextY = startTop + dy;
+
+      if (!raf) raf = requestAnimationFrame(applyMove);
+    }
+
+    function end() {
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+    }
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+  }
+
   const SoheilDrag = {
     makeDraggable: makeDraggable,
+    startManualDrag: startManualDrag,
     clamp: clamp,
     isInteractiveTarget: isInteractiveTarget,
   };

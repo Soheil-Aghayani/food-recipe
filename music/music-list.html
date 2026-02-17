@@ -455,70 +455,17 @@
     });
 
     // --- 4. قابلیت درگ و جابجایی پنجره (Draggable) ---
-    let isDragging = false;
-    let initialX, initialY;
-    let xOffset = 0, yOffset = 0;
+    dragHeader.addEventListener("mousedown", (e) => {
+      if (e.target.classList.contains("win-btn")) return;
+      e.preventDefault();
 
-
-
-
-    // شروع درگ
-    dragHeader.addEventListener("mousedown", dragStart);
-    // پایان درگ
-    document.addEventListener("mouseup", dragEnd);
-    // حین حرکت
-    document.addEventListener("mousemove", drag);
-
-    function dragStart(e) {
-      // فقط اگر دکمه‌های پنجره کلیک نشده باشند درگ کن
-      if(e.target.classList.contains('win-btn')) return;
-
-      // محاسبه موقعیت اولیه با توجه به اینکه ترنسفرم داریم یا نه
-      // چون وقتی درگ میکنیم ترنسفرم رو برمیداریم، باید آفست رو درست حساب کنیم
-      
-      // اگر اولین بار است، پوزیشن فعلی (که وسط صفحه است) را محاسبه کن
-      if (xOffset === 0 && yOffset === 0) {
-          const rect = playerCard.getBoundingClientRect();
-          // ست کردن مقدار اولیه بر اساس پوزیشن فعلی
-          xOffset = rect.left;
-          yOffset = rect.top;
-      }
-      
-      initialX = e.clientX - xOffset;
-      initialY = e.clientY - yOffset;
-
-      if (e.target === dragHeader || dragHeader.contains(e.target)) {
-        isDragging = true;
-      }
-    }
-
-    function dragEnd() {
-      initialX = xOffset;
-      initialY = yOffset;
-      isDragging = false;
-    }
-
-    function drag(e) {
-      if (isDragging) {
-        e.preventDefault();
-        
-        const currentX = e.clientX - initialX;
-        const currentY = e.clientY - initialY;
-
-        xOffset = currentX;
-        yOffset = currentY;
-
-        setTranslate(currentX, currentY, playerCard);
-      }
-    }
-
-    function setTranslate(xPos, yPos, el) {
-      // حذف transform پیش‌فرض (که مرکزچین بود) و اعمال مختصات جدید
-      // از top/left استفاده میکنیم که راحت تر باشد
-      el.style.transform = "none"; 
-      el.style.left = xPos + "px";
-      el.style.top = yPos + "px";
-    }
+      window.parent.postMessage({
+        type: "os:startDrag",
+        app: "music",
+        x: e.clientX,
+        y: e.clientY
+      }, "*");
+    });
 
     // --- 5. دکمه‌های پنجره ---
     window.handleWindow = function(action) {

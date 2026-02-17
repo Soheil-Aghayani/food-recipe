@@ -1151,16 +1151,6 @@
       handleTraffic(appKey, action);
     });
 
-    ["finder"].forEach((key) => {
-    const app = apps[key];
-    const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
-    window.SoheilDrag.makeDraggable({
-      el: app.el,
-      handle,
-      onFocus: () => bringToFront(app.key),
-      isLocked: () => app.el.classList.contains("is-maximized")
-    });
-  });
 
 
     function bindDock(appKey){
@@ -1450,6 +1440,24 @@
       const d = event.data;
       if (!d || typeof d !== "object") return;
 
+      if (d.type === "os:startDrag"){
+        const appKey = d.app;
+        const app = apps[appKey];
+        if (app){
+          const frame = app.el.querySelector("iframe");
+          const r = frame.getBoundingClientRect();
+          const sx = r.left + (d.x || 0);
+          const sy = r.top + (d.y || 0);
+          window.SoheilDrag.startManualDrag(
+            app.el,
+            sx,
+            sy,
+            () => bringToFront(appKey),
+            () => app.el.classList.contains("is-maximized") || app.busy
+          );
+        }
+      }
+
       if (d.type === "os:openApp"){
         const app = d.app || "";
         if (app === "safari") openSafari(d.url || "start");
@@ -1515,6 +1523,7 @@
     }
     setFinderActive("projects");
     markRunning("finder");
+    initDrag();
   </script>
 </body>
 </html>
