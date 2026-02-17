@@ -101,10 +101,14 @@
 
     if (onFocus) onFocus();
 
+    // 1. غیرفعال کردن انیمیشن‌ها برای جلوگیری از پرش
+    el.style.transition = "none";
+
     const r = el.getBoundingClientRect();
     const startLeft = r.left;
     const startTop = r.top;
 
+    // فیکس کردن موقعیت فعلی
     el.style.left = startLeft + "px";
     el.style.top = startTop + "px";
     el.style.transform = "translate(0,0)";
@@ -140,6 +144,9 @@
     function end() {
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
+
+      // 2. برگرداندن انیمیشن‌ها (اختیاری - یا خالی بگذارید)
+      el.style.transition = ""; 
 
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", end);
