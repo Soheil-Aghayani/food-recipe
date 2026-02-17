@@ -1128,15 +1128,17 @@
       handleTraffic(appKey, action);
     });
 
-    Object.values(apps).forEach((app) => {
-      app.el.addEventListener("pointerdown", () => bringToFront(app.key));
-
-      // Prevent dragging when interacting with window controls (lights)
-      const traffic = app.el.querySelector(".traffic");
-      if (traffic) {
-        traffic.addEventListener("pointerdown", (e) => e.stopPropagation());
-      }
+    ["finder"].forEach((key) => {
+      const app = apps[key];
+      const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
+      window.SoheilDrag.makeDraggable({
+        el: app.el,
+        handle,
+        onFocus: () => bringToFront(app.key),
+        isLocked: () => app.el.classList.contains("is-maximized")
+      });
     });
+
 
     function bindDock(appKey){
       const app = apps[appKey];
