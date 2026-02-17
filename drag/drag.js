@@ -7,44 +7,48 @@
     return Math.min(Math.max(v, min), max);
   }
 
-  // تابع درگ دستی که هوشمندانه آفست را در لحظه حرکت محاسبه می‌کند
   function startManualDrag(el, ignoredX, ignoredY, onFocus, isLocked) {
     if (!el) return;
     if (isLocked && isLocked()) return;
 
     if (onFocus) onFocus();
 
-    // متغیرهایی برای ذخیره فاصله موس تا گوشه پنجره
+    // 1. ترفند طلایی: غیرفعال کردن کلیک روی iframe
+    // این باعث می‌شود موس روی آن لیز بخورد و به سیستم عامل اصلی برسد
+    const iframe = el.querySelector('iframe');
+    if (iframe) {
+        iframe.style.pointerEvents = 'none';
+    }
+
     let startOffsetX = 0;
     let startOffsetY = 0;
-    let isInitialized = false; // آیا درگ شروع شده؟
+    let isInitialized = false;
 
     function onMove(e) {
-      // فقط در اولین لحظه حرکت، مختصات را فیکس می‌کنیم
       if (!isInitialized) {
-        // 1. حذف انیمیشن برای جلوگیری از لگ
+        // حذف انیمیشن برای جلوگیری از پرش
         el.style.setProperty('transition', 'none', 'important');
 
-        // 2. تبدیل موقعیت از حالت Transform (وسط‌چین) به مختصات ثابت پیکسلی
-        // این کار باعث می‌شود پنجره دقیقاً همان‌جا که هست بماند
+        // تبدیل موقعیت از وسط‌چین (transform) به مختصات ثابت پیکسلی (left/top)
         const r = el.getBoundingClientRect();
         el.style.left = r.left + "px";
         el.style.top = r.top + "px";
         el.style.transform = "none";
 
-        // 3. محاسبه فاصله دقیق موس تا گوشه پنجره در همین لحظه
+        // محاسبه فاصله دقیق موس تا گوشه پنجره در اولین لحظه حرکت
         startOffsetX = e.clientX - r.left;
         startOffsetY = e.clientY - r.top;
 
         isInitialized = true;
       }
 
-      // محاسبه موقعیت جدید بر اساس فاصله محاسبه شده
+      // محدود کردن پنجره در کادر صفحه
       const minLeft = DRAG_MIN_X;
       const minTop = DRAG_MIN_Y;
       const maxLeft = window.innerWidth - DRAG_BOUNDARY_OFFSET;
       const maxTop = window.innerHeight - DRAG_BOUNDARY_OFFSET;
 
+      // محاسبه مکان جدید: مکان موس منهای فاصله اولیه
       const x = e.clientX - startOffsetX;
       const y = e.clientY - startOffsetY;
 
@@ -53,15 +57,19 @@
     }
 
     function end() {
-      // بازگرداندن تنظیمات ترنزیشن (اختیاری)
+      // پاکسازی استایل‌ها
       el.style.removeProperty('transition');
+      
+      // فعال کردن دوباره موس روی پلیر (تا دکمه‌های Play/Pause کار کنند)
+      if (iframe) {
+          iframe.style.pointerEvents = '';
+      }
 
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
     }
 
-    // شروع گوش دادن به حرکت موس
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", end);
     window.addEventListener("pointercancel", end);
@@ -70,16 +78,14 @@
   const SoheilDrag = {
     startManualDrag: startManualDrag,
     makeDraggable: function(opts){
-       // این بخش برای پنجره‌های عادی (مثل Finder) است
        const el = opts.el;
        const handle = opts.handle;
        if(!el || !handle) return;
        
        handle.addEventListener("pointerdown", (e) => {
          if (opts.isLocked && opts.isLocked()) return;
-         // برای پنجره‌های عادی هم از همین منطق هوشمند استفاده می‌کنیم
+         // شروع درگ (ورودی‌های مختصات نادیده گرفته می‌شوند چون هوشمند محاسبه می‌کنیم)
          startManualDrag(el, 0, 0, opts.onFocus, opts.isLocked);
-         
          try { handle.setPointerCapture(e.pointerId); } catch (err) {}
        });
     }
