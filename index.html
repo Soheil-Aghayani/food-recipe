@@ -432,8 +432,8 @@
 
     .grid{
       display:grid;
-      grid-template-columns: repeat(auto-fill, 80px);
-      grid-auto-rows: 80px;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      grid-auto-rows: 150px;
       gap: 12px;
     }
 
@@ -441,19 +441,19 @@
       border: 0;
       background: transparent;
       border-radius: 12px;
-      padding: 8px 6px;
+      padding: 12px 10px;
       display:flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      gap: 6px;
+      gap: 10px;
     }
     .item:hover{ background: rgba(0,122,255,0.10); }
     .item:active{ background: rgba(0,122,255,0.14); }
 
     .item img{
-      width: 42px;
-      height: 42px;
+      width: 56px;
+      height: 56px;
       object-fit: contain;
       filter: drop-shadow(0 6px 14px rgba(0,0,0,0.16));
     }
@@ -657,6 +657,28 @@
         font-size: 11px;
       }
     }
+
+    /* --- استایل اختصاصی برای نامرئی کردن کادر موزیک پلیر --- */
+    #musicWin {
+      background: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+      pointer-events: none; /* کلیک روی فضای خالی عمل نکند */
+    }
+
+    #musicWin .topbar {
+      display: none !important; /* حذف نوار بالای پنجره */
+    }
+
+    #musicWin .content {
+      background: transparent !important;
+    }
+
+    #musicWin iframe {
+      background: transparent !important;
+      pointer-events: auto; /* کلیک روی خود پلیر کار کند */
+    }
+
   </style>
 </head>
 
@@ -1128,12 +1150,16 @@
       handleTraffic(appKey, action);
     });
 
-    Object.values(apps).forEach((app) => {
-      const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
-      if (handle) {
-        handle.addEventListener("pointerdown", () => bringToFront(app.key));
-      }
+    ["finder"].forEach((key) => {
+    const app = apps[key];
+    const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
+    window.SoheilDrag.makeDraggable({
+      el: app.el,
+      handle,
+      onFocus: () => bringToFront(app.key),
+      isLocked: () => app.el.classList.contains("is-maximized")
     });
+  });
 
 
     function bindDock(appKey){
@@ -1472,6 +1498,20 @@
       }
     });
 
+    function initDrag(){
+      const d = window.SoheilDrag;
+      if (!d || !d.makeDraggable) return;
+
+      Object.values(apps).forEach((app) => {
+        const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
+        d.makeDraggable({
+          el: app.el,
+          handle,
+          onFocus: () => bringToFront(app.key),
+          isLocked: () => app.el.classList.contains("is-maximized") || app.busy
+        });
+      });
+    }
     setFinderActive("projects");
     markRunning("finder");
   </script>
