@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -53,7 +53,7 @@
       display:flex;
       gap: 10px;
       align-items:flex-start;
-      text-align:right;
+      text-align:left;
       margin-bottom: 10px;
     }
     .row:active{ filter: brightness(0.97); }
@@ -88,6 +88,7 @@
       font-size: 11px;
       color: rgba(0,0,0,0.50);
       user-select:text;
+      text-align:left;
     }
     .right{
       flex:1;
@@ -295,20 +296,31 @@
         });
     }
 
+    marked.setOptions({
+  gfm: true,
+  breaks: false
+});
+
     async function fetchReadme(repoFullName){
       readme.innerHTML = '<div style="color:#666; font-style:italic;">Loading README...</div>';
+
       try {
-        const res = await fetch(`https://api.github.com/repos/${repoFullName}/readme`);
+        const res = await fetch(`https://api.github.com/repos/${repoFullName}/readme`, { cache: "no-store" });
         if (!res.ok) throw new Error("No README found");
+
         const data = await res.json();
-        // GitHub API returns content in base64
-        const content = atob(data.content);
-        // Use marked to parse
+
+        const b64 = String(data.content || "").replace(/\n/g, "");
+        const bin = atob(b64);
+        const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+        const content = new TextDecoder("utf-8").decode(bytes);
+
         readme.innerHTML = marked.parse(content);
       } catch (e) {
         readme.innerHTML = '<div style="color:#999; font-style:italic;">No README available.</div>';
       }
     }
+
 
     function renderCard(r){
       chips.innerHTML = "";
