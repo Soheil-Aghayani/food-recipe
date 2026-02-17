@@ -7,48 +7,61 @@
     return Math.min(Math.max(v, min), max);
   }
 
-  // این تابع اصلاح شده است تا آفست دقیق را بگیرد
-  function startManualDrag(el, offsetX, offsetY, onFocus, isLocked) {
+  // تابع درگ دستی که هوشمندانه آفست را در لحظه حرکت محاسبه می‌کند
+  function startManualDrag(el, ignoredX, ignoredY, onFocus, isLocked) {
     if (!el) return;
     if (isLocked && isLocked()) return;
 
     if (onFocus) onFocus();
 
-    // 1. حذف انیمیشن برای جلوگیری از پرش
-    el.style.setProperty('transition', 'none', 'important');
+    // متغیرهایی برای ذخیره فاصله موس تا گوشه پنجره
+    let startOffsetX = 0;
+    let startOffsetY = 0;
+    let isInitialized = false; // آیا درگ شروع شده؟
 
-    // 2. فیکس کردن موقعیت فعلی (تبدیل درصدی به پیکسلی)
-    // این کار باعث می‌شود وقتی Transform را حذف می‌کنیم، پنجره نپرد
-    const r = el.getBoundingClientRect();
-    el.style.left = r.left + "px";
-    el.style.top = r.top + "px";
-    el.style.transform = "none"; 
-
-    // 3. محاسبه حرکت بر اساس آفست ساده
     function onMove(e) {
-      // فرمول طلایی: موقعیت جدید = مکان موس - فاصله موس تا لبه پنجره
-      const x = e.clientX - offsetX;
-      const y = e.clientY - offsetY;
+      // فقط در اولین لحظه حرکت، مختصات را فیکس می‌کنیم
+      if (!isInitialized) {
+        // 1. حذف انیمیشن برای جلوگیری از لگ
+        el.style.setProperty('transition', 'none', 'important');
 
-      // محدود کردن در کادر صفحه
+        // 2. تبدیل موقعیت از حالت Transform (وسط‌چین) به مختصات ثابت پیکسلی
+        // این کار باعث می‌شود پنجره دقیقاً همان‌جا که هست بماند
+        const r = el.getBoundingClientRect();
+        el.style.left = r.left + "px";
+        el.style.top = r.top + "px";
+        el.style.transform = "none";
+
+        // 3. محاسبه فاصله دقیق موس تا گوشه پنجره در همین لحظه
+        startOffsetX = e.clientX - r.left;
+        startOffsetY = e.clientY - r.top;
+
+        isInitialized = true;
+      }
+
+      // محاسبه موقعیت جدید بر اساس فاصله محاسبه شده
       const minLeft = DRAG_MIN_X;
       const minTop = DRAG_MIN_Y;
       const maxLeft = window.innerWidth - DRAG_BOUNDARY_OFFSET;
       const maxTop = window.innerHeight - DRAG_BOUNDARY_OFFSET;
+
+      const x = e.clientX - startOffsetX;
+      const y = e.clientY - startOffsetY;
 
       el.style.left = clamp(x, minLeft, maxLeft) + "px";
       el.style.top = clamp(y, minTop, maxTop) + "px";
     }
 
     function end() {
-      // بازگرداندن تنظیمات
+      // بازگرداندن تنظیمات ترنزیشن (اختیاری)
       el.style.removeProperty('transition');
-      
+
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
     }
 
+    // شروع گوش دادن به حرکت موس
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", end);
     window.addEventListener("pointercancel", end);
@@ -64,12 +77,8 @@
        
        handle.addEventListener("pointerdown", (e) => {
          if (opts.isLocked && opts.isLocked()) return;
-         // محاسبه فاصله موس تا لبه پنجره برای پنجره‌های عادی
-         const r = el.getBoundingClientRect();
-         const offsetX = e.clientX - r.left;
-         const offsetY = e.clientY - r.top;
-         
-         startManualDrag(el, offsetX, offsetY, opts.onFocus, opts.isLocked);
+         // برای پنجره‌های عادی هم از همین منطق هوشمند استفاده می‌کنیم
+         startManualDrag(el, 0, 0, opts.onFocus, opts.isLocked);
          
          try { handle.setPointerCapture(e.pointerId); } catch (err) {}
        });
