@@ -5,119 +5,242 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Music</title>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <style>
     html,body{height:100%;}
     body{
       margin:0;
       font-family:"Vazirmatn",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       background:#fff;
-      color: rgba(0,0,0,0.82);
-    }
-    .wrap{
-      height:100%;
+      color: #333;
       display:flex;
       align-items:center;
       justify-content:center;
-      padding: 18px;
-      box-sizing:border-box;
+      user-select: none;
     }
-    .card{
-      width:min(640px, 94vw);
-      border: 1px solid rgba(0,0,0,0.10);
-      border-radius: 18px;
-      padding: 16px;
-      box-sizing:border-box;
-      box-shadow: 0 14px 32px rgba(0,0,0,0.08);
+    .player-card{
+      width: 320px;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 18px 48px rgba(0,0,0,0.12);
+      overflow: hidden;
+      display:flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 24px;
     }
-    .row{display:flex;gap:12px;align-items:center;}
-    .ico{width: 46px;height:46px;object-fit:contain;}
-    .title{font-weight:900;font-size:16px;}
-    .sub{font-size:12px;color:rgba(0,0,0,0.55);margin-top:2px;}
-    .btns{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;}
-    .btn{
-      border: 1px solid rgba(0,0,0,0.10);
-      background: rgba(0,0,0,0.03);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 13px;
+    .cover-art{
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position: relative;
     }
-    .btn:active{ filter: brightness(0.96); }
-    .status{
+    .cover-icon{
+      font-size: 84px;
+      color: rgba(255,255,255,0.8);
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    }
+    .info{
+      text-align:center;
+      margin-top: 20px;
+      padding: 0 20px;
+    }
+    .title{
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0;
+      color: #2d3436;
+    }
+    .artist{
+      font-size: 14px;
+      color: #636e72;
+      margin-top: 6px;
+      font-weight: 500;
+    }
+    .controls{
+      display:flex;
+      align-items:center;
+      gap: 20px;
+      margin-top: 24px;
+    }
+    .btn-control{
+      border:0;
+      background: transparent;
+      color: #2d3436;
+      cursor: pointer;
+      padding: 0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: transform 0.1s;
+    }
+    .btn-control:active{ transform: scale(0.92); }
+    .btn-control .material-icons{ font-size: 28px; }
+
+    .btn-play{
+      width: 64px;
+      height: 64px;
+      background: #ff7675;
+      border-radius: 999px;
+      color: #fff;
+      box-shadow: 0 8px 16px rgba(255,118,117,0.35);
+    }
+    .btn-play .material-icons{ font-size: 36px; }
+
+    .progress-wrap{
+      width: 100%;
+      padding: 0 32px;
+      margin-top: 24px;
+      box-sizing: border-box;
+    }
+    .progress-bar{
+      width: 100%;
+      height: 6px;
+      background: rgba(0,0,0,0.06);
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+    }
+    .progress-fill{
+      position: absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width: 0%;
+      background: #ff7675;
+      border-radius: 99px;
+      transition: width 0.1s linear;
+    }
+    .time-wrap{
+      display:flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #b2bec3;
+      font-weight: 600;
+    }
+    .status-msg{
       margin-top: 12px;
       font-size: 12px;
-      color: rgba(0,0,0,0.60);
-      line-height:1.7;
+      color: #ff7675;
       min-height: 18px;
     }
-    audio{ width: 100%; margin-top: 12px; }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="row">
-        <img class="ico" alt="Music" src="../assets/icons/music.png">
-        <div>
-          <div class="title">Imagine Dragons, Zero</div>
-          <div class="sub">Click play to load</div>
-        </div>
-      </div>
-
-      <div class="btns">
-        <button class="btn" id="load" type="button">Load</button>
-        <button class="btn" id="play" type="button">Play</button>
-        <button class="btn" id="pause" type="button">Pause</button>
-        <button class="btn" id="retry" type="button">Retry</button>
-      </div>
-
-      <div class="status" id="status"></div>
-
-      <audio id="audio" controls preload="none"></audio>
+  <div class="player-card">
+    <div class="cover-art">
+      <span class="material-icons cover-icon">music_note</span>
     </div>
+
+    <div class="info">
+      <h2 class="title">Zero</h2>
+      <div class="artist">Imagine Dragons</div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progBar">
+        <div class="progress-fill" id="progFill"></div>
+      </div>
+      <div class="time-wrap">
+        <span id="currTime">0:00</span>
+        <span id="durTime">0:00</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-control" id="prevBtn" type="button" aria-label="Previous">
+        <span class="material-icons">skip_previous</span>
+      </button>
+
+      <button class="btn-control btn-play" id="playBtn" type="button" aria-label="Play">
+        <span class="material-icons" id="playIcon">play_arrow</span>
+      </button>
+
+      <button class="btn-control" id="nextBtn" type="button" aria-label="Next">
+        <span class="material-icons">skip_next</span>
+      </button>
+    </div>
+
+    <div class="status-msg" id="status"></div>
   </div>
 
+  <audio id="audio" src="zero.mp3" preload="metadata"></audio>
+
   <script>
-    const URL_MP3 = "zero.mp3";
     const audio = document.getElementById("audio");
+    const playBtn = document.getElementById("playBtn");
+    const playIcon = document.getElementById("playIcon");
+    const progBar = document.getElementById("progBar");
+    const progFill = document.getElementById("progFill");
+    const currTime = document.getElementById("currTime");
+    const durTime = document.getElementById("durTime");
     const status = document.getElementById("status");
 
-    let loaded = false;
+    let isPlaying = false;
 
-    function setStatus(t){ status.textContent = t; }
-
-    function doLoad(){
-      if (loaded && audio.src) return;
-      loaded = true;
-      audio.src = URL_MP3;
-      setStatus("Loading");
+    function fmtTime(s){
+      const m = Math.floor(s / 60);
+      const sc = Math.floor(s % 60);
+      return m + ":" + String(sc).padStart(2,"0");
     }
 
-    document.getElementById("load").addEventListener("click", doLoad);
-
-    document.getElementById("play").addEventListener("click", async () => {
-      try{
-        doLoad();
-        await audio.play();
-        setStatus("");
-      } catch(e){
-        setStatus("Playback blocked. Click play again.");
+    function togglePlay(){
+      if (audio.paused){
+        audio.play().then(() => {
+          isPlaying = true;
+          playIcon.textContent = "pause";
+          status.textContent = "";
+        }).catch((e) => {
+          console.warn(e);
+          status.textContent = "Playback blocked";
+        });
+      } else {
+        audio.pause();
+        isPlaying = false;
+        playIcon.textContent = "play_arrow";
       }
+    }
+
+    playBtn.addEventListener("click", togglePlay);
+
+    audio.addEventListener("timeupdate", () => {
+      if (!audio.duration) return;
+      const pct = (audio.currentTime / audio.duration) * 100;
+      progFill.style.width = pct + "%";
+      currTime.textContent = fmtTime(audio.currentTime);
     });
 
-    document.getElementById("pause").addEventListener("click", () => {
-      audio.pause();
+    audio.addEventListener("loadedmetadata", () => {
+      durTime.textContent = fmtTime(audio.duration);
     });
 
-    document.getElementById("retry").addEventListener("click", () => {
-      loaded = false;
-      audio.removeAttribute("src");
-      audio.load();
-      setStatus("Reset. Click load.");
+    audio.addEventListener("ended", () => {
+      isPlaying = false;
+      playIcon.textContent = "play_arrow";
+      progFill.style.width = "0%";
+      currTime.textContent = "0:00";
     });
 
-    audio.addEventListener("waiting", () => setStatus("Buffering"));
-    audio.addEventListener("canplay", () => setStatus(""));
-    audio.addEventListener("error", () => setStatus("Audio failed to load. Retry."));
+    progBar.addEventListener("click", (e) => {
+      if (!audio.duration) return;
+      const r = progBar.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const pct = Math.max(0, Math.min(1, x / r.width));
+      audio.currentTime = pct * audio.duration;
+    });
+
+    // Mock buttons
+    document.getElementById("prevBtn").addEventListener("click", () => {
+      audio.currentTime = 0;
+    });
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      // No next track
+    });
+
   </script>
 </body>
 </html>
