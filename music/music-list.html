@@ -24,10 +24,11 @@
     body {
       margin: 0;
       height: 100vh;
-      background: #e0e5ec; /* رنگ پس‌زمینه کل صفحه */
+      background: transparent; /* رنگ پس‌زمینه کل صفحه */
       font-family: "Vazirmatn", sans-serif;
       overflow: hidden; /* جلوگیری از اسکرول هنگام درگ کردن */
       user-select: none;
+      pointer-events: none; /* کلیک روی فضای خالی عمل نکند */
     }
 
     /* انیمیشن برای حرکت گرادینت */
@@ -45,6 +46,7 @@
     }
 
     .player-card {
+      pointer-events: auto; /* کلیک روی خود پلیر کار کند */
       width: 340px;
       height: 520px;
       background: #fff;
@@ -453,6 +455,7 @@
 
       if (e.target === dragHeader || dragHeader.contains(e.target)) {
         isDragging = true;
+        document.body.style.pointerEvents = 'auto';
       }
     }
 
@@ -460,6 +463,7 @@
       initialX = xOffset;
       initialY = yOffset;
       isDragging = false;
+      document.body.style.pointerEvents = 'none';
     }
 
     function drag(e) {
