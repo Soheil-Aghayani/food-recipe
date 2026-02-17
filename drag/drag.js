@@ -7,64 +7,43 @@
     return Math.min(Math.max(v, min), max);
   }
 
-  function startManualDrag(el, startX, startY, onFocus, isLocked) {
+  // این تابع اصلاح شده است تا آفست دقیق را بگیرد
+  function startManualDrag(el, offsetX, offsetY, onFocus, isLocked) {
     if (!el) return;
     if (isLocked && isLocked()) return;
 
     if (onFocus) onFocus();
 
-    // 1. ذخیره استایل ترنزیشن قبلی (اگر وجود دارد)
-    const originalTransition = el.style.transition;
-    
-    // 2. کشتن انیمیشن با قدرت !important برای جلوگیری از پرش
+    // 1. حذف انیمیشن برای جلوگیری از پرش
     el.style.setProperty('transition', 'none', 'important');
 
+    // 2. فیکس کردن موقعیت فعلی (تبدیل درصدی به پیکسلی)
+    // این کار باعث می‌شود وقتی Transform را حذف می‌کنیم، پنجره نپرد
     const r = el.getBoundingClientRect();
-    const startLeft = r.left;
-    const startTop = r.top;
+    el.style.left = r.left + "px";
+    el.style.top = r.top + "px";
+    el.style.transform = "none"; 
 
-    // فیکس کردن موقعیت فعلی بدون انیمیشن
-    el.style.left = startLeft + "px";
-    el.style.top = startTop + "px";
-    el.style.transform = "none";
+    // 3. محاسبه حرکت بر اساس آفست ساده
+    function onMove(e) {
+      // فرمول طلایی: موقعیت جدید = مکان موس - فاصله موس تا لبه پنجره
+      const x = e.clientX - offsetX;
+      const y = e.clientY - offsetY;
 
-    let nextX = startLeft;
-    let nextY = startTop;
-    let raf = 0;
-
-    function applyMove() {
-      raf = 0;
+      // محدود کردن در کادر صفحه
       const minLeft = DRAG_MIN_X;
       const minTop = DRAG_MIN_Y;
       const maxLeft = window.innerWidth - DRAG_BOUNDARY_OFFSET;
       const maxTop = window.innerHeight - DRAG_BOUNDARY_OFFSET;
 
-      const x = clamp(nextX, minLeft, maxLeft);
-      const y = clamp(nextY, minTop, maxTop);
-
-      el.style.left = x + "px";
-      el.style.top = y + "px";
-    }
-
-    function onMove(e) {
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-
-      nextX = startLeft + dx;
-      nextY = startTop + dy;
-
-      if (!raf) raf = requestAnimationFrame(applyMove);
+      el.style.left = clamp(x, minLeft, maxLeft) + "px";
+      el.style.top = clamp(y, minTop, maxTop) + "px";
     }
 
     function end() {
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
-
-      // بازگرداندن ترنزیشن به حالت قبل (اختیاری - اگر می‌خواهید نرم باز شود)
-      // el.style.transition = originalTransition; 
-      // فعلاً خط بالا را کامنت کردم تا مطمئن شویم پرش نمی‌کند.
-      el.style.removeProperty('transition'); 
-
+      // بازگرداندن تنظیمات
+      el.style.removeProperty('transition');
+      
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", end);
       window.removeEventListener("pointercancel", end);
@@ -75,18 +54,25 @@
     window.addEventListener("pointercancel", end);
   }
 
-  // اکسپورت کردن توابع
   const SoheilDrag = {
     startManualDrag: startManualDrag,
-    // توابع دیگر اگر نیاز است
     makeDraggable: function(opts){
-        // نسخه ساده شده برای هندل کردن درگ‌های دیگر اگر هنوز استفاده می‌کنید
-        const el = opts.el;
-        const handle = opts.handle;
-        if(!el || !handle) return;
-        handle.addEventListener("pointerdown", (e) => {
-             startManualDrag(el, e.clientX, e.clientY, opts.onFocus, opts.isLocked);
-        });
+       // این بخش برای پنجره‌های عادی (مثل Finder) است
+       const el = opts.el;
+       const handle = opts.handle;
+       if(!el || !handle) return;
+       
+       handle.addEventListener("pointerdown", (e) => {
+         if (opts.isLocked && opts.isLocked()) return;
+         // محاسبه فاصله موس تا لبه پنجره برای پنجره‌های عادی
+         const r = el.getBoundingClientRect();
+         const offsetX = e.clientX - r.left;
+         const offsetY = e.clientY - r.top;
+         
+         startManualDrag(el, offsetX, offsetY, opts.onFocus, opts.isLocked);
+         
+         try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+       });
     }
   };
 
