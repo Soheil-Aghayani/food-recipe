@@ -273,6 +273,7 @@
   <div class="player-card" id="playerWindow">
     <div class="window-controls">
       <div class="win-btn close-btn" onclick="handleWindow('close')"></div>
+      <div class="win-btn min-btn" onclick="handleWindow('minimize')"></div>
     </div>
 
     <div class="top-section" id="dragHeader">
@@ -461,19 +462,19 @@
         type: "os:startDrag",
         app: "music",
         x: e.clientX,
-        y: e.clientY
+        y: e.clientY,
+        screenX: e.screenX,
+        screenY: e.screenY
       }, "*");
     });
 
     // --- 5. دکمه‌های پنجره ---
     window.handleWindow = function(action) {
       if(action === 'close') {
-        playerCard.style.transform = "scale(0)";
         audio.pause();
+        window.parent.postMessage({ type: 'os:closeApp', app: 'music' }, '*');
       } else if (action === 'minimize') {
-        playerCard.style.opacity = "0.2";
-      } else if (action === 'maximize') {
-        playerCard.style.opacity = "1";
+        window.parent.postMessage({ type: 'os:minimizeApp', app: 'music' }, '*');
       }
     }
 
