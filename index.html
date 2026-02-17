@@ -704,7 +704,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="finder" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="finder" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="finder" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">Finder</div>
     </div>
@@ -771,7 +770,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="safari" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="safari" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="safari" data-action="maximize" aria-label="Maximize"></button>
       </div>
 
       <button class="nav-btn" id="sBack" type="button" aria-label="Back">‹</button>
@@ -793,7 +791,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="recipe" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="recipe" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="recipe" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title" id="recipeTitle">Recipe</div>
       <input class="address" id="recipeAddress" type="text" value="" readonly />
@@ -811,7 +808,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="igithub" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="igithub" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="igithub" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">iGithub</div>
     </div>
@@ -828,7 +824,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="music" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="music" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="music" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">Music</div>
     </div>
@@ -845,7 +840,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="bin" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="bin" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="bin" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">Bin</div>
     </div>
@@ -1511,7 +1505,14 @@
       const d = window.SoheilDrag;
       if (!d || !d.makeDraggable) return;
 
+      // Fix for traffic lights: Stop propagation of pointerdown so dragging doesn't start
+      document.querySelectorAll(".light").forEach(btn => {
+        btn.addEventListener("pointerdown", (e) => e.stopPropagation());
+      });
+
       Object.values(apps).forEach((app) => {
+        if (app.key !== "music") return; // Only allow drag for Music app
+
         const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
         d.makeDraggable({
           el: app.el,
