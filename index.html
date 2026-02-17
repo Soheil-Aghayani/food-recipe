@@ -658,28 +658,25 @@
       }
     }
 
-    /* قاب اصلی پنجره نامرئی شود */
-    #musicWin.window {
+    /* --- استایل اختصاصی برای نامرئی کردن کادر موزیک پلیر --- */
+    #musicWin {
       background: transparent !important;
       box-shadow: none !important;
       border: none !important;
-      pointer-events: none !important; /* کلیک از فضای خالی رد شود */
+      pointer-events: none; /* کلیک روی فضای خالی عمل نکند */
     }
 
-    /* نوار بالای پنجره (دکمه‌های زرد و قرمز) حذف شود */
     #musicWin .topbar {
-      display: none !important;
+      display: none !important; /* حذف نوار بالای پنجره */
     }
 
-    /* پس‌زمینه محتوا شفاف شود */
     #musicWin .content {
       background: transparent !important;
     }
 
-    /* پس‌زمینه فریم شفاف شود */
     #musicWin iframe {
       background: transparent !important;
-      pointer-events: auto !important; /* کلیک روی خود پلیر کار کند */
+      pointer-events: auto; /* کلیک روی خود پلیر کار کند */
     }
 
   </style>
