@@ -1128,15 +1128,11 @@
       handleTraffic(appKey, action);
     });
 
-    ["finder"].forEach((key) => {
-      const app = apps[key];
+    Object.values(apps).forEach((app) => {
       const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
-      window.SoheilDrag.makeDraggable({
-        el: app.el,
-        handle,
-        onFocus: () => bringToFront(app.key),
-        isLocked: () => app.el.classList.contains("is-maximized")
-      });
+      if (handle) {
+        handle.addEventListener("pointerdown", () => bringToFront(app.key));
+      }
     });
 
 
@@ -1476,20 +1472,6 @@
       }
     });
 
-    function initDrag(){
-      const d = window.SoheilDrag;
-      if (!d || !d.makeDraggable) return;
-
-      Object.values(apps).forEach((app) => {
-        const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
-        d.makeDraggable({
-          el: app.el,
-          handle,
-          onFocus: () => bringToFront(app.key),
-          isLocked: () => app.el.classList.contains("is-maximized") || app.busy
-        });
-      });
-    }
     setFinderActive("projects");
     markRunning("finder");
   </script>
