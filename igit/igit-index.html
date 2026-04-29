@@ -29,7 +29,10 @@
       display:flex;
       gap: 10px;
       align-items:center;
+      cursor: grab;
+      user-select: none;
     }
+    .top:active { cursor: grabbing; }
     .search{
       flex:1;
       border: 1px solid rgba(0,0,0,0.12);
@@ -190,7 +193,7 @@
 
   <script>
     const API = "https://api.github.com/users/Soheil-Aghayani/repos?per_page=100&sort=updated";
-    const COMMIT_ICON = "../assets/icons/commit.png";
+    const COMMIT_ICON = "../assets/icons/commit.webp";
 
     const list = document.getElementById("list");
     const loading = document.getElementById("loading");
@@ -358,6 +361,18 @@
         err.textContent = "Failed to load repos";
       }
     }
+
+    const topBar = document.querySelector(".top");
+    topBar.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("input") || e.target.closest("a")) return;
+      
+      window.parent.postMessage({
+        type: "os:startDrag",
+        app: "igithub",
+        x: e.clientX,
+        y: e.clientY
+      }, "*");
+    });
 
     search.addEventListener("input", renderRows);
     load();

@@ -54,7 +54,11 @@ const qInput = document.getElementById("q");
 const qValue = getParam("q");
 qInput.value = qValue;
 
-if (qValue.trim()) renderResults(qValue.trim());
+if (qValue.trim()) {
+  renderResults(qValue.trim());
+  // ME FIX: Tell parent we are showing search results so address bar can sync
+  post({ type: "os:safariNavigated", url: window.location.href });
+}
 
 document.getElementById("form").addEventListener("submit", (e) => {
   e.preventDefault();

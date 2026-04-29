@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Start Page</title>
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-  <link rel="preload" as="image" href="../assets/wallpapers/safari.jpg">
+  <link rel="preload" as="image" href="../assets/wallpapers/safari.webp">
   <style>
     html,body{height:100%;}
     body{
       margin:0;
       font-family:"Vazirmatn",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       background: #0b0f1a;
-      background-image: url("../assets/wallpapers/safari.jpg");
+      background-image: url("../assets/wallpapers/safari.webp");
       background-size: cover;
       background-position: center;
       overflow:hidden;
@@ -92,7 +92,7 @@
 
       <div class="grid">
         <button class="tile" id="goSohgle" type="button">
-          <img alt="Sohgle" src="../assets/icons/sohgle.png">
+          <img alt="Sohgle" src="../assets/icons/sohgle.webp" loading="lazy" decoding="async">
           <div>
             <div>Sohgle</div>
             <div class="sub">Search</div>
@@ -100,7 +100,7 @@
         </button>
 
         <button class="tile" id="openIGithub" type="button">
-          <img alt="iGithub" src="../assets/icons/github.png">
+          <img alt="iGithub" src="../assets/icons/github.webp" loading="lazy" decoding="async">
           <div>
             <div>iGithub</div>
             <div class="sub">Repos</div>
@@ -108,7 +108,7 @@
         </button>
 
         <button class="tile" id="openMusic" type="button">
-          <img alt="Music" src="../assets/icons/music.png">
+          <img alt="Music" src="../assets/icons/music.webp" loading="lazy" decoding="async">
           <div>
             <div>Music</div>
             <div class="sub">Zero</div>
@@ -120,6 +120,8 @@
 
   <script>
     document.getElementById("goSohgle").addEventListener("click", () => {
+      // ME FIX: Ensure parent brings safari to front when we navigate
+      parent.postMessage({ type: "os:openApp", app: "safari", url: "sohgle.html" }, "*");
       location.href = "sohgle.html";
     });
 

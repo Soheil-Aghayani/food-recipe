@@ -5,18 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Soheil OS</title>
 
-  <link rel="icon" type="image/png" href="assets/icons/finder.png">
-  <link rel="apple-touch-icon" href="assets/icons/finder.png">>
+  <link rel="icon" type="image/webp" href="assets/icons/finder.webp">
+  <link rel="apple-touch-icon" href="assets/icons/finder.webp">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link rel="prefetch" href="safari/start.html">
   <link rel="prefetch" href="safari/sohgle.html">
 
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --os-bg: url("assets/wallpapers/os.jpg");
+      --os-bg: url("assets/wallpapers/os.webp");
       --border: rgba(0,0,0,0.10);
       --shadow: 0 22px 44px rgba(0,0,0,0.22);
       --radius: 12px;
@@ -42,6 +45,15 @@
     button{ cursor: var(--mac-arrow), pointer; }
     input, textarea{ cursor: text; }
     button, input { font-family: inherit; }
+
+    /* Helper for Dragging */
+    body.os-is-dragging, 
+    body.os-is-dragging * { 
+      cursor: grabbing !important; 
+    }
+    body.os-is-dragging iframe { 
+      pointer-events: none !important; 
+    }
 
     .menubar{
       position: fixed;
@@ -262,22 +274,29 @@
       z-index: 30;
       pointer-events: auto;
       position: relative;
+      padding: 0 4px;
     }
 
     .light{
       width: 12px;
       height: 12px;
       border-radius: 999px;
-      border: 0.5px solid rgba(0,0,0,0.12);
+      border: 0.5px solid rgba(0,0,0,0.15);
       padding: 0;
       margin: 0;
       pointer-events: auto;
-      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: default;
     }
-    .light:active{ filter: brightness(0.92); }
-    .light.close{ background:#ff5f57; }
-    .light.min{ background:#febc2e; }
-    .light.max{ background:#28c840; }
+    
+    .light:active{ filter: brightness(0.85); }
+    
+    .light.close{ background:#ff5f57; border-color: #e2463f; }
+    .light.min{ background:#febc2e; border-color: #d6a223; }
+    .light.max{ background:#28c840; border-color: #1fa031; }
 
     .title{
       font-size: 13px;
@@ -694,7 +713,7 @@
 
   <div class="desktop-icons">
     <button class="desktop-icon" id="desktopBin" type="button" title="Bin">
-      <img alt="Bin" src="assets/icons/bin.png">
+      <img alt="Bin" src="assets/icons/bin.webp" loading="lazy" decoding="async">
       <span>Bin</span>
     </button>
   </div>
@@ -732,7 +751,7 @@
           <div class="side-section" style="margin-top:14px;">iGithub</div>
 
           <button class="side-item" type="button" data-finder="igithub">
-            <img alt="iGithub" src="https://s8.uupload.ir/files/github_alt_macos_bigsur_icon_190139_sf6w.png">
+            <img alt="iGithub" src="assets/icons/github.webp">
             iGithub
           </button>
         </div>
@@ -865,7 +884,7 @@
       </div>
       <div class="help-body">
         <div class="help-photo">
-          <img alt="Soheil" src="assets/profile/me.jpg">
+          <img alt="Soheil" src="assets/profile/me.webp">
         </div>
         <div class="help-text">
           <div class="name">Soheil OS v1.0.0</div>
@@ -884,27 +903,27 @@
 
     <div class="dock">
       <button class="dock-btn is-running" id="dockFinder" type="button" title="Finder">
-        <img alt="Finder" src="assets/icons/finder.png">
+        <img alt="Finder" src="assets/icons/finder.webp" loading="lazy" decoding="async">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockSafari" type="button" title="Safari">
-        <img alt="Safari" src="assets/icons/safari.png">
+        <img alt="Safari" src="assets/icons/safari.webp" loading="lazy" decoding="async">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockMusic" type="button" title="Music">
-        <img alt="Music" src="assets/icons/music.png">
+        <img alt="Music" src="assets/icons/music.webp" loading="lazy" decoding="async">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockIGithub" type="button" title="iGithub">
-        <img alt="iGithub" src="assets/icons/github.png">
+        <img alt="iGithub" src="assets/icons/github.webp" loading="lazy" decoding="async">
         <span class="dock-dot"></span>
       </button>
 
       <button class="dock-btn" id="dockSource" type="button" title="Source Code">
-        <img alt="Source" src="assets/icons/terminal.png">
+        <img alt="Source" src="assets/icons/terminal.webp" loading="lazy" decoding="async">
         <span class="dock-dot"></span>
       </button>
     </div>
@@ -968,12 +987,12 @@
     }
 
     const apps = {
-      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), icon:"assets/icons/finder.png", isOpen:true, isMin:false, busy:false },
-      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  icon:"assets/icons/safari.png", isOpen:false, isMin:false, busy:false },
-      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, icon:"assets/icons/garlic.png", isOpen:false, isMin:false, busy:false },
-      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), icon:"assets/icons/github.png", isOpen:false, isMin:false, busy:false },
-      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), icon:"assets/icons/music.png", isOpen:false, isMin:false, busy:false },
-      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, icon:"assets/icons/bin.png", isOpen:false, isMin:false, busy:false }
+      finder: { key:"finder", el: document.getElementById("finderWin"), dock: document.getElementById("dockFinder"), icon:"assets/icons/finder.webp", isOpen:true, isMin:false, busy:false },
+      safari:  { key:"safari",  el: document.getElementById("safariWin"),  dock: document.getElementById("dockSafari"),  icon:"assets/icons/safari.webp", isOpen:false, isMin:false, busy:false },
+      recipe:  { key:"recipe",  el: document.getElementById("recipeWin"),  dock: null, icon:"assets/icons/garlic.webp", isOpen:false, isMin:false, busy:false },
+      igithub: { key:"igithub", el: document.getElementById("igithubWin"), dock: document.getElementById("dockIGithub"), icon:"assets/icons/github.webp", isOpen:false, isMin:false, busy:false },
+      music:   { key:"music",   el: document.getElementById("musicWin"),   dock: document.getElementById("dockMusic"), icon:"assets/icons/music.webp", isOpen:false, isMin:false, busy:false },
+      bin:     { key:"bin",     el: document.getElementById("binWin"),     dock: null, icon:"assets/icons/bin.webp", isOpen:false, isMin:false, busy:false }
     };
 
     function markRunning(appKey){
@@ -1023,7 +1042,8 @@
       app.busy = true;
       bringToFront(appKey);
 
-      window.SoheilLights.animateClose(app.el).finally(() => {
+      // Safe wrap for animateClose
+      const closeFinish = () => {
         app.el.style.display = "none";
         app.el.classList.add("is-hidden");
         app.el.setAttribute("aria-hidden","true");
@@ -1039,7 +1059,11 @@
         markRunning(appKey);
 
         if (appKey === "safari") resetSafariState();
-      });
+      };
+
+      const anim = window.SoheilLights.animateClose(app.el);
+      if (anim && anim.then) anim.then(closeFinish).catch(closeFinish);
+      else closeFinish();
     }
 
     function minimizeApp(appKey){
@@ -1055,7 +1079,7 @@
       if (app.dock) targetRect = app.dock.getBoundingClientRect();
       else targetRect = trayBtn.getBoundingClientRect();
 
-      window.SoheilLights.animateMinimizeTo(app.el, targetRect).finally(() => {
+      const miniFinish = () => {
         app.el.style.display = "none";
         app.el.classList.add("is-hidden");
         app.el.setAttribute("aria-hidden","true");
@@ -1066,7 +1090,11 @@
 
         app.isMin = true;
         markRunning(appKey);
-      });
+      };
+
+      const anim = window.SoheilLights.animateMinimizeTo(app.el, targetRect);
+      if (anim && anim.then) anim.then(miniFinish).catch(miniFinish);
+      else miniFinish();
     }
 
     function restoreApp(appKey){
@@ -1137,10 +1165,10 @@
       if (action === "maximize") toggleMaximize(appKey);
     }
 
-    document.addEventListener("click", (e) => {
-      const t = e.target;
+    // Traffic Light Global Listener
+    document.addEventListener("pointerdown", (e) => {
+      const t = e.target.closest(".light");
       if (!t) return;
-      if (!t.classList.contains("light")) return;
 
       const appKey = t.getAttribute("data-app");
       const action = t.getAttribute("data-action");
@@ -1150,8 +1178,6 @@
       e.stopPropagation();
       handleTraffic(appKey, action);
     });
-
-
 
     function bindDock(appKey){
       const app = apps[appKey];
@@ -1170,9 +1196,7 @@
     bindDock("igithub");
 
     document.getElementById("dockSource").addEventListener("click", () => {
-      if (!apps.igithub.isOpen) openApp("igithub");
-      else if (apps.igithub.isMin) restoreApp("igithub");
-      else bringToFront("igithub");
+      openSafari("https://github.com/Soheil-Aghayani/food-recipe");
     });
 
     function bindTrayRestore(appKey){
@@ -1272,7 +1296,7 @@
 
           const img = document.createElement("img");
           img.alt = it.title_fa || it.title || "Recipe";
-          img.src = it.icon || "assets/icons/garlic.png";
+          img.src = it.icon || "assets/icons/garlic.webp";
 
           const name = document.createElement("div");
           name.className = "name";
@@ -1307,7 +1331,7 @@
         {
           name: "Bin",
           sub: "Trash",
-          icon: "assets/icons/bin.png",
+          icon: "assets/icons/bin.webp",
           onClick: () => {
             if (!apps.bin.isOpen) openApp("bin");
             else if (apps.bin.isMin) restoreApp("bin");
@@ -1356,9 +1380,7 @@
       document.getElementById("recipeAddress").value = url;
       document.getElementById("recipeFrame").src = url;
 
-      if (!apps.recipe.isOpen) openApp("recipe");
-      else if (apps.recipe.isMin) restoreApp("recipe");
-      else bringToFront("recipe");
+      openApp("recipe");
     }
 
     loadRecipes();
@@ -1458,6 +1480,21 @@
         }
       }
 
+      if (d.type === "os:safariNavigated"){
+        const url = d.url || "";
+        if (url && state.safari.history[state.safari.index] !== url){
+          state.safari.history = state.safari.history.slice(0, state.safari.index + 1);
+          state.safari.history.push(url);
+          state.safari.index = state.safari.history.length - 1;
+          document.getElementById("sAddress").value = url;
+          safariSetButtons();
+        }
+      }
+
+      if (d.type === "safari:navigate"){
+        safariGo(d.url || "start", true);
+      }
+
       if (d.type === "os:openApp"){
         const app = d.app || "";
         if (app === "safari") openSafari(d.url || "start");
@@ -1513,6 +1550,7 @@
 
       Object.values(apps).forEach((app) => {
         const handle = app.el.querySelector('[data-drag-handle="' + app.key + '"]');
+        if (!handle) return;
         d.makeDraggable({
           el: app.el,
           handle,

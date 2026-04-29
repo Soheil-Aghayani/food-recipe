@@ -453,8 +453,8 @@
     });
 
     // --- 4. قابلیت درگ و جابجایی پنجره (Draggable) ---
-    dragHeader.addEventListener("mousedown", (e) => {
-      if (e.target.classList.contains("win-btn")) return;
+    dragHeader.addEventListener("pointerdown", (e) => {
+      if (e.target.closest(".win-btn")) return;
       e.preventDefault();
 
       window.parent.postMessage({
