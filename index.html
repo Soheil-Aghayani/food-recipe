@@ -723,7 +723,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="finder" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="finder" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="finder" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">Finder</div>
     </div>
@@ -790,7 +789,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="safari" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="safari" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="safari" data-action="maximize" aria-label="Maximize"></button>
       </div>
 
       <button class="nav-btn" id="sBack" type="button" aria-label="Back">‹</button>
@@ -812,7 +810,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="recipe" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="recipe" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="recipe" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title" id="recipeTitle">Recipe</div>
       <input class="address" id="recipeAddress" type="text" value="" readonly />
@@ -830,7 +827,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="igithub" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="igithub" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="igithub" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">iGithub</div>
     </div>
@@ -847,7 +843,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="music" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="music" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="music" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">Music</div>
     </div>
@@ -864,7 +859,6 @@
       <div class="traffic">
         <button class="light close" type="button" data-app="bin" data-action="close" aria-label="Close"></button>
         <button class="light min" type="button" data-app="bin" data-action="minimize" aria-label="Minimize"></button>
-        <button class="light max" type="button" data-app="bin" data-action="maximize" aria-label="Maximize"></button>
       </div>
       <div class="title">Bin</div>
     </div>
@@ -1466,14 +1460,10 @@
         const appKey = d.app;
         const app = apps[appKey];
         if (app){
-          const frame = app.el.querySelector("iframe");
-          const r = frame.getBoundingClientRect();
-          const sx = r.left + (d.x || 0);
-          const sy = r.top + (d.y || 0);
           window.SoheilDrag.startManualDrag(
             app.el,
-            sx,
-            sy,
+            d.screenX,
+            d.screenY,
             () => bringToFront(appKey),
             () => app.el.classList.contains("is-maximized") || app.busy
           );
@@ -1519,6 +1509,14 @@
             openRecipe({ title_fa: d.title || "Recipe", url: d.url, icon: d.icon || "" });
           }
         }
+      }
+
+      if (d.type === "os:closeApp") {
+        if (d.app && apps[d.app]) closeApp(d.app);
+      }
+
+      if (d.type === "os:minimizeApp") {
+        if (d.app && apps[d.app]) minimizeApp(d.app);
       }
     });
 

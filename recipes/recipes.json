@@ -5,5 +5,12 @@
     "icon": "assets/icons/garlic.webp",
     "url": "garlic-bread/index.html",
     "coming_soon": false
+  },
+  {
+    "id": "lasagna",
+    "title_fa": "لازانیا گوشت و پنیر",
+    "icon": "assets/icons/lasagna.webp",
+    "url": "lasagna/index.html",
+    "coming_soon": false
   }
 ]

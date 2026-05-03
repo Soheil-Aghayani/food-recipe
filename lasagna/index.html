@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لازانیا گوشت و پنیر کلاسیک</title>
+
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+  <style>
+    :root{
+      --primary: #e17055;
+      --text: #333;
+      --bg: #fdfbf7;
+      --card: #ffffff;
+
+      --mac-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 3l0 22l6-6l4 9l3-1l-4-9l8 0z' fill='%23000'/%3E%3Cpath d='M7.5 5.3l0 16.1l4.4-4.4l1-.9l.5 1.2l3.2 7.5l.9-.4l-3.2-7.5l-.5-1.2l1.3 0l6.2 0z' fill='%23fff' opacity='0.35'/%3E%3C/svg%3E") 1 1;
+    }
+
+    html, body { height: 100%; }
+    body{
+      margin:0;
+      font-family: "Vazirmatn", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: auto;
+      user-select: none;
+      cursor: var(--mac-arrow), default;
+    }
+
+    button{ cursor: var(--mac-arrow), pointer; }
+    input, textarea{ cursor: text; }
+
+    .recipe-header{
+      height: 300px;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0.12), rgba(0,0,0,0.62)),
+        url("../assets/wallpapers/lasagna.webp") center/cover;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      padding: 0 18px 34px;
+      box-sizing: border-box;
+      color: #fff;
+      text-align:center;
+    }
+
+    .recipe-header h1{
+      font-size: 2.3rem;
+      margin: 0;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    }
+
+    .recipe-header p{
+      font-size: 1.05rem;
+      opacity: 0.92;
+      margin: 10px 0 0;
+    }
+
+    .recipe-container{
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 18px 70px;
+      box-sizing: border-box;
+    }
+
+    h2{
+      font-size: 1.45rem;
+      color: #2d3436;
+      margin: 22px 0 14px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+
+    .ingredients-list{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+    }
+
+    .ing-item{
+      background: var(--card);
+      padding: 14px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+      transition: transform 0.18s;
+    }
+
+    .ing-item:hover{
+      transform: translateY(-2px);
+      border-color: rgba(225,112,85,0.55);
+    }
+
+    .ing-item input{
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+    }
+
+    .ing-item.checked{
+      opacity: 0.62;
+      text-decoration: line-through;
+      background: rgba(0,0,0,0.02);
+    }
+
+    .step-row{
+      display: flex;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    .step-number{
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 900;
+      font-size: 1.3rem;
+      box-shadow: 0 6px 14px rgba(225,112,85,0.26);
+    }
+
+    .step-content{
+      background: var(--card);
+      padding: 16px 16px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.04);
+      flex-grow: 1;
+      user-select: text;
+    }
+
+    .step-content h3{
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      color: rgba(0,0,0,0.82);
+    }
+
+    .step-content p{
+      margin: 0;
+      color: rgba(0,0,0,0.62);
+      line-height: 1.9;
+    }
+
+    .highlight{
+      color: #d35400;
+      font-weight: 800;
+      background: rgba(225,112,85,0.12);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 768px){
+      .recipe-header{ height: 240px; padding-bottom: 24px; }
+      .recipe-header h1{ font-size: 1.7rem; }
+      .recipe-container{ padding: 18px 14px 80px; }
+      .step-row{ flex-direction: column; gap: 10px; }
+      .step-number{ width: 36px; height: 36px; font-size: 1.1rem; border-radius: 10px; }
+      .ingredients-list { grid-template-columns: 1fr; }
+      .step-content p { font-size: 1.05rem; line-height: 1.8; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="recipe-header">
+    <div>
+      <h1>لازانیا گوشت و پنیر کلاسیک</h1>
+      <p>غنی، خوشمزه و لایه‌لایه</p>
+    </div>
+  </div>
+
+  <div class="recipe-container">
+    <h2>مواد لازم</h2>
+    <div class="ingredients-list" id="ing-list"></div>
+
+    <h2>دستور پخت قدم به قدم</h2>
+
+    <div class="step-row">
+      <div class="step-number">۱</div>
+      <div class="step-content">
+        <h3>آماده‌سازی پاستا</h3>
+        <p>
+          یک قابلمه بزرگ آب نمک را به جوش آورید. ورق‌های لازانیا را طبق دستور روی بسته‌بندی بپزید تا نیم‌پز (al dente) شوند. 
+          آبکشی کرده و با آب سرد بشویید تا پخت متوقف شود. ورق‌ها را روی کاغذ روغنی پهن کنید تا به هم نچسبند.
+        </p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-number">۲</div>
+      <div class="step-content">
+        <h3>تهیه سس گوشت</h3>
+        <p>
+          گوشت و پیاز را در یک تابه بزرگ تفت دهید تا گوشت قهوه‌ای و پیاز نرم شود (۵-۷ دقیقه). روغن اضافه را بگیرید. 
+          سیر را اضافه کرده و ۱ دقیقه دیگر تفت دهید تا عطر آن بلند شود.
+        </p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-number">۳</div>
+      <div class="step-content">
+        <h3>جا افتادن سس</h3>
+        <p>
+          پوره گوجه‌فرنگی، رب، پونه کوهی، ریحان، نمک و فلفل را اضافه کنید. 
+          اجازه دهید ۱۵ دقیقه با حرارت ملایم بجوشد تا طعم‌ها با هم ترکیب شده و سس غلیظ شود.
+        </p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-number">۴</div>
+      <div class="step-content">
+        <h3>مخلوط ریکوتا</h3>
+        <p>
+          در یک کاسه متوسط، پنیر ریکوتا، تخم‌مرغ، پارمزان و کمی نمک را با هم مخلوط کنید تا کاملاً یکدست شود.
+        </p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-number">۵</div>
+      <div class="step-content">
+        <h3>لایه‌بندی لازانیا</h3>
+        <p>
+          فر را روی <span class="highlight">۱۹۰ درجه سانتی‌گراد</span> گرم کنید. در ظرف ۹ در ۱۳ اینچ: 
+          ابتدا ۱ پیمانه سس گوشت، سپس یک لایه ورق لازانیا، یک‌سوم مخلوط ریکوتا و ۱ پیمانه موزارلا بریزید. 
+          این کار را ۲ بار دیگر تکرار کنید. لایه آخر را با ورق لازانیا، باقی‌مانده سس و مقدار زیادی پنیر موزارلا بپوشانید.
+        </p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-number">۶</div>
+      <div class="step-content">
+        <h3>پخت در فر</h3>
+        <p>
+          روی ظرف را با فویل بپوشانید (فویل با پنیر تماس نداشته باشد). ۲۵ دقیقه بپزید. 
+          سپس فویل را برداشته و ۲۵ دقیقه دیگر بپزید تا پنیر طلایی و حباب‌دار شود.
+        </p>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-number">۷</div>
+      <div class="step-content">
+        <h3>استراحت و سرو</h3>
+        <p>
+          قبل از برش زدن، اجازه دهید لازانیا ۱۵ دقیقه استراحت کند. این کار باعث می‌شود لایه‌ها ثابت بمانند و هنگام برش از هم نپاشند.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ingredients = [
+      "۴۵۰ گرم گوشت چرخ‌کرده",
+      "نصف پیاز زرد (نگینی)",
+      "۳ حبه سیر (له شده)",
+      "۸۰۰ گرم پوره گوجه‌فرنگی",
+      "۲ قاشق غذاخوری رب گوجه‌فرنگی",
+      "۱ قاشق چایخوری پونه کوهی",
+      "۱ قاشق چایخوری ریحان خشک",
+      "۴۲۵ گرم پنیر ریکوتا",
+      "۱ عدد تخم‌مرغ بزرگ",
+      "۱/۴ پیمانه پنیر پارمزان",
+      "۱۲ ورق لازانیا خشک",
+      "۳ پیمانه پنیر موزارلا",
+      "جعفری یا ریحان تازه",
+      "نمک و فلفل سیاه"
+    ];
+
+    const container = document.getElementById("ing-list");
+
+    ingredients.forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "ing-item";
+      div.innerHTML =
+        '<input type="checkbox" id="ing-' + index + '">' +
+        '<label for="ing-' + index + '" style="user-select:text;">' + item + '</label>';
+
+      div.addEventListener("click", (e) => {
+        if (e.target.tagName !== "INPUT") {
+          const chk = div.querySelector("input");
+          chk.checked = !chk.checked;
+        }
+        div.classList.toggle("checked", div.querySelector("input").checked);
+      });
+
+      container.appendChild(div);
+    });
+  </script>
+</body>
+</html>
