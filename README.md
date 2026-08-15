@@ -1,4 +1,6 @@
 <div align="center">
+  <img src="docs/readme-hero.svg" alt="Soheil OS Food Recipe visual hero" width="100%">
+
   <h1>SOHEIL OS · FOOD RECIPE</h1>
   <p><strong>A playful macOS-inspired browser world where recipes, music, files, and tiny apps live together.</strong></p>
   <p>
