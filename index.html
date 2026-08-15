@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Soheil OS</title>
+  <title>Soheil OS · Persian Recipes &amp; Creative Desktop</title>
+  <meta name="description" content="A playful macOS-inspired Persian recipe desktop with Finder, Safari, music, and interactive cooking stories.">
 
   <link rel="icon" type="image/webp" href="assets/icons/finder.webp">
   <link rel="apple-touch-icon" href="assets/icons/finder.webp">
@@ -833,7 +834,7 @@
 
     <div class="content">
       <iframe class="app-frame" id="igithubFrame" title="iGithub"
-        src="igit/igit-index.html"
+        src="about:blank" data-src="igit/igit-index.html" loading="lazy"
         sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
     </div>
   </div>
@@ -849,7 +850,7 @@
 
     <div class="content">
       <iframe class="app-frame" id="musicFrame" title="Music"
-        src="music/music-list.html"
+        src="about:blank" data-src="music/music-list.html" loading="lazy"
         sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
     </div>
   </div>
@@ -865,7 +866,7 @@
 
     <div class="content">
       <iframe class="app-frame" id="binFrame" title="Bin"
-        src="bin/index_bin.html"
+        src="about:blank" data-src="bin/index_bin.html" loading="lazy"
         sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
     </div>
   </div>
@@ -1007,6 +1008,11 @@
     function openApp(appKey){
       const app = apps[appKey];
       if (!app || app.busy) return;
+
+      const deferredFrame = document.getElementById(`${appKey}Frame`);
+      if (deferredFrame && deferredFrame.dataset.src && deferredFrame.getAttribute("src") === "about:blank") {
+        deferredFrame.src = deferredFrame.dataset.src;
+      }
 
       app.el.classList.remove("is-hidden");
       app.el.setAttribute("aria-hidden","false");
